@@ -37,7 +37,7 @@ const kurt: Kurt = new KurtOpenAI({
 ```ts
 const kurt: Kurt = new KurtVertexAI({
   vertexAI: new VertexAI({ project: "my-project", location: "us-central1" }),
-  model: "gpt-3.5-turbo-0125",
+  model: "gemini-1.0-pro",
 })
 ```
 
