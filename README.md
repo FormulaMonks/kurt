@@ -13,6 +13,8 @@ Currently Supported LLMs:
 
 Kurt is the reverse of The Turk: it is a system composed of a machine acting like an intelligent human. The LLM is hidden inside the box, abstracted away as a generic intelligence.
 
+![A chess-playing humanoid robot inside a box, in the style of the illustration from the Wikipedia page for Mechanical Turk](./assets/kurt.jpg)
+
 # Why not use [Langchain.js](https://js.langchain.com/docs/get_started/introduction)?
 
 Langchain tries to do too much. It is packed with a ton of different features for different use cases, but in practice some of these features get too little attention (at least on the JavaScript version of the library) and end up being buggy or incomplete on certain LLM backends. For example, at the time of this writing there are many bugs in the function calling features for Gemini in Langchain.js.
