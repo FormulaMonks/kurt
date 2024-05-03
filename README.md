@@ -65,6 +65,8 @@ for await (const event of stream) {
 //   text: "Hello! How can I assist you today?",
 //   data: undefined,
 // }
+
+await stream.finalText // "Hello! How can I assist you today?"
 ```
 
 ## Generate Structured Data Output
@@ -88,4 +90,6 @@ for await (const event of stream) {
 // { chunk: "hello" }
 // { chunk: '"}' }
 // { finished: true, text: '{"say":"hello"}', data: { say: "hello" } }
+
+await stream.finalData // { say: "hello" }
 ```

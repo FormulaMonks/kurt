@@ -9,6 +9,7 @@
     "lib": ["esnext"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2015"
+    "target": "ES2015",
+    "esModuleInterop": true
   }
 }
