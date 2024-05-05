@@ -182,3 +182,14 @@ export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
     }
   }
 }
+
+export const toFinal = async <T extends KurtSchemaInnerMaybe = undefined>(
+  result: KurtResult<T>
+): Promise<KurtResultEventFinal<T>> => {
+  for await (const event of result) {
+    if ("finished" in event) {
+      return event
+    }
+  }
+  throw new Error("Result didn't finish")
+}

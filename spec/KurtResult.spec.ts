@@ -1,5 +1,5 @@
 import { describe, test, expect, jest } from "@jest/globals"
-import { KurtResult, KurtResultEvent } from "../src/KurtResult"
+import { KurtResult, KurtResultEvent, toFinal } from "../src/KurtResult"
 import { z } from "zod"
 
 function kurtSayHelloEvents() {
@@ -61,7 +61,10 @@ describe("KurtResult", () => {
   test("with an await for final text", async () => {
     const result = kurtResultSayHello()
 
-    expect(await result.finalText).toEqual(kurtSayHelloFinalEvent().text)
+    const { text } = await toFinal(result)
+    expect(text).toEqual(kurtSayHelloFinalEvent().text)
+
+    // expect(await result.finalText).toEqual(kurtSayHelloFinalEvent().text)
   })
 
   test("with an await for final data", async () => {
