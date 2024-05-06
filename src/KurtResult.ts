@@ -1,5 +1,5 @@
 import type { Promisable } from "type-fest"
-import { KurtSchemaInnerMaybe, KurtSchemaResultMaybe } from "./KurtSchema"
+import type { KurtSchemaInnerMaybe, KurtSchemaResultMaybe } from "./KurtSchema"
 
 export type KurtResultEventChunk = { chunk: string }
 export type KurtResultEventFinal<T extends KurtSchemaInnerMaybe = undefined> = {
@@ -30,8 +30,8 @@ type _AdditionalListener<T extends KurtSchemaInnerMaybe = undefined> = (
 export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
   implements AsyncIterable<KurtResultEvent<T>>
 {
-  private started: boolean = false
-  private finished: boolean = false
+  private started = false
+  private finished = false
   private seenEvents: KurtResultEvent<T>[] = []
   private finalError?: { uncaughtError: unknown }
   private additionalListeners = new Set<_AdditionalListener<T>>()
@@ -125,7 +125,7 @@ export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
     // that will receive the next event (or error) via the listener callback.
     let nextEventResolve: (value: Promisable<KurtResultEvent<T>>) => void
     let nextEventReject: (reason?: unknown) => void
-    let createNextEventPromise = () => {
+    const createNextEventPromise = () => {
       return new Promise<KurtResultEvent<T>>((resolve, reject) => {
         nextEventResolve = resolve
         nextEventReject = reject

@@ -1,18 +1,18 @@
-import {
+import { zodToJsonSchema } from "zod-to-json-schema"
+import type {
   Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
   KurtMessage,
 } from "./Kurt"
-import { KurtResult, KurtResultEvent } from "./KurtResult"
-import {
+import { KurtResult, type KurtResultEvent } from "./KurtResult"
+import type {
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
 } from "./KurtSchema"
-import { zodToJsonSchema } from "zod-to-json-schema"
-import { OpenAI, OpenAIMessage, OpenAIResponse } from "./OpenAI.types"
+import type { OpenAI, OpenAIMessage, OpenAIResponse } from "./OpenAI.types"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = [

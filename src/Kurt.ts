@@ -1,5 +1,5 @@
-import { KurtResult } from "./KurtResult"
-import { KurtSchema, KurtSchemaInner } from "./KurtSchema"
+import type { KurtResult } from "./KurtResult"
+import type { KurtSchema, KurtSchemaInner } from "./KurtSchema"
 
 export interface Kurt {
   generateNaturalLanguage(
