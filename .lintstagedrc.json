@@ -1,3 +1,3 @@
 {
-  "*.{json,ts,js,mjs,mts}": ["pnpm exec biome ci"]
+  "*.{json,ts,js,cjs,mjs,mts}": ["pnpm exec biome ci"]
 }
