@@ -8,12 +8,14 @@ import type {
   KurtGenerateStructuredDataOptions,
   KurtMessage,
 } from "./Kurt"
-import { KurtStream, type KurtStreamEvent } from "./KurtStream"
+import { KurtResult, KurtStream, type KurtStreamEvent } from "./KurtStream"
 import type {
   KurtSchema,
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
+  KurtSchemaResult,
+  KurtSchemaResultMaybe,
 } from "./KurtSchema"
 import type {
   VertexAI,
@@ -43,93 +45,45 @@ export class KurtVertexAI implements Kurt {
       model: this.options.model,
     }) as VertexAIGenerativeModel
 
-    return this.handleStream(
-      undefined,
-      llm.generateContentStreamPATCHED({
-        contents: this.toVertexAIMessages(options),
-      })
+    return new KurtStream(
+      transformStream(
+        undefined,
+        llm.generateContentStreamPATCHED({
+          contents: this.toVertexAIMessages(options),
+        })
+      )
     )
   }
 
-  generateStructuredData<T extends KurtSchemaInner>(
-    options: KurtGenerateStructuredDataOptions<T>
-  ): KurtStream<T> {
+  generateStructuredData<I extends KurtSchemaInner>(
+    options: KurtGenerateStructuredDataOptions<I>
+  ): KurtStream<KurtSchemaResult<I>> {
     const schema = options.schema
 
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
     }) as VertexAIGenerativeModel
 
-    return this.handleStream(
-      schema as KurtSchemaMaybe<T>,
-      llm.generateContentStreamPATCHED({
-        contents: this.toVertexAIMessages(options),
-        tool_config: { function_calling_config: { mode: "ANY" } },
-        tools: [
-          {
-            functionDeclarations: [
-              {
-                name: "structured_data",
-                description: schema.description,
-                parameters: jsonSchemaForVertexAI(schema),
-              },
-            ],
-          },
-        ],
-      })
+    return new KurtStream(
+      transformStream(
+        schema,
+        llm.generateContentStreamPATCHED({
+          contents: this.toVertexAIMessages(options),
+          tool_config: { function_calling_config: { mode: "ANY" } },
+          tools: [
+            {
+              functionDeclarations: [
+                {
+                  name: "structured_data",
+                  description: schema.description,
+                  parameters: jsonSchemaForVertexAI(schema),
+                },
+              ],
+            },
+          ],
+        })
+      )
     )
-  }
-
-  private handleStream<T extends KurtSchemaInnerMaybe>(
-    schema: KurtSchemaMaybe<T>,
-    response: VertexAIResponse
-  ): KurtStream<T> {
-    async function* generator<T extends KurtSchemaInnerMaybe>() {
-      const { stream } = await response
-      const chunks: string[] = []
-
-      for await (const streamChunk of stream) {
-        const choice = streamChunk.candidates?.at(0)
-        if (!choice) continue
-
-        const isContentFinal = choice.finishReason !== undefined
-        const { parts } = choice.content
-
-        for (const [partIndex, part] of parts.entries()) {
-          const chunk = part.text
-          const isFinal = isContentFinal && partIndex === parts.length - 1
-          const data = isFinal
-            ? applySchemaToFuzzyStructure(schema, part.functionCall)
-            : undefined
-
-          if (chunk) {
-            yield { chunk }
-            chunks.push(chunk)
-          }
-          if (isFinal) {
-            if (data) {
-              const text = JSON.stringify(data)
-              yield { chunk: text }
-              yield {
-                finished: true,
-                text,
-                data,
-              } as KurtStreamEvent<T>
-            } else {
-              const text = chunks.join("")
-              const data = undefined
-              yield {
-                finished: true,
-                text,
-                data,
-              } as KurtStreamEvent<T>
-            }
-          }
-        }
-      }
-    }
-
-    return new KurtStream<T>(generator())
   }
 
   private toVertexAIMessages = ({
@@ -190,19 +144,63 @@ function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
   return schema as VertexAISchema
 }
 
+async function* transformStream<
+  I extends KurtSchemaInnerMaybe,
+  S extends KurtSchemaMaybe<I>,
+  D extends KurtSchemaResultMaybe<I>,
+>(schema: S, response: VertexAIResponse): AsyncGenerator<KurtStreamEvent<D>> {
+  const { stream } = await response
+  const chunks: string[] = []
+
+  for await (const streamChunk of stream) {
+    const choice = streamChunk.candidates?.at(0)
+    if (!choice) continue
+
+    const isContentFinal = choice.finishReason !== undefined
+    const { parts } = choice.content
+
+    for (const [partIndex, part] of parts.entries()) {
+      const chunk = part.text
+      const isFinal = isContentFinal && partIndex === parts.length - 1
+
+      if (chunk) {
+        chunks.push(chunk)
+        yield { chunk }
+      }
+      if (isFinal) {
+        if (schema) {
+          const { functionCall } = part
+          if (!functionCall) {
+            throw new Error(
+              `Expected function call in final chunk, but got ${JSON.stringify(
+                part
+              )}`
+            )
+          }
+          const data = applySchemaToFuzzyStructure(schema, functionCall) as D
+          const text = JSON.stringify(data)
+          yield { chunk: text }
+          yield { finished: true, text, data }
+        } else {
+          const text = chunks.join("")
+          yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
+        }
+      }
+    }
+  }
+}
+
 // Vertex AI sometimes gives wonky results that are nested weirdly.
 // This function tries to account for the different scenarios we've seen.
 //
 // If a new scenario is seen, we can add a test for it in KurtVertexAI.spec.ts
 // and then add new logic here as needed to handle the new scenario.
-function applySchemaToFuzzyStructure<T extends KurtSchemaInnerMaybe>(
-  schema: KurtSchemaMaybe<T>,
-  input: { name: string; args: object } | undefined
-  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
-): any {
-  if (schema === undefined || input === undefined) return undefined
-
+function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
+  schema: KurtSchema<I>,
+  input: { name: string; args: object }
+): KurtSchemaResult<I> {
   const { name, args } = input
+
   try {
     // First, try the most obvious case.
     return schema.parse(args)

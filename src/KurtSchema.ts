@@ -1,11 +1,11 @@
 import type { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
 
 export type KurtSchemaInner = ZodRawShape
-export type KurtSchema<T extends KurtSchemaInner> = ZodObject<T>
-export type KurtSchemaResult<T extends KurtSchemaInner> = zodInfer<ZodObject<T>>
+export type KurtSchema<I extends KurtSchemaInner> = ZodObject<I>
+export type KurtSchemaResult<I extends KurtSchemaInner> = zodInfer<ZodObject<I>>
 
 export type KurtSchemaInnerMaybe = KurtSchemaInner | undefined
-export type KurtSchemaMaybe<T extends KurtSchemaInnerMaybe> =
-  T extends KurtSchemaInner ? KurtSchema<T> : undefined
-export type KurtSchemaResultMaybe<T extends KurtSchemaInnerMaybe> =
-  T extends KurtSchemaInner ? KurtSchemaResult<T> : undefined
+export type KurtSchemaMaybe<I extends KurtSchemaInnerMaybe> =
+  I extends KurtSchemaInner ? KurtSchema<I> : undefined
+export type KurtSchemaResultMaybe<I extends KurtSchemaInnerMaybe> =
+  I extends KurtSchemaInner ? KurtSchemaResult<I> : undefined
