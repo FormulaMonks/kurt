@@ -1,21 +1,21 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
 
-import {
+import zodToJsonSchema from "zod-to-json-schema"
+import type {
   Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
   KurtMessage,
 } from "./Kurt"
-import { KurtResult, KurtResultEvent } from "./KurtResult"
-import {
+import { KurtResult, type KurtResultEvent } from "./KurtResult"
+import type {
   KurtSchema,
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
 } from "./KurtSchema"
-import zodToJsonSchema from "zod-to-json-schema"
-import {
+import type {
   VertexAI,
   VertexAIGenerativeModel,
   VertexAIMessage,
@@ -129,11 +129,19 @@ export class KurtVertexAI implements Kurt {
             if (data) {
               const text = JSON.stringify(data)
               yield { chunk: text }
-              yield { finished: true, text, data } as KurtResultEvent<T>
+              yield {
+                finished: true,
+                text,
+                data,
+              } as KurtResultEvent<T>
             } else {
               const text = chunks.join("")
               const data = undefined
-              yield { finished: true, text, data } as KurtResultEvent<T>
+              yield {
+                finished: true,
+                text,
+                data,
+              } as KurtResultEvent<T>
             }
           }
         }
@@ -160,25 +168,27 @@ function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
     $refStrategy: "none",
   })
 
-  delete schema.description
+  schema.description = undefined
 
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
   function removeAdditionalProperties(obj: any) {
     if (typeof obj !== "object") return obj
     if (Array.isArray(obj)) return obj.forEach(removeAdditionalProperties)
-    Object.entries(obj).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(obj)) {
       if (key === "additionalProperties") delete obj[key]
       removeAdditionalProperties(value)
-    })
+    }
   }
   removeAdditionalProperties(schema)
 
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
   function removeDollarSchema(obj: any) {
     if (typeof obj !== "object") return obj
     if (Array.isArray(obj)) return obj.forEach(removeDollarSchema)
-    Object.entries(obj).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(obj)) {
       if (key === "$schema") delete obj[key]
       removeDollarSchema(value)
-    })
+    }
   }
   removeDollarSchema(schema)
 
@@ -193,6 +203,7 @@ function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
 function applySchemaToFuzzyStructure<T extends KurtSchemaInnerMaybe>(
   schema: KurtSchemaMaybe<T>,
   input: { name: string; args: object } | undefined
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
 ): any {
   if (schema === undefined || input === undefined) return undefined
 

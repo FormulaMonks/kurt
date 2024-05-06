@@ -1,4 +1,4 @@
-import { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
+import type { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
 
 export type KurtSchemaInner = ZodRawShape
 export type KurtSchema<T extends KurtSchemaInner> = ZodObject<T>

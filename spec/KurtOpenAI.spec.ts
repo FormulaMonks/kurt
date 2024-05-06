@@ -1,14 +1,14 @@
-import { describe, test, expect, jest } from "@jest/globals"
+import { describe, expect, test } from "@jest/globals"
 import { OpenAI as RealOpenAI } from "openai"
-import {
+import { z } from "zod"
+import { KurtOpenAI } from "../src/KurtOpenAI"
+import type {
   OpenAI,
   OpenAIRequest,
   OpenAIResponse,
   OpenAIResponseChunk,
 } from "../src/OpenAI.types"
-import { KurtOpenAI } from "../src/KurtOpenAI"
 import { arrayFromAsync } from "./util"
-import { z } from "zod"
 
 const USE_REAL_API = false // set to true to validate against actual OpenAI
 
@@ -141,22 +141,31 @@ describe("KurtOpenAI", () => {
                 index: 0,
                 id: "call_dd6BuYAtlTQ3V4uIIpDNRVVU",
                 type: "function",
-                function: { name: "structured_data", arguments: "" },
+                function: {
+                  name: "structured_data",
+                  arguments: "",
+                },
               },
             ],
           },
           finish_reason: null,
         },
         {
-          delta: { tool_calls: [{ index: 0, function: { arguments: '{"' } }] },
+          delta: {
+            tool_calls: [{ index: 0, function: { arguments: '{"' } }],
+          },
           finish_reason: null,
         },
         {
-          delta: { tool_calls: [{ index: 0, function: { arguments: "say" } }] },
+          delta: {
+            tool_calls: [{ index: 0, function: { arguments: "say" } }],
+          },
           finish_reason: null,
         },
         {
-          delta: { tool_calls: [{ index: 0, function: { arguments: '":"' } }] },
+          delta: {
+            tool_calls: [{ index: 0, function: { arguments: '":"' } }],
+          },
           finish_reason: null,
         },
         {
@@ -166,7 +175,9 @@ describe("KurtOpenAI", () => {
           finish_reason: null,
         },
         {
-          delta: { tool_calls: [{ index: 0, function: { arguments: '"}' } }] },
+          delta: {
+            tool_calls: [{ index: 0, function: { arguments: '"}' } }],
+          },
           finish_reason: null,
         },
         { delta: {}, finish_reason: "stop" },

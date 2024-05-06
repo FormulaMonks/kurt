@@ -1,7 +1,8 @@
-import { describe, test, expect, jest } from "@jest/globals"
-import { KurtVertexAI } from "../src/KurtVertexAI"
 import { VertexAI as RealVertexAI } from "@google-cloud/vertexai"
-import {
+import { describe, expect, test } from "@jest/globals"
+import { z } from "zod"
+import { KurtVertexAI } from "../src/KurtVertexAI"
+import type {
   VertexAI,
   VertexAIRequest,
   VertexAIResponse,
@@ -10,7 +11,6 @@ import {
   VertexAISchema,
 } from "../src/VertexAI.types"
 import { arrayFromAsync } from "./util"
-import { z } from "zod"
 
 const USE_REAL_API = false // set to true to validate against actual VertexAI
 
@@ -77,7 +77,8 @@ describe("KurtVertexAI", () => {
             role: "model",
             parts: [{ text: " How can I help you today?" }],
           },
-          finishReason: "STOP" as any, // TODO: no any
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
         },
       ]
     )
@@ -137,7 +138,8 @@ describe("KurtVertexAI", () => {
               },
             ],
           },
-          finishReason: "STOP" as any, // TODO: no any
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
         },
       ]
     )
@@ -204,7 +206,8 @@ describe("KurtVertexAI", () => {
               },
             ],
           },
-          finishReason: "STOP" as any, // TODO: no any
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
         },
       ]
     )
@@ -271,7 +274,8 @@ describe("KurtVertexAI", () => {
               },
             ],
           },
-          finishReason: "STOP" as any, // TODO: no any
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
         },
       ]
     )

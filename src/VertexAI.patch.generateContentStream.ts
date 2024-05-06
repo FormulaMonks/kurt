@@ -39,7 +39,7 @@ import type { VertexAIGenerativeModel } from "./VertexAI.types"
  * @returns The GenerateContentResponse object with the response candidates.
  */
 
-import {
+import type {
   GenerateContentRequest,
   GenerateContentResult,
   GenerationConfig,
@@ -51,9 +51,10 @@ import {
 import { GoogleGenerativeAIError } from "@google-cloud/vertexai/build/src/types/errors"
 import * as constants from "@google-cloud/vertexai/build/src/util/constants"
 
+import { GenerativeModel, type VertexAI } from "@google-cloud/vertexai"
 import {
-  processUnary,
   processStream,
+  processUnary,
   throwErrorIfNotOK,
 } from "@google-cloud/vertexai/build/src/functions/post_fetch_processing"
 import { postRequest } from "@google-cloud/vertexai/build/src/functions/post_request"
@@ -62,7 +63,6 @@ import {
   validateGenerateContentRequest,
   validateGenerationConfig,
 } from "@google-cloud/vertexai/build/src/functions/pre_fetch_processing"
-import { GenerativeModel, VertexAI } from "@google-cloud/vertexai"
 
 export async function generateContent(
   location: string,
@@ -76,6 +76,7 @@ export async function generateContent(
   tools?: Tool[],
   requestOptions?: RequestOptions
 ): Promise<GenerateContentResult> {
+  // biome-ignore lint/style/noParameterAssign: Pending explanation
   request = formatContentRequest(request, generationConfig, safetySettings)
 
   validateGenerateContentRequest(request)
@@ -131,6 +132,7 @@ export async function generateContentStream(
   tools?: Tool[],
   requestOptions?: RequestOptions
 ): Promise<StreamGenerateContentResult> {
+  // biome-ignore lint/style/noParameterAssign: Pending explanation
   request = formatContentRequest(request, generationConfig, safetySettings)
   validateGenerateContentRequest(request)
 
@@ -165,7 +167,6 @@ export async function generateContentStream(
   })
   return processStream(response)
 }
-
 ///
 // Below this section is code from generative_models.ts in the library repo,
 // modified to use the patched generateContentStream function.
@@ -178,16 +179,18 @@ async function generateContentStreamPATCHED(
   this: VertexAI,
   request: GenerateContentRequest
 ): Promise<StreamGenerateContentResult> {
+  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+  const _this = this as any
   return generateContentStream(
-    (this as any).location,
-    (this as any).project,
-    (this as any).publisherModelEndpoint,
-    (this as any).fetchToken(),
+    _this.location,
+    _this.project,
+    _this.publisherModelEndpoint,
+    _this.fetchToken(),
     request,
-    (this as any).apiEndpoint,
-    (this as any).generationConfig,
-    (this as any).safetySettings,
-    (this as any).tools,
-    (this as any).requestOptions
+    _this.apiEndpoint,
+    _this.generationConfig,
+    _this.safetySettings,
+    _this.tools,
+    _this.requestOptions
   )
 }

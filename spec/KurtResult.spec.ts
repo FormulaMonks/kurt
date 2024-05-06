@@ -1,6 +1,6 @@
-import { describe, test, expect, jest } from "@jest/globals"
-import { KurtResult, KurtResultEvent } from "../src/KurtResult"
+import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
+import { KurtResult, type KurtResultEvent } from "../src/KurtResult"
 
 function kurtSayHelloEvents() {
   return [
@@ -19,6 +19,7 @@ function kurtSayHelloEvents() {
 
 function kurtSayHelloFinalEvent() {
   const events = kurtSayHelloEvents()
+  // biome-ignore lint/style/noNonNullAssertion: Pending explanation
   return events[events.length - 1]!
 }
 
@@ -173,7 +174,7 @@ describe("KurtResult", () => {
       events.push([])
       const listenerIndex = events.length - 1
       for await (const event of result) {
-        events[listenerIndex]!.push(event)
+        events[listenerIndex]?.push(event)
         if (spawnMoreListeners) listeners.push(listen())
       }
     }
@@ -186,9 +187,9 @@ describe("KurtResult", () => {
     }
 
     expect(events.length).toBe(7)
-    events.forEach((e) => {
+    for (const e of events) {
       expect(e).toEqual(kurtSayHelloEvents())
-    })
+    }
   })
 
   test("with many listeners, interleaved with final event awaits", async () => {
@@ -201,7 +202,7 @@ describe("KurtResult", () => {
       events.push([])
       const listenerIndex = events.length - 1
       for await (const event of result) {
-        events[listenerIndex]!.push(event)
+        events[listenerIndex]?.push(event)
         if (spawnMoreListeners) {
           listeners.push(listen())
           awaits.push(
@@ -223,9 +224,9 @@ describe("KurtResult", () => {
     await Promise.all(awaits)
 
     expect(events.length).toBe(7)
-    events.forEach((e) => {
+    for (const e of events) {
       expect(e).toEqual(kurtSayHelloEvents())
-    })
+    }
   })
 
   test("with many listeners/awaits, interleaved, with error", async () => {
@@ -233,17 +234,17 @@ describe("KurtResult", () => {
 
     const events: unknown[][] = []
     const listeners: Promise<unknown>[] = []
-    const errorers: Promise<unknown>[] = []
+    const errors: Promise<unknown>[] = []
     async function listen(spawnMoreListeners = false) {
       events.push([])
       const listenerIndex = events.length - 1
       for await (const event of result) {
-        events[listenerIndex]!.push(event)
+        events[listenerIndex]?.push(event)
         if (spawnMoreListeners) {
           const listener = listen()
           listeners.push(listener)
-          errorers.push(expectThrow("Whoops!", async () => await listener))
-          errorers.push(
+          errors.push(expectThrow("Whoops!", async () => await listener))
+          errors.push(
             expectThrow("Whoops!", async () => await result.finalEvent)
           )
         }
@@ -256,11 +257,11 @@ describe("KurtResult", () => {
       lastListenerCount = listeners.length
       await expectThrow("Whoops!", async () => await Promise.all(listeners))
     }
-    await Promise.all(errorers)
+    await Promise.all(errors)
 
     expect(events.length).toBe(6)
-    events.forEach((e) => {
+    for (const e of events) {
       expect(e).toEqual(kurtSayHelloEvents().slice(0, -1))
-    })
+    }
   })
 })

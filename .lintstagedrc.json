@@ -1,0 +1,3 @@
+{
+  "*.{json,ts,js,mjs,mts}": ["pnpm exec biome ci"]
+}

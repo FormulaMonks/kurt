@@ -1,32 +1,38 @@
 {
-	"name": "@formula-monks/kurt",
-	"description": "A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
-	"license": "MIT",
-	"version": "1.0.0",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"test": "jest",
-		"build": "tsc",
-		"prepack": "pnpm run build"
-	},
-	"prettier": {
-		"semi": false
-	},
-	"dependencies": {
-		"@google-cloud/vertexai": "1.1.0",
-		"openai": "^4.40.0",
-		"zod": "^3.23.5",
-		"zod-to-json-schema": "^3.23.0"
-	},
-	"devDependencies": {
-		"@jest/globals": "^29.7.0",
-		"jest": "^29.7.0",
-		"ts-jest": "^29.1.2",
-		"type-fest": "^4.18.1",
-		"typescript": "^5.4.5"
-	}
+  "name": "@formula-monks/kurt",
+  "description": "A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
+  "license": "MIT",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "prepack": "pnpm run build",
+    "prepare": "husky"
+  },
+  "prettier": {
+    "semi": false
+  },
+  "dependencies": {
+    "@google-cloud/vertexai": "1.1.0",
+    "openai": "^4.40.0",
+    "zod": "^3.23.5",
+    "zod-to-json-schema": "^3.23.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.7.3",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/cz-commitlint": "^19.2.0",
+    "@jest/globals": "^29.7.0",
+    "commitizen": "^4.3.0",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.2",
+    "ts-jest": "^29.1.2",
+    "type-fest": "^4.18.1",
+    "typescript": "^5.4.5"
+  }
 }
