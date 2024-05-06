@@ -1,22 +1,21 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
 
 import zodToJsonSchema from "zod-to-json-schema"
+import { KurtStream } from "@formula-monks/kurt"
 import type {
   Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
   KurtMessage,
-} from "./Kurt"
-import { KurtResult, KurtStream, type KurtStreamEvent } from "./KurtStream"
-import type {
+  KurtStreamEvent,
   KurtSchema,
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
-} from "./KurtSchema"
+} from "@formula-monks/kurt"
 import type {
   VertexAI,
   VertexAIGenerativeModel,

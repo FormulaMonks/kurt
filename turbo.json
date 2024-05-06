@@ -1,0 +1,17 @@
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist"]
+    },
+    "deploy": {
+      "dependsOn": ["build", "test", "check"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "check": {},
+    "format": {},
+    "lint": {}
+  }
+}

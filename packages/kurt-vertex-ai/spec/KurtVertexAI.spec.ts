@@ -10,7 +10,6 @@ import type {
   VertexAIResponseChunkCandidate,
   VertexAISchema,
 } from "../src/VertexAI.types"
-import { arrayFromAsync } from "./util"
 
 const USE_REAL_API = false // set to true to validate against actual VertexAI
 
@@ -53,6 +52,12 @@ function setupExpectingCall(
     vertexAI,
     model: "gemini-1.0-pro",
   })
+}
+
+async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
+  const array: T[] = []
+  for await (const item of iter) array.push(item)
+  return array
 }
 
 describe("KurtVertexAI", () => {
