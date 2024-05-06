@@ -1,18 +1,18 @@
 import type { Promisable } from "type-fest"
 import type { KurtSchemaInnerMaybe, KurtSchemaResultMaybe } from "./KurtSchema"
 
-export type KurtResultEventChunk = { chunk: string }
-export type KurtResultEventFinal<T extends KurtSchemaInnerMaybe = undefined> = {
+export type KurtStreamEventChunk = { chunk: string }
+export type KurtResult<T extends KurtSchemaInnerMaybe = undefined> = {
   finished: true
   text: string
   data: KurtSchemaResultMaybe<T>
 }
-export type KurtResultEvent<T extends KurtSchemaInnerMaybe = undefined> =
-  | KurtResultEventChunk
-  | KurtResultEventFinal<T>
+export type KurtStreamEvent<T extends KurtSchemaInnerMaybe = undefined> =
+  | KurtStreamEventChunk
+  | KurtResult<T>
 
 type _AdditionalListener<T extends KurtSchemaInnerMaybe = undefined> = (
-  event: KurtResultEvent<T> | { uncaughtError: unknown }
+  event: KurtStreamEvent<T> | { uncaughtError: unknown }
 ) => void
 
 // This class represents the result of a call to an LLM.
@@ -25,39 +25,23 @@ type _AdditionalListener<T extends KurtSchemaInnerMaybe = undefined> = (
 // each listener will see exactly the same stream of events, regardless
 // of when each one started listening.
 //
-// It also exposes a few convenience getters for callers who are only
-// interested in the final result event, or the text/data from that event.
-export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
-  implements AsyncIterable<KurtResultEvent<T>>
+// It also exposes a `result` convenience getter for callers who are only
+// interested in the final result event.
+export class KurtStream<T extends KurtSchemaInnerMaybe = undefined>
+  implements AsyncIterable<KurtStreamEvent<T>>
 {
   private started = false
   private finished = false
-  private seenEvents: KurtResultEvent<T>[] = []
+  private seenEvents: KurtStreamEvent<T>[] = []
   private finalError?: { uncaughtError: unknown }
   private additionalListeners = new Set<_AdditionalListener<T>>()
 
   // Create a new result stream, from the given underlying stream generator.
-  constructor(private gen: AsyncGenerator<KurtResultEvent<T>>) {}
+  constructor(private gen: AsyncGenerator<KurtStreamEvent<T>>) {}
 
   // Get the final event from the end of the result stream, when it is ready.
-  get finalEvent(): Promise<KurtResultEventFinal<T>> {
+  get result(): Promise<KurtResult<T>> {
     return toFinal(this)
-  }
-
-  // Get the text from the end of the result stream, when it is ready.
-  get finalText(): Promise<string> {
-    return this._finalText()
-  }
-  private async _finalText() {
-    return (await this.finalEvent).text
-  }
-
-  // Get the data from the end of the result stream, when it is ready.
-  get finalData(): Promise<KurtSchemaResultMaybe<T>> {
-    return this._finalData()
-  }
-  private async _finalData() {
-    return (await this.finalEvent).data
   }
 
   // Get each event in the stream (each yielded from this `AsyncGenerator`).
@@ -123,10 +107,10 @@ export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
 
     // To make this generator work, we need to set up a replaceable promise
     // that will receive the next event (or error) via the listener callback.
-    let nextEventResolve: (value: Promisable<KurtResultEvent<T>>) => void
+    let nextEventResolve: (value: Promisable<KurtStreamEvent<T>>) => void
     let nextEventReject: (reason?: unknown) => void
     const createNextEventPromise = () => {
-      return new Promise<KurtResultEvent<T>>((resolve, reject) => {
+      return new Promise<KurtStreamEvent<T>>((resolve, reject) => {
         nextEventResolve = resolve
         nextEventReject = reject
       })
@@ -162,9 +146,9 @@ export class KurtResult<T extends KurtSchemaInnerMaybe = undefined>
 }
 
 async function toFinal<T extends KurtSchemaInnerMaybe = undefined>(
-  result: KurtResult<T>
-): Promise<KurtResultEventFinal<T>> {
-  for await (const event of result) {
+  stream: KurtStream<T>
+): Promise<KurtResult<T>> {
+  for await (const event of stream) {
     if ("finished" in event) {
       return event
     }

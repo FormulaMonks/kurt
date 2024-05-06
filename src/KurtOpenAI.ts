@@ -6,7 +6,7 @@ import type {
   KurtGenerateStructuredDataOptions,
   KurtMessage,
 } from "./Kurt"
-import { KurtResult, type KurtResultEvent } from "./KurtResult"
+import { KurtStream, type KurtStreamEvent } from "./KurtStream"
 import type {
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
@@ -37,7 +37,7 @@ export class KurtOpenAI implements Kurt {
 
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
-  ): KurtResult {
+  ): KurtStream {
     return this.handleStream(
       undefined,
       this.options.openAI.chat.completions.create({
@@ -50,7 +50,7 @@ export class KurtOpenAI implements Kurt {
 
   generateStructuredData<T extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<T>
-  ): KurtResult<T> {
+  ): KurtStream<T> {
     const schema = options.schema
 
     return this.handleStream(
@@ -80,7 +80,7 @@ export class KurtOpenAI implements Kurt {
   private handleStream<T extends KurtSchemaInnerMaybe>(
     schema: KurtSchemaMaybe<T>,
     response: OpenAIResponse
-  ): KurtResult<T> {
+  ): KurtStream<T> {
     async function* generator<T extends KurtSchemaInnerMaybe>() {
       const stream = await response
       const chunks: string[] = []
@@ -91,13 +91,13 @@ export class KurtOpenAI implements Kurt {
 
         const textChunk = choice.delta.content
         if (textChunk) {
-          yield { chunk: textChunk } as KurtResultEvent<T>
+          yield { chunk: textChunk } as KurtStreamEvent<T>
           chunks.push(textChunk)
         }
 
         const dataChunk = choice.delta.tool_calls?.at(0)?.function?.arguments
         if (dataChunk) {
-          yield { chunk: dataChunk } as KurtResultEvent<T>
+          yield { chunk: dataChunk } as KurtStreamEvent<T>
           chunks.push(dataChunk)
         }
 
@@ -111,19 +111,19 @@ export class KurtOpenAI implements Kurt {
               finished: true,
               text,
               data,
-            } as KurtResultEvent<T>
+            } as KurtStreamEvent<T>
           } else {
             yield {
               finished: true,
               text,
               data: undefined,
-            } as KurtResultEvent<T>
+            } as KurtStreamEvent<T>
           }
         }
       }
     }
 
-    return new KurtResult<T>(generator())
+    return new KurtStream<T>(generator())
   }
 
   private toOpenAIMessages = ({
