@@ -8,7 +8,7 @@ import type {
   KurtGenerateStructuredDataOptions,
   KurtMessage,
 } from "./Kurt"
-import { KurtResult, type KurtResultEvent } from "./KurtResult"
+import { KurtStream, type KurtStreamEvent } from "./KurtStream"
 import type {
   KurtSchema,
   KurtSchemaInner,
@@ -38,7 +38,7 @@ export class KurtVertexAI implements Kurt {
 
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
-  ): KurtResult {
+  ): KurtStream {
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
     }) as VertexAIGenerativeModel
@@ -53,7 +53,7 @@ export class KurtVertexAI implements Kurt {
 
   generateStructuredData<T extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<T>
-  ): KurtResult<T> {
+  ): KurtStream<T> {
     const schema = options.schema
 
     const llm = this.options.vertexAI.getGenerativeModel({
@@ -83,7 +83,7 @@ export class KurtVertexAI implements Kurt {
   private handleStream<T extends KurtSchemaInnerMaybe>(
     schema: KurtSchemaMaybe<T>,
     response: VertexAIResponse
-  ): KurtResult<T> {
+  ): KurtStream<T> {
     async function* generator<T extends KurtSchemaInnerMaybe>() {
       const { stream } = await response
       const chunks: string[] = []
@@ -114,7 +114,7 @@ export class KurtVertexAI implements Kurt {
                 finished: true,
                 text,
                 data,
-              } as KurtResultEvent<T>
+              } as KurtStreamEvent<T>
             } else {
               const text = chunks.join("")
               const data = undefined
@@ -122,14 +122,14 @@ export class KurtVertexAI implements Kurt {
                 finished: true,
                 text,
                 data,
-              } as KurtResultEvent<T>
+              } as KurtStreamEvent<T>
             }
           }
         }
       }
     }
 
-    return new KurtResult<T>(generator())
+    return new KurtStream<T>(generator())
   }
 
   private toVertexAIMessages = ({

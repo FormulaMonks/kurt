@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
-import { KurtResult, type KurtResultEvent } from "../src/KurtResult"
+import { KurtStream, type KurtStreamEvent } from "../src/KurtStream"
 
 function kurtSayHelloEvents() {
   return [
@@ -17,19 +17,19 @@ function kurtSayHelloEvents() {
   ]
 }
 
-function kurtSayHelloFinalEvent() {
+function kurtSayHelloResult() {
   const events = kurtSayHelloEvents()
   // biome-ignore lint/style/noNonNullAssertion: Pending explanation
   return events[events.length - 1]!
 }
 
-function kurtResultSayHello(
+function kurtStreamSayHello(
   opts: {
     errorBeforeFinish?: boolean
   } = {}
 ) {
   const schema = z.object({ say: z.string() })
-  return new KurtResult<(typeof schema)["shape"]>(
+  return new KurtStream<(typeof schema)["shape"]>(
     (async function* gen() {
       const events = kurtSayHelloEvents()
 
@@ -41,7 +41,7 @@ function kurtResultSayHello(
         if (opts.errorBeforeFinish && event.finished) throw new Error("Whoops!")
 
         // Send the event.
-        yield event as KurtResultEvent<(typeof schema)["shape"]>
+        yield event as KurtStreamEvent<(typeof schema)["shape"]>
       }
     })()
   )
@@ -59,85 +59,73 @@ async function expectThrow(message: string, fn: () => Promise<unknown>) {
 }
 
 describe("KurtResult", () => {
-  test("with an await for final text", async () => {
-    const result = kurtResultSayHello()
-
-    expect(await result.finalText).toEqual(kurtSayHelloFinalEvent().text)
-  })
-
-  test("with an await for final data", async () => {
-    const result = kurtResultSayHello()
-
-    expect(await result.finalData).toEqual(kurtSayHelloFinalEvent().data)
-  })
-
   test("with an await for final event", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
-    expect(await result.finalEvent).toEqual(kurtSayHelloFinalEvent())
+    expect(await stream.result).toEqual(kurtSayHelloResult())
   })
 
   test("with an await for final event catching an error", async () => {
-    const result = kurtResultSayHello({ errorBeforeFinish: true })
+    const stream = kurtStreamSayHello({ errorBeforeFinish: true })
 
-    expectThrow("Whoops!", async () => await result.finalEvent)
+    expectThrow("Whoops!", async () => await stream.result)
   })
 
   test("with one event listener", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
     const events: unknown[] = []
-    for await (const event of result) events.push(event)
+    for await (const event of stream) events.push(event)
 
     expect(events).toEqual(kurtSayHelloEvents())
   })
 
   test("with one event listener, catching an error", async () => {
-    const result = kurtResultSayHello({ errorBeforeFinish: true })
+    const stream = kurtStreamSayHello({ errorBeforeFinish: true })
 
     const events: unknown[] = []
     await expectThrow("Whoops!", async () => {
-      for await (const event of result) events.push(event)
+      for await (const event of stream) events.push(event)
     })
 
     expect(events).toEqual(kurtSayHelloEvents().slice(0, -1))
   })
 
   test("with final awaits before listener", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
-    expect(await result.finalEvent).toEqual(kurtSayHelloFinalEvent())
-    expect(await result.finalText).toEqual(kurtSayHelloFinalEvent().text)
-    expect(await result.finalData).toEqual(kurtSayHelloFinalEvent().data)
+    expect(await stream.result).toEqual(kurtSayHelloResult())
+    expect(await stream.result).toEqual(kurtSayHelloResult())
+    expect(await stream.result).toEqual(kurtSayHelloResult())
 
     const events: unknown[] = []
-    for await (const event of result) events.push(event)
+    for await (const event of stream) events.push(event)
 
     expect(events).toEqual(kurtSayHelloEvents())
   })
 
   test("with final awaits after listener", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
     const events: unknown[] = []
-    for await (const event of result) events.push(event)
+    for await (const event of stream) events.push(event)
 
-    expect(await result.finalEvent).toEqual(kurtSayHelloFinalEvent())
-    expect(await result.finalText).toEqual(kurtSayHelloFinalEvent().text)
-    expect(await result.finalData).toEqual(kurtSayHelloFinalEvent().data)
+    expect(await stream.result).toEqual(kurtSayHelloResult())
+    expect(await stream.result).toEqual(kurtSayHelloResult())
+    expect(await stream.result).toEqual(kurtSayHelloResult())
 
     expect(events).toEqual(kurtSayHelloEvents())
   })
 
   test("with three listeners, each after the last one finished", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
     const events1: unknown[] = []
     const events2: unknown[] = []
     const events3: unknown[] = []
-    for await (const event of result) events1.push(event)
-    for await (const event of result) events2.push(event)
-    for await (const event of result) events3.push(event)
+    for await (const event of stream) events1.push(event)
+    for await (const event of stream) events2.push(event)
+    for await (const event of stream) events3.push(event)
 
     expect(events1).toEqual(kurtSayHelloEvents())
     expect(events2).toEqual(kurtSayHelloEvents())
@@ -145,19 +133,19 @@ describe("KurtResult", () => {
   })
 
   test("with three listeners, each catching an error", async () => {
-    const result = kurtResultSayHello({ errorBeforeFinish: true })
+    const stream = kurtStreamSayHello({ errorBeforeFinish: true })
 
     const events1: unknown[] = []
     const events2: unknown[] = []
     const events3: unknown[] = []
     await expectThrow("Whoops!", async () => {
-      for await (const event of result) events1.push(event)
+      for await (const event of stream) events1.push(event)
     })
     await expectThrow("Whoops!", async () => {
-      for await (const event of result) events2.push(event)
+      for await (const event of stream) events2.push(event)
     })
     await expectThrow("Whoops!", async () => {
-      for await (const event of result) events3.push(event)
+      for await (const event of stream) events3.push(event)
     })
 
     expect(events1).toEqual(kurtSayHelloEvents().slice(0, -1))
@@ -166,14 +154,14 @@ describe("KurtResult", () => {
   })
 
   test("with many listeners, interleaved with one another", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
     const events: unknown[][] = []
     const listeners: Promise<unknown>[] = []
     async function listen(spawnMoreListeners = false) {
       events.push([])
       const listenerIndex = events.length - 1
-      for await (const event of result) {
+      for await (const event of stream) {
         events[listenerIndex]?.push(event)
         if (spawnMoreListeners) listeners.push(listen())
       }
@@ -193,7 +181,7 @@ describe("KurtResult", () => {
   })
 
   test("with many listeners, interleaved with final event awaits", async () => {
-    const result = kurtResultSayHello()
+    const stream = kurtStreamSayHello()
 
     const events: unknown[][] = []
     const listeners: Promise<unknown>[] = []
@@ -201,15 +189,13 @@ describe("KurtResult", () => {
     async function listen(spawnMoreListeners = false) {
       events.push([])
       const listenerIndex = events.length - 1
-      for await (const event of result) {
+      for await (const event of stream) {
         events[listenerIndex]?.push(event)
         if (spawnMoreListeners) {
           listeners.push(listen())
           awaits.push(
             (async () =>
-              expect(await result.finalEvent).toEqual(
-                kurtSayHelloFinalEvent()
-              ))()
+              expect(await stream.result).toEqual(kurtSayHelloResult()))()
           )
         }
       }
@@ -230,7 +216,7 @@ describe("KurtResult", () => {
   })
 
   test("with many listeners/awaits, interleaved, with error", async () => {
-    const result = kurtResultSayHello({ errorBeforeFinish: true })
+    const stream = kurtStreamSayHello({ errorBeforeFinish: true })
 
     const events: unknown[][] = []
     const listeners: Promise<unknown>[] = []
@@ -238,15 +224,13 @@ describe("KurtResult", () => {
     async function listen(spawnMoreListeners = false) {
       events.push([])
       const listenerIndex = events.length - 1
-      for await (const event of result) {
+      for await (const event of stream) {
         events[listenerIndex]?.push(event)
         if (spawnMoreListeners) {
           const listener = listen()
           listeners.push(listener)
           errors.push(expectThrow("Whoops!", async () => await listener))
-          errors.push(
-            expectThrow("Whoops!", async () => await result.finalEvent)
-          )
+          errors.push(expectThrow("Whoops!", async () => await stream.result))
         }
       }
     }

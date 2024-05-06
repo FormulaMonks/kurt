@@ -1,14 +1,14 @@
-import type { KurtResult } from "./KurtResult"
+import type { KurtStream } from "./KurtStream"
 import type { KurtSchema, KurtSchemaInner } from "./KurtSchema"
 
 export interface Kurt {
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
-  ): KurtResult
+  ): KurtStream
 
   generateStructuredData<T extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<T>
-  ): KurtResult<T>
+  ): KurtStream<T>
 }
 
 export interface KurtMessage {
