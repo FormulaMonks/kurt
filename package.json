@@ -12,9 +12,6 @@
     "prepack": "pnpm run build",
     "prepare": "husky"
   },
-  "prettier": {
-    "semi": false
-  },
   "dependencies": {
     "@google-cloud/vertexai": "1.1.0",
     "openai": "^4.40.0",
