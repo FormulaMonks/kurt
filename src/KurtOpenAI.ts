@@ -8,9 +8,12 @@ import type {
 } from "./Kurt"
 import { KurtStream, type KurtStreamEvent } from "./KurtStream"
 import type {
+  KurtSchema,
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
+  KurtSchemaResult,
+  KurtSchemaResultMaybe,
 } from "./KurtSchema"
 import type { OpenAI, OpenAIMessage, OpenAIResponse } from "./OpenAI.types"
 
@@ -38,92 +41,47 @@ export class KurtOpenAI implements Kurt {
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
   ): KurtStream {
-    return this.handleStream(
-      undefined,
-      this.options.openAI.chat.completions.create({
-        stream: true,
-        model: this.options.model,
-        messages: this.toOpenAIMessages(options),
-      })
+    return new KurtStream(
+      transformStream(
+        undefined,
+        this.options.openAI.chat.completions.create({
+          stream: true,
+          model: this.options.model,
+          messages: this.toOpenAIMessages(options),
+        })
+      )
     )
   }
 
-  generateStructuredData<T extends KurtSchemaInner>(
-    options: KurtGenerateStructuredDataOptions<T>
-  ): KurtStream<T> {
+  generateStructuredData<I extends KurtSchemaInner>(
+    options: KurtGenerateStructuredDataOptions<I>
+  ): KurtStream<KurtSchemaResult<I>> {
     const schema = options.schema
 
-    return this.handleStream(
-      schema as KurtSchemaMaybe<T>,
-      this.options.openAI.chat.completions.create({
-        stream: true,
-        model: this.options.model,
-        messages: this.toOpenAIMessages(options),
-        tool_choice: {
-          type: "function",
-          function: { name: "structured_data" },
-        },
-        tools: [
-          {
+    return new KurtStream(
+      transformStream(
+        schema,
+        this.options.openAI.chat.completions.create({
+          stream: true,
+          model: this.options.model,
+          messages: this.toOpenAIMessages(options),
+          tool_choice: {
             type: "function",
-            function: {
-              name: "structured_data",
-              description: schema.description,
-              parameters: zodToJsonSchema(schema),
-            },
+            function: { name: "structured_data" },
           },
-        ],
-      })
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "structured_data",
+                description: schema.description,
+                parameters: zodToJsonSchema(schema),
+              },
+            },
+          ],
+        })
+      )
     )
-  }
-
-  private handleStream<T extends KurtSchemaInnerMaybe>(
-    schema: KurtSchemaMaybe<T>,
-    response: OpenAIResponse
-  ): KurtStream<T> {
-    async function* generator<T extends KurtSchemaInnerMaybe>() {
-      const stream = await response
-      const chunks: string[] = []
-
-      for await (const streamChunk of stream) {
-        const choice = streamChunk.choices[0]
-        if (!choice) continue
-
-        const textChunk = choice.delta.content
-        if (textChunk) {
-          yield { chunk: textChunk } as KurtStreamEvent<T>
-          chunks.push(textChunk)
-        }
-
-        const dataChunk = choice.delta.tool_calls?.at(0)?.function?.arguments
-        if (dataChunk) {
-          yield { chunk: dataChunk } as KurtStreamEvent<T>
-          chunks.push(dataChunk)
-        }
-
-        const isFinal = choice.finish_reason !== null
-
-        if (isFinal) {
-          const text = chunks.join("")
-          if (schema) {
-            const data = schema?.parse(JSON.parse(chunks.join("")))
-            yield {
-              finished: true,
-              text,
-              data,
-            } as KurtStreamEvent<T>
-          } else {
-            yield {
-              finished: true,
-              text,
-              data: undefined,
-            } as KurtStreamEvent<T>
-          }
-        }
-      }
-    }
-
-    return new KurtStream<T>(generator())
   }
 
   private toOpenAIMessages = ({
@@ -153,3 +111,41 @@ const openAIRoleMapping = {
   system: "system",
   user: "user",
 } as const satisfies Record<KurtMessage["role"], OpenAIMessage["role"]>
+
+async function* transformStream<
+  I extends KurtSchemaInnerMaybe,
+  S extends KurtSchemaMaybe<I>,
+  D extends KurtSchemaResultMaybe<I>,
+>(schema: S, response: OpenAIResponse): AsyncGenerator<KurtStreamEvent<D>> {
+  const stream = await response
+  const chunks: string[] = []
+
+  for await (const streamChunk of stream) {
+    const choice = streamChunk.choices[0]
+    if (!choice) continue
+
+    const textChunk = choice.delta.content
+    if (textChunk) {
+      chunks.push(textChunk)
+      yield { chunk: textChunk }
+    }
+
+    const dataChunk = choice.delta.tool_calls?.at(0)?.function?.arguments
+    if (dataChunk) {
+      chunks.push(dataChunk)
+      yield { chunk: dataChunk }
+    }
+
+    const isFinal = choice.finish_reason !== null
+
+    if (isFinal) {
+      const text = chunks.join("")
+      if (schema) {
+        const data = schema.parse(JSON.parse(text)) as D
+        yield { finished: true, text, data }
+      } else {
+        yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
+      }
+    }
+  }
+}
