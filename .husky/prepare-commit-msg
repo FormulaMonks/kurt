@@ -21,4 +21,10 @@ if [ -n "$GIT_SEQUENCE_EDITOR" ]; then
   exit 0
 fi
 
-exec < /dev/tty && pnpm exec cz --hook || true
+# If explicitly disabled, skip the hook
+if [ "$(git config --get custom.hooks.prepare-commit-msg)" == "false" ]; then
+  echo "prepare-commit-msg: hook disabled by user"
+  exit 0
+fi
+
+exec < /dev/tty && pnpm exec czg --hook || true

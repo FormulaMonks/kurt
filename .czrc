@@ -1,3 +1,7 @@
 {
-  "path": "@commitlint/cz-commitlint"
+    "$schema": "https://cdn.jsdelivr.net/gh/Zhengqbbb/cz-git@1.9.1/docs/public/schema/cz-git.json",
+    "scopes": [],
+    "useEmoji": false,
+    "allowCustomIssuePrefix": false,
+    "emptyScopesAlias": "none"
 }
