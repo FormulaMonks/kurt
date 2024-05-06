@@ -1,20 +1,18 @@
 import { zodToJsonSchema } from "zod-to-json-schema"
+import { KurtStream } from "@formula-monks/kurt"
 import type {
   Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
   KurtMessage,
-} from "./Kurt"
-import { KurtStream, type KurtStreamEvent } from "./KurtStream"
-import type {
-  KurtSchema,
+  KurtStreamEvent,
   KurtSchemaInner,
   KurtSchemaInnerMaybe,
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
-} from "./KurtSchema"
+} from "@formula-monks/kurt"
 import type { OpenAI, OpenAIMessage, OpenAIResponse } from "./OpenAI.types"
 
 // These models support function calling.

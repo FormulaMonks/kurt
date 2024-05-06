@@ -1,6 +1,9 @@
 {
   "include": ["src/*.ts"],
+  "references": [{ "path": "../kurt" }],
   "compilerOptions": {
+    "composite": true,
+    "paths": { "@formula-monks/kurt": ["../kurt/src"] },
     "outDir": "dist",
     "declaration": true,
     "strict": true,

@@ -8,7 +8,6 @@ import type {
   OpenAIResponse,
   OpenAIResponseChunk,
 } from "../src/OpenAI.types"
-import { arrayFromAsync } from "./util"
 
 const USE_REAL_API = false // set to true to validate against actual OpenAI
 
@@ -39,6 +38,12 @@ function setupExpectingCall(
     openAI,
     model: "gpt-3.5-turbo-0125",
   })
+}
+
+async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
+  const array: T[] = []
+  for await (const item of iter) array.push(item)
+  return array
 }
 
 describe("KurtOpenAI", () => {
