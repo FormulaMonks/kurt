@@ -38,22 +38,12 @@ export class KurtOpenAI implements Kurt {
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
   ): KurtResult {
-    const systemPrompt = options.systemPrompt ?? this.options.systemPrompt
-    const prompt = options.prompt
-    const extraMessages = options.extraMessages ?? []
-
     return this.handleStream(
       undefined,
       this.options.openAI.chat.completions.create({
         stream: true,
         model: this.options.model,
-        messages: [
-          ...(systemPrompt
-            ? [{ role: "system", content: systemPrompt } as const]
-            : []),
-          { role: "user", content: prompt },
-          ...toOpenAIMessages(extraMessages),
-        ],
+        messages: this.toOpenAIMessages(options),
       })
     )
   }
@@ -61,23 +51,14 @@ export class KurtOpenAI implements Kurt {
   generateStructuredData<T extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<T>
   ): KurtResult<T> {
-    const systemPrompt = options.systemPrompt ?? this.options.systemPrompt
-    const prompt = options.prompt
     const schema = options.schema
-    const extraMessages = options.extraMessages ?? []
 
     return this.handleStream(
       schema as KurtSchemaMaybe<T>,
       this.options.openAI.chat.completions.create({
         stream: true,
         model: this.options.model,
-        messages: [
-          ...(systemPrompt
-            ? [{ role: "system", content: systemPrompt } as const]
-            : []),
-          { role: "user", content: prompt },
-          ...toOpenAIMessages(extraMessages),
-        ],
+        messages: this.toOpenAIMessages(options),
         tool_choice: {
           type: "function",
           function: { name: "structured_data" },
@@ -144,14 +125,31 @@ export class KurtOpenAI implements Kurt {
 
     return new KurtResult<T>(generator())
   }
+
+  private toOpenAIMessages = ({
+    prompt,
+    systemPrompt = this.options.systemPrompt,
+    extraMessages = [],
+  }: KurtGenerateNaturalLanguageOptions): OpenAIMessage[] => {
+    const systemMessage: OpenAIMessage[] = systemPrompt
+      ? [toOpenAIMessage({ role: "system", text: systemPrompt })]
+      : []
+
+    const userMessage = toOpenAIMessage({ role: "user", text: prompt })
+
+    const extras = extraMessages.map(toOpenAIMessage)
+
+    return systemMessage.concat(userMessage, extras)
+  }
 }
 
-function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
-  return messages.map((message) => {
-    const { role, text } = message
-    return {
-      role: role === "model" ? "assistant" : role,
-      content: text,
-    }
-  })
-}
+const toOpenAIMessage = ({ role, text }: KurtMessage): OpenAIMessage => ({
+  role: openAIRoleMapping[role],
+  content: text,
+})
+
+const openAIRoleMapping = {
+  model: "assistant",
+  system: "system",
+  user: "user",
+} as const satisfies Record<KurtMessage["role"], OpenAIMessage["role"]>

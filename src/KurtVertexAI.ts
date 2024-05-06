@@ -39,10 +39,6 @@ export class KurtVertexAI implements Kurt {
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
   ): KurtResult {
-    const systemPrompt = options.systemPrompt ?? this.options.systemPrompt
-    const prompt = options.prompt
-    const extraMessages = options.extraMessages ?? []
-
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
     }) as VertexAIGenerativeModel
@@ -50,13 +46,7 @@ export class KurtVertexAI implements Kurt {
     return this.handleStream(
       undefined,
       llm.generateContentStreamPATCHED({
-        contents: [
-          ...(systemPrompt
-            ? [{ role: "system", parts: [{ text: systemPrompt }] }]
-            : []),
-          { role: "user", parts: [{ text: prompt }] },
-          ...toVertexAIMessages(extraMessages),
-        ],
+        contents: this.toVertexAIMessages(options),
       })
     )
   }
@@ -64,10 +54,7 @@ export class KurtVertexAI implements Kurt {
   generateStructuredData<T extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<T>
   ): KurtResult<T> {
-    const systemPrompt = options.systemPrompt ?? this.options.systemPrompt
-    const prompt = options.prompt
     const schema = options.schema
-    const extraMessages = options.extraMessages ?? []
 
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
@@ -76,13 +63,7 @@ export class KurtVertexAI implements Kurt {
     return this.handleStream(
       schema as KurtSchemaMaybe<T>,
       llm.generateContentStreamPATCHED({
-        contents: [
-          ...(systemPrompt
-            ? [{ role: "system", parts: [{ text: systemPrompt }] }]
-            : []),
-          { role: "user", parts: [{ text: prompt }] },
-          ...toVertexAIMessages(extraMessages),
-        ],
+        contents: this.toVertexAIMessages(options),
         tool_config: { function_calling_config: { mode: "ANY" } },
         tools: [
           {
@@ -142,14 +123,28 @@ export class KurtVertexAI implements Kurt {
 
     return new KurtResult<T>(generator())
   }
+
+  private toVertexAIMessages = ({
+    prompt,
+    systemPrompt = this.options.systemPrompt,
+    extraMessages = [],
+  }: KurtGenerateNaturalLanguageOptions): VertexAIMessage[] => {
+    const systemMessage: VertexAIMessage[] = systemPrompt
+      ? [toVertexAIMessage({ role: "system", text: systemPrompt })]
+      : []
+
+    const userMessage = toVertexAIMessage({ role: "user", text: prompt })
+
+    const extras = extraMessages.map(toVertexAIMessage)
+
+    return systemMessage.concat(userMessage, extras)
+  }
 }
 
-function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
-  return messages.map((message) => {
-    const { role, text } = message
-    return { role, parts: [{ text }] }
-  })
-}
+const toVertexAIMessage = ({ role, text }: KurtMessage): VertexAIMessage => ({
+  role,
+  parts: [{ text }],
+})
 
 function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
   zodSchema: KurtSchema<T>
