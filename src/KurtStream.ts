@@ -14,18 +14,20 @@ type _AdditionalListener<D = undefined> = (
   event: KurtStreamEvent<D> | { uncaughtError: unknown }
 ) => void
 
-// This class represents the result of a call to an LLM.
-//
-// It acts as an AsyncIterable, so that the caller can observe a stream of
-// events (with a common interface across any supported LLM).
-//
-// The events are buffered such that multiple listeners can all observe
-// the stream, without disrupting one anothers' view of events, such that
-// each listener will see exactly the same stream of events, regardless
-// of when each one started listening.
-//
-// It also exposes a `result` convenience getter for callers who are only
-// interested in the final result event.
+/**
+ * This class represents the result of a call to an LLM.
+ *
+ * It acts as an AsyncIterable, so that the caller can observe a stream of
+ * events (with a common interface across any supported LLM).
+ *
+ * The events are buffered such that multiple listeners can all observe
+ * the stream, without disrupting one anothers' view of events, such that
+ * each listener will see exactly the same stream of events, regardless
+ * of when each one started listening.
+ *
+ * It also exposes a `result` convenience getter for callers who are only
+ * interested in the final result event.
+ */
 export class KurtStream<D = undefined>
   implements AsyncIterable<KurtStreamEvent<D>>
 {
@@ -35,15 +37,23 @@ export class KurtStream<D = undefined>
   private finalError?: { uncaughtError: unknown }
   private additionalListeners = new Set<_AdditionalListener<D>>()
 
-  // Create a new result stream, from the given underlying stream generator.
+  /**
+   * Create a new result stream, from the given underlying stream generator.
+   * @param gen - Stream generator.
+   */
   constructor(private gen: AsyncGenerator<KurtStreamEvent<D>>) {}
 
-  // Get the final event from the end of the result stream, when it is ready.
+  /**
+   * Get the final event from the end of the result stream, when it is ready.
+   * @returns A promise that resolves with the final event from the result stream.
+   */
   get result(): Promise<KurtResult<D>> {
     return toFinal(this)
   }
 
-  // Get each event in the stream (each yielded from this `AsyncGenerator`).
+  /**
+   * Get each event in the stream (each yielded from this `AsyncGenerator`).
+   */
   async *[Symbol.asyncIterator]() {
     // If some other caller has already started iterating on this stream,
     // we can't let them consume from the same underlying generator, because the
