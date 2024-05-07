@@ -11,5 +11,6 @@
     "target": "ES2015",
     "esModuleInterop": true
   },
+  "include": ["src/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
