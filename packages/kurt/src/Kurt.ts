@@ -9,16 +9,16 @@ import type {
   KurtSchemaResult,
 } from "./KurtSchema"
 
-export interface Kurt {
-  generateNaturalLanguage(
+export abstract class Kurt {
+  abstract generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
   ): KurtStream
 
-  generateStructuredData<I extends KurtSchemaInner>(
+  abstract generateStructuredData<I extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<I>
   ): KurtStream<KurtSchemaResult<I>>
 
-  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
+  abstract generateWithOptionalTools<I extends KurtSchemaInnerMap>(
     options: KurtGenerateWithOptionalToolsOptions<I>
   ): KurtStream<KurtSchemaMapSingleResult<I> | undefined>
 }
