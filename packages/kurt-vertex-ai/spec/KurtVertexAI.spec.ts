@@ -294,4 +294,227 @@ describe("KurtVertexAI", () => {
       },
     ])
   })
+
+  test("generateWithOptionalTools (with tool call)", async () => {
+    const req = {
+      prompt:
+        "What's 9876356 divided by 30487, rounded to the nearest integer?",
+      tools: {
+        subtract: z
+          .object({
+            minuend: z.number().describe("The number to subtract from"),
+            subtrahend: z.number().describe("The number to subtract by"),
+          })
+          .describe("Calculate a subtraction"),
+        divide: z
+          .object({
+            dividend: z.number().describe("The number to be divided"),
+            divisor: z.number().describe("The number to divide by"),
+          })
+          .describe("Calculate a division"),
+      },
+    }
+
+    const kurt = setupExpectingCall(
+      {
+        contents: [{ role: "user", parts: [{ text: req.prompt }] }],
+        tools: [
+          {
+            functionDeclarations: [
+              {
+                name: "subtract",
+                description: req.tools.subtract.description,
+                parameters: {
+                  type: "object",
+                  description: undefined,
+                  properties: {
+                    minuend: {
+                      type: "number",
+                      description: "The number to subtract from",
+                    },
+                    subtrahend: {
+                      type: "number",
+                      description: "The number to subtract by",
+                    },
+                  },
+                  required: ["minuend", "subtrahend"],
+                } as unknown as VertexAISchema,
+              },
+              {
+                name: "divide",
+                description: req.tools.divide.description,
+                parameters: {
+                  type: "object",
+                  description: undefined,
+                  properties: {
+                    dividend: {
+                      type: "number",
+                      description: "The number to be divided",
+                    },
+                    divisor: {
+                      type: "number",
+                      description: "The number to divide by",
+                    },
+                  },
+                  required: ["dividend", "divisor"],
+                } as unknown as VertexAISchema,
+              },
+            ],
+          },
+        ],
+      },
+      [
+        {
+          content: {
+            role: "model",
+            parts: [
+              {
+                functionCall: {
+                  name: "divide",
+                  args: { dividend: 9876356, divisor: 30487 },
+                },
+              },
+            ],
+          },
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
+        },
+      ]
+    )
+
+    expect(await arrayFromAsync(kurt.generateWithOptionalTools(req))).toEqual([
+      { chunk: '{"dividend":9876356,"divisor":30487}' },
+      {
+        finished: true,
+        text: '{"dividend":9876356,"divisor":30487}',
+        data: { name: "divide", args: { dividend: 9876356, divisor: 30487 } },
+      },
+    ])
+  })
+
+  test("generateWithOptionalTools (after tool call)", async () => {
+    const req = {
+      prompt:
+        "What's 9876356 divided by 30487, rounded to the nearest integer?",
+      tools: {
+        subtract: z
+          .object({
+            minuend: z.number().describe("The number to subtract from"),
+            subtrahend: z.number().describe("The number to subtract by"),
+          })
+          .describe("Calculate a subtraction"),
+        divide: z
+          .object({
+            dividend: z.number().describe("The number to be divided"),
+            divisor: z.number().describe("The number to divide by"),
+          })
+          .describe("Calculate a division"),
+      },
+      extraMessages: [
+        {
+          role: "model" as const,
+          toolCall: {
+            name: "divide",
+            args: { dividend: 9876356, divisor: 30487 },
+            result: { quotient: 323.95302915996984 },
+          },
+        },
+      ],
+    }
+
+    const kurt = setupExpectingCall(
+      {
+        contents: [
+          { role: "user", parts: [{ text: req.prompt }] },
+          {
+            role: "model",
+            parts: [
+              {
+                functionCall: {
+                  name: "divide",
+                  args: { dividend: 9876356, divisor: 30487 },
+                },
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                functionResponse: {
+                  name: "divide",
+                  response: { quotient: 323.95302915996984 },
+                },
+              },
+            ],
+          },
+        ],
+        tools: [
+          {
+            functionDeclarations: [
+              {
+                name: "subtract",
+                description: req.tools.subtract.description,
+                parameters: {
+                  type: "object",
+                  description: undefined,
+                  properties: {
+                    minuend: {
+                      type: "number",
+                      description: "The number to subtract from",
+                    },
+                    subtrahend: {
+                      type: "number",
+                      description: "The number to subtract by",
+                    },
+                  },
+                  required: ["minuend", "subtrahend"],
+                } as unknown as VertexAISchema,
+              },
+              {
+                name: "divide",
+                description: req.tools.divide.description,
+                parameters: {
+                  type: "object",
+                  description: undefined,
+                  properties: {
+                    dividend: {
+                      type: "number",
+                      description: "The number to be divided",
+                    },
+                    divisor: {
+                      type: "number",
+                      description: "The number to divide by",
+                    },
+                  },
+                  required: ["dividend", "divisor"],
+                } as unknown as VertexAISchema,
+              },
+            ],
+          },
+        ],
+      },
+      [
+        { content: { role: "model", parts: [{ text: "The answer" }] } },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: ", rounded to the nearest integer, is 324." }],
+          },
+          // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
+          finishReason: "STOP" as any,
+        },
+      ]
+    )
+
+    expect(await arrayFromAsync(kurt.generateWithOptionalTools(req))).toEqual([
+      { chunk: "The answer" },
+      { chunk: ", rounded to the nearest integer, is 324." },
+      {
+        finished: true,
+        text: "The answer, rounded to the nearest integer, is 324.",
+        data: undefined,
+      },
+    ])
+  })
 })

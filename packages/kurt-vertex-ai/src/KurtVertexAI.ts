@@ -7,11 +7,14 @@ import type {
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
-  KurtMessage,
+  KurtGenerateWithOptionalToolsOptions,
   KurtStreamEvent,
   KurtSchema,
   KurtSchemaInner,
+  KurtSchemaInnerMap,
   KurtSchemaInnerMaybe,
+  KurtSchemaMap,
+  KurtSchemaMapSingleResult,
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
@@ -85,27 +88,69 @@ export class KurtVertexAI implements Kurt {
     )
   }
 
+  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
+    options: KurtGenerateWithOptionalToolsOptions<I>
+  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined> {
+    const llm = this.options.vertexAI.getGenerativeModel({
+      model: this.options.model,
+    }) as VertexAIGenerativeModel
+
+    return new KurtStream(
+      transformStreamWithOptionalTools<
+        I,
+        KurtSchemaMap<I>,
+        KurtSchemaMapSingleResult<I>
+      >(
+        options.tools,
+        llm.generateContentStreamPATCHED({
+          contents: this.toVertexAIMessages(options),
+          tools: [
+            {
+              functionDeclarations: Object.entries(options.tools).map(
+                ([name, schema]) => ({
+                  name,
+                  description: schema.description,
+                  parameters: jsonSchemaForVertexAI(schema),
+                })
+              ),
+            },
+          ],
+        })
+      )
+    )
+  }
+
   private toVertexAIMessages = ({
     prompt,
     systemPrompt = this.options.systemPrompt,
     extraMessages = [],
   }: KurtGenerateNaturalLanguageOptions): VertexAIMessage[] => {
-    const systemMessage: VertexAIMessage[] = systemPrompt
-      ? [toVertexAIMessage({ role: "system", text: systemPrompt })]
-      : []
+    const vertexMessages: VertexAIMessage[] = []
 
-    const userMessage = toVertexAIMessage({ role: "user", text: prompt })
+    if (systemPrompt) {
+      vertexMessages.push({ role: "system", parts: [{ text: systemPrompt }] })
+    }
 
-    const extras = extraMessages.map(toVertexAIMessage)
+    vertexMessages.push({ role: "user", parts: [{ text: prompt }] })
 
-    return systemMessage.concat(userMessage, extras)
+    for (const message of extraMessages) {
+      const { role, text, toolCall } = message
+      if (text) {
+        vertexMessages.push({ role, parts: [{ text }] })
+      } else if (toolCall) {
+        const { name, args, result } = toolCall
+        const functionCall = { name, args }
+        const functionResponse = { name, response: result }
+        vertexMessages.push({ role, parts: [{ functionCall }] })
+        vertexMessages.push({ role, parts: [{ functionResponse }] })
+      } else {
+        throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+      }
+    }
+
+    return vertexMessages
   }
 }
-
-const toVertexAIMessage = ({ role, text }: KurtMessage): VertexAIMessage => ({
-  role,
-  parts: [{ text }],
-})
 
 function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
   zodSchema: KurtSchema<T>
@@ -183,6 +228,60 @@ async function* transformStream<
         } else {
           const text = chunks.join("")
           yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
+        }
+      }
+    }
+  }
+}
+
+async function* transformStreamWithOptionalTools<
+  I extends KurtSchemaInnerMap,
+  S extends KurtSchemaMap<I>,
+  D extends KurtSchemaMapSingleResult<I>,
+>(
+  tools: S,
+  response: VertexAIResponse
+): AsyncGenerator<KurtStreamEvent<D | undefined>> {
+  const { stream } = await response
+  const chunks: string[] = []
+
+  for await (const streamChunk of stream) {
+    const choice = streamChunk.candidates?.at(0)
+    if (!choice) continue
+
+    const isContentFinal = choice.finishReason !== undefined
+    const { parts } = choice.content
+
+    for (const [partIndex, part] of parts.entries()) {
+      const chunk = part.text
+      const isFinal = isContentFinal && partIndex === parts.length - 1
+
+      if (chunk) {
+        chunks.push(chunk)
+        yield { chunk }
+      }
+      if (isFinal) {
+        const { functionCall } = part
+        if (functionCall) {
+          const { name } = functionCall
+          const schema = tools[name]
+          if (!schema) {
+            throw new Error(
+              `Vertex AI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
+                Object.keys(tools)
+              )}}`
+            )
+          }
+          const data = {
+            name,
+            args: applySchemaToFuzzyStructure(schema, functionCall),
+          } as D
+          const text = JSON.stringify(data.args)
+          yield { chunk: text }
+          yield { finished: true, text, data }
+        } else {
+          const text = chunks.join("")
+          yield { finished: true, text, data: undefined }
         }
       }
     }
