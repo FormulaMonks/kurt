@@ -1,7 +1,5 @@
 {
-  "include": ["src/*.ts"],
   "compilerOptions": {
-    "composite": true,
     "outDir": "dist",
     "declaration": true,
     "strict": true,
@@ -12,5 +10,6 @@
     "moduleResolution": "NodeNext",
     "target": "ES2015",
     "esModuleInterop": true
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

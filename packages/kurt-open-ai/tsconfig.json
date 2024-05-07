@@ -1,11 +1,6 @@
 {
-  "include": ["src/*.ts"],
-  "references": [{ "path": "../kurt" }],
   "compilerOptions": {
-    "composite": true,
-    "paths": { "@formula-monks/kurt": ["../kurt/src"] },
     "outDir": "dist",
-    "declaration": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "downlevelIteration": true,
@@ -14,5 +9,6 @@
     "moduleResolution": "NodeNext",
     "target": "ES2015",
     "esModuleInterop": true
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }
