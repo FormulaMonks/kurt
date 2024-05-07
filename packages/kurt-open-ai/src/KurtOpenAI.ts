@@ -5,10 +5,14 @@ import type {
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
+  KurtGenerateWithOptionalToolsOptions,
   KurtMessage,
   KurtStreamEvent,
   KurtSchemaInner,
+  KurtSchemaInnerMap,
   KurtSchemaInnerMaybe,
+  KurtSchemaMap,
+  KurtSchemaMapSingleResult,
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
@@ -82,27 +86,87 @@ export class KurtOpenAI implements Kurt {
     )
   }
 
+  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
+    options: KurtGenerateWithOptionalToolsOptions<I>
+  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined> {
+    return new KurtStream(
+      transformStreamWithOptionalTools<
+        I,
+        KurtSchemaMap<I>,
+        KurtSchemaMapSingleResult<I>
+      >(
+        options.tools,
+        this.options.openAI.chat.completions.create({
+          stream: true,
+          model: this.options.model,
+          messages: this.toOpenAIMessages(options),
+          tools: Object.entries(options.tools).map(([name, schema]) => ({
+            type: "function",
+            function: {
+              name,
+              description: schema.description,
+              parameters: zodToJsonSchema(schema),
+            },
+          })),
+        })
+      )
+    )
+  }
+
   private toOpenAIMessages = ({
     prompt,
     systemPrompt = this.options.systemPrompt,
     extraMessages = [],
   }: KurtGenerateNaturalLanguageOptions): OpenAIMessage[] => {
-    const systemMessage: OpenAIMessage[] = systemPrompt
-      ? [toOpenAIMessage({ role: "system", text: systemPrompt })]
-      : []
+    const openAIMessages: OpenAIMessage[] = []
 
-    const userMessage = toOpenAIMessage({ role: "user", text: prompt })
+    if (systemPrompt) {
+      openAIMessages.push({ role: "system", content: systemPrompt })
+    }
 
-    const extras = extraMessages.map(toOpenAIMessage)
+    openAIMessages.push({ role: "user", content: prompt })
 
-    return systemMessage.concat(userMessage, extras)
+    for (const [messageIndex, message] of extraMessages.entries()) {
+      const { text, toolCall } = message
+      if (text) {
+        const role = openAIRoleMapping[message.role]
+        openAIMessages.push({ role, content: text })
+      } else if (toolCall) {
+        const { name, args, result } = toolCall
+
+        // OpenAI supports parallel tool calling, so it expects each tool call
+        // and response to be associated by a unique id it gives to each.
+        //
+        // Kurt doesn't support parallel tool calling (because it isn't
+        // supported by the other LLMs that Kurt needs to be compatible with),
+        // so the id is useless to us and we don't require the user to track it.
+        //
+        // We generate a simple sequential id here to satisfy OpenAI's API.
+        const id = `call_${messageIndex}`
+
+        openAIMessages.push({
+          role: "assistant",
+          tool_calls: [
+            {
+              id,
+              type: "function" as const,
+              function: { name, arguments: JSON.stringify(args) },
+            },
+          ],
+        })
+        openAIMessages.push({
+          role: "tool",
+          tool_call_id: id,
+          content: JSON.stringify(result),
+        })
+      } else {
+        throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+      }
+    }
+
+    return openAIMessages
   }
 }
-
-const toOpenAIMessage = ({ role, text }: KurtMessage): OpenAIMessage => ({
-  role: openAIRoleMapping[role],
-  content: text,
-})
 
 const openAIRoleMapping = {
   model: "assistant",
@@ -143,6 +207,61 @@ async function* transformStream<
         yield { finished: true, text, data }
       } else {
         yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
+      }
+    }
+  }
+}
+
+async function* transformStreamWithOptionalTools<
+  I extends KurtSchemaInnerMap,
+  S extends KurtSchemaMap<I>,
+  D extends KurtSchemaMapSingleResult<I>,
+>(
+  tools: S,
+  response: OpenAIResponse
+): AsyncGenerator<KurtStreamEvent<D | undefined>> {
+  const stream = await response
+  const chunks: string[] = []
+  let functionName: string | undefined
+
+  for await (const streamChunk of stream) {
+    const choice = streamChunk.choices[0]
+    if (!choice) continue
+
+    const textChunk = choice.delta.content
+    if (textChunk) {
+      chunks.push(textChunk)
+      yield { chunk: textChunk }
+    }
+
+    const functionCall = choice.delta.tool_calls?.at(0)?.function
+    functionName ||= functionCall?.name
+    const dataChunk = functionCall?.arguments
+    if (dataChunk) {
+      chunks.push(dataChunk)
+      yield { chunk: dataChunk }
+    }
+
+    const isFinal = choice.finish_reason !== null
+
+    if (isFinal) {
+      const text = chunks.join("")
+      if (functionName) {
+        const schema = tools[functionName]
+        if (!schema) {
+          throw new Error(
+            `OpenAI tried to call tool ${functionName} which isn't in the tool set ${JSON.stringify(
+              Object.keys(tools)
+            )}}`
+          )
+        }
+        const data = {
+          name: functionName,
+          args: schema.parse(JSON.parse(text)),
+        } as D
+        yield { finished: true, text, data }
+      } else {
+        yield { finished: true, text, data: undefined }
       }
     }
   }
