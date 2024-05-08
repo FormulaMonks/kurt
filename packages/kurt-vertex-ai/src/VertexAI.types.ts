@@ -4,6 +4,7 @@ import type {
   Content,
   GenerateContentRequest,
   GenerateContentCandidate,
+  FunctionDeclaration,
   FunctionDeclarationSchema,
 } from "@google-cloud/vertexai"
 
@@ -24,6 +25,7 @@ export type VertexAIRequest = GenerateContentRequest & {
   }
 }
 export type VertexAISchema = FunctionDeclarationSchema
+export type VertexAITool = FunctionDeclaration
 export type VertexAIResponse = Promise<{
   stream: AsyncGenerator<VertexAIResponseChunk>
 }>

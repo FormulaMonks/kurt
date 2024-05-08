@@ -1,6 +1,7 @@
 import { describe, expect, test } from "@jest/globals"
 import { OpenAI as RealOpenAI } from "openai"
 import { z } from "zod"
+import { Kurt } from "@formula-monks/kurt"
 import { KurtOpenAI } from "../src/KurtOpenAI"
 import type {
   OpenAI,
@@ -34,10 +35,7 @@ function setupExpectingCall(
         },
       } as unknown as OpenAI)
 
-  return new KurtOpenAI({
-    openAI,
-    model: "gpt-3.5-turbo-0125",
-  })
+  return new Kurt(new KurtOpenAI({ openAI, model: "gpt-3.5-turbo-0125" }))
 }
 
 async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
@@ -459,7 +457,7 @@ describe("KurtOpenAI", () => {
             role: "assistant",
             tool_calls: [
               {
-                id: "call_0",
+                id: "call_1",
                 type: "function",
                 function: {
                   name: "divide",
@@ -470,10 +468,11 @@ describe("KurtOpenAI", () => {
           },
           {
             role: "tool",
-            tool_call_id: "call_0",
+            tool_call_id: "call_1",
             content: '{"quotient":323.95302915996984}',
           },
         ],
+        tool_choice: undefined,
         tools: [
           {
             type: "function",

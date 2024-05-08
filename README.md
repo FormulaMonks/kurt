@@ -28,17 +28,21 @@ Unlike Langchain, Kurt won't bother trying to support structured output with LLM
 ## Create Kurt with your LLM of choice
 
 ```ts
-const kurt: Kurt = new KurtOpenAI({
-  openAI: new OpenAI(),
-  model: "gpt-3.5-turbo-0125",
-})
+const kurt = new Kurt(
+  new KurtOpenAI({
+    openAI: new OpenAI(),
+    model: "gpt-3.5-turbo-0125",
+  })
+)
 ```
 
 ```ts
-const kurt: Kurt = new KurtVertexAI({
-  vertexAI: new VertexAI({ project: "my-project", location: "us-central1" }),
-  model: "gemini-1.0-pro",
-})
+const kurt = new Kurt(
+  new KurtVertexAI({
+    vertexAI: new VertexAI({ project: "my-project", location: "us-central1" }),
+    model: "gemini-1.0-pro",
+  })
+)
 ```
 
 ## Generate Natural Language Output
