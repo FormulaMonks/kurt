@@ -1,7 +1,6 @@
 import { zodToJsonSchema } from "zod-to-json-schema"
-import { KurtStream } from "@formula-monks/kurt"
+import { Kurt, KurtStream } from "@formula-monks/kurt"
 import type {
-  Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
@@ -37,8 +36,10 @@ export type KurtOpenAICreateOptions = KurtCreateOptions & {
   openAI: OpenAI
 }
 
-export class KurtOpenAI implements Kurt {
-  constructor(private options: KurtOpenAICreateOptions) {}
+export class KurtOpenAI extends Kurt {
+  constructor(private options: KurtOpenAICreateOptions) {
+    super()
+  }
 
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions

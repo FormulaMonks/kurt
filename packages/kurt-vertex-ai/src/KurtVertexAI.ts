@@ -1,9 +1,8 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
 
 import zodToJsonSchema from "zod-to-json-schema"
-import { KurtStream } from "@formula-monks/kurt"
+import { Kurt, KurtStream } from "@formula-monks/kurt"
 import type {
-  Kurt,
   KurtCreateOptions,
   KurtGenerateNaturalLanguageOptions,
   KurtGenerateStructuredDataOptions,
@@ -37,8 +36,10 @@ export type KurtVertexAICreateOptions = KurtCreateOptions & {
   vertexAI: VertexAI
 }
 
-export class KurtVertexAI implements Kurt {
-  constructor(private options: KurtVertexAICreateOptions) {}
+export class KurtVertexAI extends Kurt {
+  constructor(private options: KurtVertexAICreateOptions) {
+    super()
+  }
 
   generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
