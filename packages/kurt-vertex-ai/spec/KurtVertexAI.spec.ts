@@ -10,6 +10,7 @@ import type {
   VertexAIResponseChunkCandidate,
   VertexAISchema,
 } from "../src/VertexAI.types"
+import { Kurt } from "@formula-monks/kurt"
 
 const USE_REAL_API = false // set to true to validate against actual VertexAI
 
@@ -48,10 +49,7 @@ function setupExpectingCall(
         },
       } as unknown as VertexAI)
 
-  return new KurtVertexAI({
-    vertexAI,
-    model: "gemini-1.0-pro",
-  })
+  return new Kurt(new KurtVertexAI({ vertexAI, model: "gemini-1.0-pro" }))
 }
 
 async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
@@ -108,7 +106,12 @@ describe("KurtVertexAI", () => {
     const kurt = setupExpectingCall(
       {
         contents: [{ role: "user", parts: [{ text: req.prompt }] }],
-        tool_config: { function_calling_config: { mode: "ANY" } },
+        tool_config: {
+          function_calling_config: {
+            mode: "ANY",
+            allowed_function_names: ["structured_data"],
+          },
+        },
         tools: [
           {
             functionDeclarations: [
@@ -172,7 +175,12 @@ describe("KurtVertexAI", () => {
     const kurt = setupExpectingCall(
       {
         contents: [{ role: "user", parts: [{ text: req.prompt }] }],
-        tool_config: { function_calling_config: { mode: "ANY" } },
+        tool_config: {
+          function_calling_config: {
+            mode: "ANY",
+            allowed_function_names: ["structured_data"],
+          },
+        },
         tools: [
           {
             functionDeclarations: [
@@ -240,7 +248,12 @@ describe("KurtVertexAI", () => {
     const kurt = setupExpectingCall(
       {
         contents: [{ role: "user", parts: [{ text: req.prompt }] }],
-        tool_config: { function_calling_config: { mode: "ANY" } },
+        tool_config: {
+          function_calling_config: {
+            mode: "ANY",
+            allowed_function_names: ["structured_data"],
+          },
+        },
         tools: [
           {
             functionDeclarations: [

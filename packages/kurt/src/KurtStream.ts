@@ -85,7 +85,7 @@ export class KurtStream<D = undefined>
    * Create a new result stream, from the given underlying stream generator.
    * @param gen - A well-formatted stream of events from the underlying LLM.
    */
-  constructor(private gen: AsyncGenerator<KurtStreamEvent<D>>) {}
+  constructor(private gen: AsyncIterable<KurtStreamEvent<D>>) {}
 
   /**
    * Get the final event from the end of the result stream, when it is ready.

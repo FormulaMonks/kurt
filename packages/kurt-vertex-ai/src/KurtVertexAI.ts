@@ -1,12 +1,8 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
 
 import zodToJsonSchema from "zod-to-json-schema"
-import { Kurt, KurtStream } from "@formula-monks/kurt"
 import type {
-  KurtCreateOptions,
-  KurtGenerateNaturalLanguageOptions,
-  KurtGenerateStructuredDataOptions,
-  KurtGenerateWithOptionalToolsOptions,
+  KurtAdapterV1,
   KurtStreamEvent,
   KurtSchema,
   KurtSchemaInner,
@@ -17,13 +13,16 @@ import type {
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
+  KurtMessage,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
   VertexAIGenerativeModel,
   VertexAIMessage,
-  VertexAIResponse,
+  VertexAIRequest,
+  VertexAIResponseChunk,
   VertexAISchema,
+  VertexAITool,
 } from "./VertexAI.types"
 
 // These models support function calling.
@@ -31,7 +30,7 @@ const COMPATIBLE_MODELS = ["gemini-1.0-pro", "gemini-1.5-pro"] as const
 
 export type KurtVertexAISupportedModel = (typeof COMPATIBLE_MODELS)[number]
 
-export type KurtVertexAICreateOptions = KurtCreateOptions & {
+export type KurtVertexAICreateOptions = {
   /**
    * The Vertex AI model to use as an underlying LLM for Kurt
    *
@@ -50,121 +49,101 @@ export type KurtVertexAICreateOptions = KurtCreateOptions & {
   vertexAI: VertexAI
 }
 
-export class KurtVertexAI extends Kurt {
-  constructor(private options: KurtVertexAICreateOptions) {
-    super()
-  }
+export class KurtVertexAI
+  implements
+    KurtAdapterV1<{
+      rawMessage: VertexAIMessage
+      rawSchema: VertexAISchema
+      rawTool: VertexAITool
+      rawEvent: VertexAIResponseChunk
+    }>
+{
+  kurtAdapterVersion = "v1" as const
 
-  generateNaturalLanguage(
-    options: KurtGenerateNaturalLanguageOptions
-  ): KurtStream {
+  constructor(private options: KurtVertexAICreateOptions) {}
+
+  transformToRawMessages = toVertexAIMessages
+
+  transformToRawSchema = jsonSchemaForVertexAI
+
+  transformToRawTool = (tool: VertexAITool) => tool
+
+  generateRawEvents(options: {
+    messages: VertexAIMessage[]
+    tools: { [key: string]: VertexAITool }
+    forceTool?: string | undefined
+  }): AsyncIterable<VertexAIResponseChunk> {
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
     }) as VertexAIGenerativeModel
 
-    return new KurtStream(
-      transformStream(
-        undefined,
-        llm.generateContentStreamPATCHED({
-          contents: this.toVertexAIMessages(options),
-        })
-      )
-    )
-  }
+    const req: VertexAIRequest = { contents: options.messages }
 
-  generateStructuredData<I extends KurtSchemaInner>(
-    options: KurtGenerateStructuredDataOptions<I>
-  ): KurtStream<KurtSchemaResult<I>> {
-    const schema = options.schema
+    const tools = Object.values(options.tools)
+    if (tools.length > 0) req.tools = [{ functionDeclarations: tools }]
 
-    const llm = this.options.vertexAI.getGenerativeModel({
-      model: this.options.model,
-    }) as VertexAIGenerativeModel
-
-    return new KurtStream(
-      transformStream(
-        schema,
-        llm.generateContentStreamPATCHED({
-          contents: this.toVertexAIMessages(options),
-          tool_config: { function_calling_config: { mode: "ANY" } },
-          tools: [
-            {
-              functionDeclarations: [
-                {
-                  name: "structured_data",
-                  description: schema.description,
-                  parameters: jsonSchemaForVertexAI(schema),
-                },
-              ],
-            },
-          ],
-        })
-      )
-    )
-  }
-
-  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
-    options: KurtGenerateWithOptionalToolsOptions<I>
-  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined> {
-    const llm = this.options.vertexAI.getGenerativeModel({
-      model: this.options.model,
-    }) as VertexAIGenerativeModel
-
-    return new KurtStream(
-      transformStreamWithOptionalTools<
-        I,
-        KurtSchemaMap<I>,
-        KurtSchemaMapSingleResult<I>
-      >(
-        options.tools,
-        llm.generateContentStreamPATCHED({
-          contents: this.toVertexAIMessages(options),
-          tools: [
-            {
-              functionDeclarations: Object.entries(options.tools).map(
-                ([name, schema]) => ({
-                  name,
-                  description: schema.description,
-                  parameters: jsonSchemaForVertexAI(schema),
-                })
-              ),
-            },
-          ],
-        })
-      )
-    )
-  }
-
-  private toVertexAIMessages = ({
-    prompt,
-    systemPrompt = this.options.systemPrompt,
-    extraMessages = [],
-  }: KurtGenerateNaturalLanguageOptions): VertexAIMessage[] => {
-    const vertexMessages: VertexAIMessage[] = []
-
-    if (systemPrompt) {
-      vertexMessages.push({ role: "system", parts: [{ text: systemPrompt }] })
-    }
-
-    vertexMessages.push({ role: "user", parts: [{ text: prompt }] })
-
-    for (const message of extraMessages) {
-      const { role, text, toolCall } = message
-      if (text) {
-        vertexMessages.push({ role, parts: [{ text }] })
-      } else if (toolCall) {
-        const { name, args, result } = toolCall
-        const functionCall = { name, args }
-        const functionResponse = { name, response: result }
-        vertexMessages.push({ role, parts: [{ functionCall }] })
-        vertexMessages.push({ role, parts: [{ functionResponse }] })
-      } else {
-        throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+    if (options.forceTool)
+      req.tool_config = {
+        function_calling_config: {
+          mode: "ANY",
+          allowed_function_names: [options.forceTool],
+        },
       }
+
+    const promise = llm.generateContentStreamPATCHED(req)
+
+    async function* gen() {
+      const { stream } = await promise
+      for await (const chunk of stream) yield chunk
     }
 
-    return vertexMessages
+    return gen()
   }
+
+  transformNaturalLanguageFromRawEvents(
+    rawEvents: AsyncIterable<VertexAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<undefined>> {
+    return transformStream(undefined, rawEvents)
+  }
+
+  transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
+    schema: KurtSchema<I>,
+    rawEvents: AsyncIterable<VertexAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<KurtSchemaResult<I>>> {
+    return transformStream(schema, rawEvents)
+  }
+
+  transformWithOptionalToolsFromRawEvents<I extends KurtSchemaInnerMap>(
+    tools: KurtSchemaMap<I>,
+    rawEvents: AsyncIterable<VertexAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<KurtSchemaMapSingleResult<I> | undefined>> {
+    return transformStreamWithOptionalTools<
+      I,
+      KurtSchemaMap<I>,
+      KurtSchemaMapSingleResult<I>
+    >(tools, rawEvents)
+  }
+}
+
+function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
+  const vertexAIMessages: VertexAIMessage[] = []
+
+  for (const message of messages) {
+    const { role, text, toolCall } = message
+    if (text) {
+      vertexAIMessages.push({ role, parts: [{ text }] })
+    } else if (toolCall) {
+      const { name, args, result } = toolCall
+      const functionCall = { name, args }
+      const functionResponse = { name, response: result }
+      vertexAIMessages.push({ role, parts: [{ functionCall }] })
+      vertexAIMessages.push({ role, parts: [{ functionResponse }] })
+    } else {
+      throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+    }
+  }
+
+  return vertexAIMessages
 }
 
 function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
@@ -207,12 +186,14 @@ async function* transformStream<
   I extends KurtSchemaInnerMaybe,
   S extends KurtSchemaMaybe<I>,
   D extends KurtSchemaResultMaybe<I>,
->(schema: S, response: VertexAIResponse): AsyncGenerator<KurtStreamEvent<D>> {
-  const { stream } = await response
+>(
+  schema: S,
+  rawEvents: AsyncIterable<VertexAIResponseChunk>
+): AsyncGenerator<KurtStreamEvent<D>> {
   const chunks: string[] = []
 
-  for await (const streamChunk of stream) {
-    const choice = streamChunk.candidates?.at(0)
+  for await (const rawEvent of rawEvents) {
+    const choice = rawEvent.candidates?.at(0)
     if (!choice) continue
 
     const isContentFinal = choice.finishReason !== undefined
@@ -255,13 +236,12 @@ async function* transformStreamWithOptionalTools<
   D extends KurtSchemaMapSingleResult<I>,
 >(
   tools: S,
-  response: VertexAIResponse
+  rawEvents: AsyncIterable<VertexAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
-  const { stream } = await response
   const chunks: string[] = []
 
-  for await (const streamChunk of stream) {
-    const choice = streamChunk.candidates?.at(0)
+  for await (const rawEvent of rawEvents) {
+    const choice = rawEvent.candidates?.at(0)
     if (!choice) continue
 
     const isContentFinal = choice.finishReason !== undefined

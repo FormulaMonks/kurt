@@ -1,10 +1,6 @@
 import { zodToJsonSchema } from "zod-to-json-schema"
-import { Kurt, KurtStream } from "@formula-monks/kurt"
 import type {
-  KurtCreateOptions,
-  KurtGenerateNaturalLanguageOptions,
-  KurtGenerateStructuredDataOptions,
-  KurtGenerateWithOptionalToolsOptions,
+  KurtAdapterV1,
   KurtMessage,
   KurtStreamEvent,
   KurtSchemaInner,
@@ -15,8 +11,16 @@ import type {
   KurtSchemaMaybe,
   KurtSchemaResult,
   KurtSchemaResultMaybe,
+  KurtSchema,
 } from "@formula-monks/kurt"
-import type { OpenAI, OpenAIMessage, OpenAIResponse } from "./OpenAI.types"
+import type {
+  OpenAI,
+  OpenAIMessage,
+  OpenAIRequest,
+  OpenAIResponseChunk,
+  OpenAISchema,
+  OpenAITool,
+} from "./OpenAI.types"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = [
@@ -31,7 +35,7 @@ const COMPATIBLE_MODELS = [
 
 export type KurtOpenAISupportedModel = (typeof COMPATIBLE_MODELS)[number]
 
-export type KurtOpenAICreateOptions = KurtCreateOptions & {
+export type KurtOpenAICreateOptions = {
   /**
    * The OpenAI model to use as an underlying LLM for Kurt.
    *
@@ -50,136 +54,80 @@ export type KurtOpenAICreateOptions = KurtCreateOptions & {
   openAI: OpenAI
 }
 
-export class KurtOpenAI extends Kurt {
-  constructor(private options: KurtOpenAICreateOptions) {
-    super()
+export class KurtOpenAI
+  implements
+    KurtAdapterV1<{
+      rawMessage: OpenAIMessage
+      rawSchema: OpenAISchema
+      rawTool: OpenAITool
+      rawEvent: OpenAIResponseChunk
+    }>
+{
+  kurtAdapterVersion = "v1" as const
+
+  constructor(private options: KurtOpenAICreateOptions) {}
+
+  transformToRawMessages = toOpenAIMessages
+
+  transformToRawSchema = zodToJsonSchema
+
+  transformToRawTool(tool: OpenAITool["function"]): OpenAITool {
+    return { type: "function", function: tool } as OpenAITool
   }
 
-  generateNaturalLanguage(
-    options: KurtGenerateNaturalLanguageOptions
-  ): KurtStream {
-    return new KurtStream(
-      transformStream(
-        undefined,
-        this.options.openAI.chat.completions.create({
-          stream: true,
-          model: this.options.model,
-          messages: this.toOpenAIMessages(options),
-        })
-      )
-    )
-  }
-
-  generateStructuredData<I extends KurtSchemaInner>(
-    options: KurtGenerateStructuredDataOptions<I>
-  ): KurtStream<KurtSchemaResult<I>> {
-    const schema = options.schema
-
-    return new KurtStream(
-      transformStream(
-        schema,
-        this.options.openAI.chat.completions.create({
-          stream: true,
-          model: this.options.model,
-          messages: this.toOpenAIMessages(options),
-          tool_choice: {
-            type: "function",
-            function: { name: "structured_data" },
-          },
-          tools: [
-            {
-              type: "function",
-              function: {
-                name: "structured_data",
-                description: schema.description,
-                parameters: zodToJsonSchema(schema),
-              },
-            },
-          ],
-        })
-      )
-    )
-  }
-
-  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
-    options: KurtGenerateWithOptionalToolsOptions<I>
-  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined> {
-    return new KurtStream(
-      transformStreamWithOptionalTools<
-        I,
-        KurtSchemaMap<I>,
-        KurtSchemaMapSingleResult<I>
-      >(
-        options.tools,
-        this.options.openAI.chat.completions.create({
-          stream: true,
-          model: this.options.model,
-          messages: this.toOpenAIMessages(options),
-          tools: Object.entries(options.tools).map(([name, schema]) => ({
-            type: "function",
-            function: {
-              name,
-              description: schema.description,
-              parameters: zodToJsonSchema(schema),
-            },
-          })),
-        })
-      )
-    )
-  }
-
-  private toOpenAIMessages = ({
-    prompt,
-    systemPrompt = this.options.systemPrompt,
-    extraMessages = [],
-  }: KurtGenerateNaturalLanguageOptions): OpenAIMessage[] => {
-    const openAIMessages: OpenAIMessage[] = []
-
-    if (systemPrompt) {
-      openAIMessages.push({ role: "system", content: systemPrompt })
+  generateRawEvents(options: {
+    messages: OpenAIMessage[]
+    tools: { [key: string]: OpenAITool }
+    forceTool?: string
+  }): AsyncIterable<OpenAIResponseChunk> {
+    const req: OpenAIRequest = {
+      stream: true,
+      model: this.options.model,
+      messages: options.messages,
     }
 
-    openAIMessages.push({ role: "user", content: prompt })
+    const tools = Object.values(options.tools)
+    if (tools.length > 0) req.tools = tools
 
-    for (const [messageIndex, message] of extraMessages.entries()) {
-      const { text, toolCall } = message
-      if (text) {
-        const role = openAIRoleMapping[message.role]
-        openAIMessages.push({ role, content: text })
-      } else if (toolCall) {
-        const { name, args, result } = toolCall
-
-        // OpenAI supports parallel tool calling, so it expects each tool call
-        // and response to be associated by a unique id it gives to each.
-        //
-        // Kurt doesn't support parallel tool calling (because it isn't
-        // supported by the other LLMs that Kurt needs to be compatible with),
-        // so the id is useless to us and we don't require the user to track it.
-        //
-        // We generate a simple sequential id here to satisfy OpenAI's API.
-        const id = `call_${messageIndex}`
-
-        openAIMessages.push({
-          role: "assistant",
-          tool_calls: [
-            {
-              id,
-              type: "function" as const,
-              function: { name, arguments: JSON.stringify(args) },
-            },
-          ],
-        })
-        openAIMessages.push({
-          role: "tool",
-          tool_call_id: id,
-          content: JSON.stringify(result),
-        })
-      } else {
-        throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+    if (options.forceTool)
+      req.tool_choice = {
+        type: "function",
+        function: { name: options.forceTool },
       }
+
+    const promise = this.options.openAI.chat.completions.create(req)
+
+    // Convert the promise of an async iterable to just an async iterable.
+    async function* gen() {
+      const stream: AsyncIterable<OpenAIResponseChunk> = await promise
+      for await (const chunk of stream) yield chunk
     }
 
-    return openAIMessages
+    return gen()
+  }
+
+  transformNaturalLanguageFromRawEvents(
+    rawEvents: AsyncIterable<OpenAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<undefined>> {
+    return transformStream(undefined, rawEvents)
+  }
+
+  transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
+    schema: KurtSchema<I>,
+    rawEvents: AsyncIterable<OpenAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<KurtSchemaResult<I>>> {
+    return transformStream(schema, rawEvents)
+  }
+
+  transformWithOptionalToolsFromRawEvents<I extends KurtSchemaInnerMap>(
+    tools: KurtSchemaMap<I>,
+    rawEvents: AsyncIterable<OpenAIResponseChunk>
+  ): AsyncIterable<KurtStreamEvent<KurtSchemaMapSingleResult<I> | undefined>> {
+    return transformStreamWithOptionalTools<
+      I,
+      KurtSchemaMap<I>,
+      KurtSchemaMapSingleResult<I>
+    >(tools, rawEvents)
   }
 }
 
@@ -189,16 +137,62 @@ const openAIRoleMapping = {
   user: "user",
 } as const satisfies Record<KurtMessage["role"], OpenAIMessage["role"]>
 
+function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
+  const openAIMessages: OpenAIMessage[] = []
+
+  for (const [messageIndex, message] of messages.entries()) {
+    const { text, toolCall } = message
+    if (text) {
+      const role = openAIRoleMapping[message.role]
+      openAIMessages.push({ role, content: text })
+    } else if (toolCall) {
+      const { name, args, result } = toolCall
+
+      // OpenAI supports parallel tool calling, so it expects each tool call
+      // and response to be associated by a unique id it gives to each.
+      //
+      // Kurt doesn't support parallel tool calling (because it isn't
+      // supported by the other LLMs that Kurt needs to be compatible with),
+      // so the id is useless to us and we don't require the user to track it.
+      //
+      // We generate a simple sequential id here to satisfy OpenAI's API.
+      const id = `call_${messageIndex}`
+
+      openAIMessages.push({
+        role: "assistant",
+        tool_calls: [
+          {
+            id,
+            type: "function" as const,
+            function: { name, arguments: JSON.stringify(args) },
+          },
+        ],
+      })
+      openAIMessages.push({
+        role: "tool",
+        tool_call_id: id,
+        content: JSON.stringify(result),
+      })
+    } else {
+      throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+    }
+  }
+
+  return openAIMessages
+}
+
 async function* transformStream<
   I extends KurtSchemaInnerMaybe,
   S extends KurtSchemaMaybe<I>,
   D extends KurtSchemaResultMaybe<I>,
->(schema: S, response: OpenAIResponse): AsyncGenerator<KurtStreamEvent<D>> {
-  const stream = await response
+>(
+  schema: S,
+  rawEvents: AsyncIterable<OpenAIResponseChunk>
+): AsyncGenerator<KurtStreamEvent<D>> {
   const chunks: string[] = []
 
-  for await (const streamChunk of stream) {
-    const choice = streamChunk.choices[0]
+  for await (const rawEvent of rawEvents) {
+    const choice = rawEvent.choices[0]
     if (!choice) continue
 
     const textChunk = choice.delta.content
@@ -233,14 +227,13 @@ async function* transformStreamWithOptionalTools<
   D extends KurtSchemaMapSingleResult<I>,
 >(
   tools: S,
-  response: OpenAIResponse
+  rawEvents: AsyncIterable<OpenAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
-  const stream = await response
   const chunks: string[] = []
   let functionName: string | undefined
 
-  for await (const streamChunk of stream) {
-    const choice = streamChunk.choices[0]
+  for await (const rawEvent of rawEvents) {
+    const choice = rawEvent.choices[0]
     if (!choice) continue
 
     const textChunk = choice.delta.content

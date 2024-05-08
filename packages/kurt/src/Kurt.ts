@@ -1,5 +1,5 @@
 import type { RequireExactlyOne } from "type-fest"
-import type { KurtStream } from "./KurtStream"
+import { KurtStream } from "./KurtStream"
 import type {
   KurtSchema,
   KurtSchemaInner,
@@ -8,6 +8,7 @@ import type {
   KurtSchemaMapSingleResult,
   KurtSchemaResult,
 } from "./KurtSchema"
+import type { KurtAdapter } from "./KurtAdapter"
 
 /**
  * Kurt wraps an LLM. You can use it to generate some output.
@@ -17,13 +18,18 @@ import type {
  * and where adaptation, statistical fuzziness, and small intuitive leaps
  * are more helpful than purely mechanical rule-following.
  *
- * This abstract class has the common methods implemented by each of the
- * LLM-specific Kurt libraries, so you can use this type for building
+ * This class has the common methods available across each of the LLMs
+ * supported by Kurt, so you can use this class for building
  * structured AI applications should work with any supported LLM.
  * That is, the only place your application should need to know about the
- * specific LLM is at the point of instantiation of one of the Kurt sub-classes.
+ * specific LLM is at the point of instantiation of one of adapters.
  */
-export abstract class Kurt {
+export class Kurt {
+  constructor(
+    readonly adapter: KurtAdapter,
+    readonly options: KurtCreateOptions = {}
+  ) {}
+
   /**
    * Ask Kurt to generate some text in a natural language.
    *
@@ -32,9 +38,20 @@ export abstract class Kurt {
    * - summarizing or explaining some retrieved information
    * - transforming structured data to natural language
    */
-  abstract generateNaturalLanguage(
+  generateNaturalLanguage(
     options: KurtGenerateNaturalLanguageOptions
-  ): KurtStream
+  ): KurtStream {
+    return new KurtStream(
+      this.adapter.transformNaturalLanguageFromRawEvents(
+        this.adapter.generateRawEvents({
+          messages: this.adapter.transformToRawMessages(
+            this.makeMessages(options)
+          ),
+          tools: {},
+        })
+      )
+    )
+  }
 
   /**
    * Ask Kurt to generate some structured data with a particular schema.
@@ -46,9 +63,28 @@ export abstract class Kurt {
    * - generating synthetic data
    * - calling an API or creating a database record
    */
-  abstract generateStructuredData<I extends KurtSchemaInner>(
+  generateStructuredData<I extends KurtSchemaInner>(
     options: KurtGenerateStructuredDataOptions<I>
-  ): KurtStream<KurtSchemaResult<I>>
+  ): KurtStream<KurtSchemaResult<I>> {
+    return new KurtStream(
+      this.adapter.transformStructuredDataFromRawEvents(
+        options.schema,
+        this.adapter.generateRawEvents({
+          messages: this.adapter.transformToRawMessages(
+            this.makeMessages(options)
+          ),
+          tools: {
+            structured_data: this.adapter.transformToRawTool({
+              name: "structured_data",
+              description: options.schema.description ?? "",
+              parameters: this.adapter.transformToRawSchema(options.schema),
+            }),
+          },
+          forceTool: "structured_data",
+        })
+      )
+    )
+  }
 
   /**
    * Ask Kurt to either generate some text in natural language or invoke
@@ -71,9 +107,44 @@ export abstract class Kurt {
    * information that Kurt can use to give a more informed response,
    * or to continue to the next step in a multi-step process.
    */
-  abstract generateWithOptionalTools<I extends KurtSchemaInnerMap>(
+  generateWithOptionalTools<I extends KurtSchemaInnerMap>(
     options: KurtGenerateWithOptionalToolsOptions<I>
-  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined>
+  ): KurtStream<KurtSchemaMapSingleResult<I> | undefined> {
+    return new KurtStream(
+      this.adapter.transformWithOptionalToolsFromRawEvents<I>(
+        options.tools,
+        this.adapter.generateRawEvents({
+          messages: this.adapter.transformToRawMessages(
+            this.makeMessages(options)
+          ),
+          tools: Object.fromEntries(
+            Object.entries(options.tools).map(([name, schema]) => [
+              name,
+              this.adapter.transformToRawTool({
+                name,
+                description: schema.description,
+                parameters: this.adapter.transformToRawSchema(schema),
+              }),
+            ])
+          ),
+        })
+      )
+    )
+  }
+
+  private makeMessages({
+    systemPrompt = this.options.systemPrompt,
+    prompt,
+    extraMessages,
+  }: KurtGenerateNaturalLanguageOptions): KurtMessage[] {
+    const messages: KurtMessage[] = []
+
+    if (systemPrompt) messages.push({ role: "system", text: systemPrompt })
+    messages.push({ role: "user", text: prompt })
+    if (extraMessages) messages.push(...extraMessages)
+
+    return messages
+  }
 }
 
 export type KurtMessage = {
