@@ -32,7 +32,21 @@ const COMPATIBLE_MODELS = [
 export type KurtOpenAISupportedModel = (typeof COMPATIBLE_MODELS)[number]
 
 export type KurtOpenAICreateOptions = KurtCreateOptions & {
+  /**
+   * The OpenAI model to use as an underlying LLM for Kurt.
+   *
+   * These models support function calling, which is necessary for Kurt to
+   * force generation of structured data.
+   */
   model: KurtOpenAISupportedModel
+
+  /**
+   * The properly authenticated OpenAI instance to use as a connection
+   * to the upstream OpenAI service that serves up the LLM as an API.
+   *
+   * For more information on how to set this up, refer to the [OpenAI API
+   * reference](https://platform.openai.com/docs/api-reference/authentication).
+   */
   openAI: OpenAI
 }
 

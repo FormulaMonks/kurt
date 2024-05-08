@@ -32,7 +32,21 @@ const COMPATIBLE_MODELS = ["gemini-1.0-pro", "gemini-1.5-pro"] as const
 export type KurtVertexAISupportedModel = (typeof COMPATIBLE_MODELS)[number]
 
 export type KurtVertexAICreateOptions = KurtCreateOptions & {
+  /**
+   * The Vertex AI model to use as an underlying LLM for Kurt
+   *
+   * These models support function calling, which is necessary for Kurt to
+   * force generation of structured data.
+   */
   model: KurtVertexAISupportedModel
+
+  /**
+   * The properly authenticated Vertex AI instance to use as a connection
+   * to the upstream Vertex AI service that serves up the LLM as an API.
+   *
+   * For more information on how to set this up, refer to the [Vertex AI SDK
+   * README](https://github.com/googleapis/nodejs-vertexai/blob/main/README.md).
+   */
   vertexAI: VertexAI
 }
 
