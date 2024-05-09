@@ -8,6 +8,7 @@ on:
 
 jobs:
   ci:
+    environment: ${{ github.ref == 'refs/heads/main' && 'publish' || 'test' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # to publish releases
