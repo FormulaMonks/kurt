@@ -1,7 +1,10 @@
 import { VertexAI as RealVertexAI } from "@google-cloud/vertexai"
 import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
-import { KurtVertexAI } from "../src/KurtVertexAI"
+import {
+  KurtVertexAI,
+  type KurtVertexAISupportedModel,
+} from "../src/KurtVertexAI"
 import type {
   VertexAI,
   VertexAIRequest,
@@ -59,6 +62,22 @@ async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
 }
 
 describe("KurtVertexAI", () => {
+  test("isSupportedModel", () => {
+    // For updating this test, the current list of models can be found at:
+    // https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+    expect(KurtVertexAI.isSupportedModel("gemini-1.5-pro")).toBe(true)
+    expect(KurtVertexAI.isSupportedModel("gemini-1.0-pro")).toBe(true)
+    expect(KurtVertexAI.isSupportedModel("gemini-1.0-pro-vision")).toBe(false)
+
+    expect(KurtVertexAI.isSupportedModel("bogus")).toBe(false)
+
+    // The below code proves that the function works as a type guard.
+    const modelName = "gemini-1.0-pro"
+    if (KurtVertexAI.isSupportedModel(modelName)) {
+      const modelNameGood: KurtVertexAISupportedModel = modelName
+    }
+  })
+
   test("generateNaturalLanguage", async () => {
     const req = {
       prompt: "Say hello!",

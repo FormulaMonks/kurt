@@ -62,6 +62,10 @@ export class KurtVertexAI
 
   constructor(private options: KurtVertexAICreateOptions) {}
 
+  static isSupportedModel(model: string): model is KurtVertexAISupportedModel {
+    return COMPATIBLE_MODELS.includes(model as KurtVertexAISupportedModel)
+  }
+
   transformToRawMessages = toVertexAIMessages
 
   transformToRawSchema = jsonSchemaForVertexAI
