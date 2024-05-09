@@ -67,6 +67,10 @@ export class KurtOpenAI
 
   constructor(private options: KurtOpenAICreateOptions) {}
 
+  static isSupportedModel(model: string): model is KurtOpenAISupportedModel {
+    return COMPATIBLE_MODELS.includes(model as KurtOpenAISupportedModel)
+  }
+
   transformToRawMessages = toOpenAIMessages
 
   transformToRawSchema = zodToJsonSchema

@@ -1,1 +1,1 @@
-export { KurtVertexAI } from "./KurtVertexAI"
+export * from "./KurtVertexAI"

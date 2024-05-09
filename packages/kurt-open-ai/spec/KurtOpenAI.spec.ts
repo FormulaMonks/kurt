@@ -2,7 +2,7 @@ import { describe, expect, test } from "@jest/globals"
 import { OpenAI as RealOpenAI } from "openai"
 import { z } from "zod"
 import { Kurt } from "@formula-monks/kurt"
-import { KurtOpenAI } from "../src/KurtOpenAI"
+import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src/KurtOpenAI"
 import type {
   OpenAI,
   OpenAIRequest,
@@ -45,6 +45,30 @@ async function arrayFromAsync<T>(iter: AsyncIterable<T>): Promise<T[]> {
 }
 
 describe("KurtOpenAI", () => {
+  test("isSupportedModel", () => {
+    // For updating this test, the current list of models can be found at:
+    // https://platform.openai.com/docs/models/overview
+    expect(KurtOpenAI.isSupportedModel("gpt-4-turbo")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-turbo-2024-04-09")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-turbo-preview")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-0125-preview")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-1106-preview")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-vision-preview")).toBe(false)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-1106-vision-preview")).toBe(false)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-0613")).toBe(false)
+    expect(KurtOpenAI.isSupportedModel("gpt-4-32k-0613")).toBe(false)
+    expect(KurtOpenAI.isSupportedModel("gpt-3.5-turbo-0125")).toBe(true)
+    expect(KurtOpenAI.isSupportedModel("gpt-3.5-turbo-1106")).toBe(true)
+
+    expect(KurtOpenAI.isSupportedModel("bogus")).toBe(false)
+
+    // The below code proves that the function works as a type guard.
+    const modelName = "gemini-1.0-pro"
+    if (KurtOpenAI.isSupportedModel(modelName)) {
+      const modelNameGood: KurtOpenAISupportedModel = modelName
+    }
+  })
+
   test("generateNaturalLanguage", async () => {
     const req = {
       prompt: "Say hello!",
