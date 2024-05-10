@@ -20,7 +20,7 @@
     "extends": "semantic-release-monorepo"
   },
   "dependencies": {
-    "@formula-monks/kurt": "workspace:^",
+    "@formula-monks/kurt": "^1.0.0",
     "@google-cloud/vertexai": "1.1.0",
     "zod": "^3.23.5",
     "zod-to-json-schema": "^3.23.0"
