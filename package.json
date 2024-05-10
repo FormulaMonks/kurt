@@ -1,4 +1,9 @@
 {
+  "pnpm": {
+    "overrides": {
+      "@formula-monks/kurt": "workspace:^"
+    }
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",
     "@commitlint/cli": "^19.3.0",
