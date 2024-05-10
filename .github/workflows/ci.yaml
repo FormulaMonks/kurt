@@ -21,9 +21,19 @@ jobs:
       - uses: actions/setup-node@v2.5.1
         with: { node-version: 20.x }
       - run: npm install -g pnpm@9
+
+      # Main tests.
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test
       - run: pnpm run build
+
+      # Validate that the tests pass without the pnpm overrides that alter
+      # the intra-monorepo dependencies for local development.
+      - run: cat package.json | jq 'del(.pnpm.overrides)' | tee package.json
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm run test
+
+      # Finally, release (actual publishing only happens on the main branch).
       - run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ github.token }}
