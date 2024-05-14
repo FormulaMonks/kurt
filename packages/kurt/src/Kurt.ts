@@ -47,6 +47,7 @@ export class Kurt {
           messages: this.adapter.transformToRawMessages(
             this.makeMessages(options)
           ),
+          sampling: this.makeSamplingOptions(options.sampling),
           tools: {},
         })
       )
@@ -73,6 +74,7 @@ export class Kurt {
           messages: this.adapter.transformToRawMessages(
             this.makeMessages(options)
           ),
+          sampling: this.makeSamplingOptions(options.sampling),
           tools: {
             structured_data: this.adapter.transformToRawTool({
               name: "structured_data",
@@ -117,6 +119,7 @@ export class Kurt {
           messages: this.adapter.transformToRawMessages(
             this.makeMessages(options)
           ),
+          sampling: this.makeSamplingOptions(options.sampling),
           tools: Object.fromEntries(
             Object.entries(options.tools).map(([name, schema]) => [
               name,
@@ -144,6 +147,37 @@ export class Kurt {
     if (extraMessages) messages.push(...extraMessages)
 
     return messages
+  }
+
+  private makeSamplingOptions(overrides?: KurtSamplingOptions) {
+    const sampling = {
+      ...KurtSamplingOptionsDefault,
+      ...this.options.sampling,
+      ...overrides,
+    }
+
+    // Round integers.
+    sampling.maxOutputTokens = Math.round(sampling.maxOutputTokens)
+
+    // Enforce "hard" limits.
+    if (sampling.maxOutputTokens < 1)
+      throw new Error(
+        `maxOutputTokens must be at least 1 (got: ${sampling.maxOutputTokens})`
+      )
+    if (sampling.temperature < 0)
+      throw new Error(
+        `temperature must be no less than 0 (got: ${sampling.temperature})`
+      )
+    if (sampling.topP < 0)
+      throw new Error(`topP must be no less than 0 (got: ${sampling.topP})`)
+    if (sampling.topP > 1)
+      throw new Error(`topP must be no greater than 1 (got: ${sampling.topP})`)
+
+    // Enforce "soft" limits.
+    if (sampling.temperature === 0) sampling.temperature = Number.MIN_VALUE
+    if (sampling.topP === 0) sampling.topP = Number.MIN_VALUE
+
+    return sampling
   }
 }
 
@@ -211,6 +245,93 @@ export interface KurtCreateOptions {
    * But it's a good start and an easy first step to guide the LLM's behavior.
    */
   systemPrompt?: string
+
+  /**
+   * Default sampling options to use, for any generation method call which
+   * does not specify a different sampling options that override these ones.
+   */
+  sampling?: KurtSamplingOptions
+}
+
+/**
+ * Options which control how output tokens are sampled from the underlying LLM.
+ */
+export type KurtSamplingOptions = Partial<typeof KurtSamplingOptionsDefault>
+
+/**
+ * The default values to use for `KurtSamplingOptions` when the application
+ * doesn't specify any explicit values to override them.
+ *
+ * These values are loosely based on the defaults for major LLM providers,
+ * erring on the side of more conservative choices where there is variance.
+ *
+ * Kurt has uniform defaults no matter which LLM you select, rather than
+ * using defaults which vary from one LLM provider to another, to make it
+ * easier to "compare apples to apples" when using different LLMs with Kurt.
+ */
+export const KurtSamplingOptionsDefault = {
+  /**
+   * Maximum number of output tokens to sample from the model.
+   *
+   * This is mean to be a cost control measure, to protect against scenarios
+   * where the model might get "stuck" and generate excessive output.
+   *
+   * When the model hits the output limit, whatever it has generated will
+   * be cut off abruptly - the model has no awareness of this limit or how
+   * concise its output needs to be, so if you need more concise output,
+   * you'll need to include that in the (user or system) prompt instructions,
+   * rather than relying on this parameter alone.
+   */
+  maxOutputTokens: 4096,
+
+  /**
+   * A factor to increase the amount of randomness in final token sampling.
+   *
+   * Along with `temperature`, this parameter can control the amount of
+   * variation, "creativity", and topic drift of the generated output.
+   * Higher values for each of these parameters will increase the variation,
+   * but most LLM vendors recommend only adjusting one and not the other.
+   * If you know what you're doing, then adjusting both may be helpful.
+   *
+   * Using a temperature value near 0 will cause sampling to almost always
+   * choose the "most likely" next token from the "top tokens" set,
+   * while increasing toward a value near 1 will make sampling more random.
+   *
+   * In all cases, the sampling occurs within the set of "top tokens" that
+   * were above the cutoff thresholds introduced by `topK` and `topP`, so
+   * even high temperatures will be constrained by those thresholds.
+   *
+   * Some models allow for values higher than 1, and the precise meaning
+   * of this parameter is not consistently defined for all models,
+   * so as much as Kurt would like to make the behavior uniform across
+   * all supported LLMs, in practice you may need to tune this parameter
+   * differently for different models used by your application.
+   */
+  temperature: 0.5,
+
+  /**
+   * The width of the "probability"-based filter for initial token sampling.
+   *
+   * Along with `temperature`, this parameter can control the amount of
+   * variation, "creativity", and topic drift of the generated output.
+   * Higher values for each of these parameters will increase the variation,
+   * but most LLM vendors recommend only adjusting one and not the other.
+   * If you know what you're doing, then adjusting both may be helpful.
+   *
+   * This parameter specifies the inclusiveness of the probability threshold
+   * that must be met in order to consider a token for inclusion in the
+   * "top tokens" set that is to be sampled from. This threshold filtering
+   * happens before the `temperature` parameter is applied for sampling.
+   *
+   * Therefore, narrowing or widening this value will narrow/widen the set of
+   * tokens that are considered for sampling, and decreasing or increasing
+   * the temperature will modify how the selection happens within that set.
+   *
+   * Valid values are greater than 0 and less than or equal to 1.
+   * A value of 1 means that all tokens are considered for sampling,
+   * without any "top tokens" filtering being applied before sampling.
+   */
+  topP: 0.95,
 }
 
 export interface KurtGenerateNaturalLanguageOptions {
@@ -253,6 +374,15 @@ export interface KurtGenerateNaturalLanguageOptions {
    * so you can manipulate or even fabricate the message history as you see fit.
    */
   extraMessages?: KurtMessage[]
+
+  /**
+   * Sampling options to use for this generation.
+   *
+   * Any options not specified here will be taken from the options given
+   * in the constructor call for this Kurt instance if present there, or
+   * otherwise from the `KurtSamplingOptionsDefault` values.
+   */
+  sampling?: KurtSamplingOptions
 }
 
 export type KurtGenerateStructuredDataOptions<I extends KurtSchemaInner> =

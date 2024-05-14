@@ -1,4 +1,4 @@
-import type { KurtMessage } from "./Kurt"
+import type { KurtMessage, KurtSamplingOptions } from "./Kurt"
 import type { KurtStreamEvent } from "./KurtStream"
 import type {
   KurtSchema,
@@ -47,6 +47,7 @@ export interface KurtAdapterV1<A extends V1TypeParams = V1TypeParams> {
 
   generateRawEvents(options: {
     messages: A["rawMessage"][]
+    sampling: Required<KurtSamplingOptions>
     tools: { [key: string]: A["rawTool"] }
     forceTool?: string
   }): AsyncIterable<A["rawEvent"]>
