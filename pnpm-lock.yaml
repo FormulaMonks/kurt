@@ -105,6 +105,9 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
+      yaml:
+        specifier: ^2.4.2
+        version: 2.4.2
 
   packages/kurt-vertex-ai:
     dependencies:
@@ -145,6 +148,9 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
+      yaml:
+        specifier: ^2.4.2
+        version: 2.4.2
 
 packages:
 
@@ -3026,6 +3032,11 @@ packages:
   yaml@2.3.4:
     resolution: {integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==}
     engines: {node: '>= 14'}
+
+  yaml@2.4.2:
+    resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
+    engines: {node: '>= 14'}
+    hasBin: true
 
   yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
@@ -6357,6 +6368,8 @@ snapshots:
   yallist@4.0.0: {}
 
   yaml@2.3.4: {}
+
+  yaml@2.4.2: {}
 
   yargs-parser@20.2.9: {}
 

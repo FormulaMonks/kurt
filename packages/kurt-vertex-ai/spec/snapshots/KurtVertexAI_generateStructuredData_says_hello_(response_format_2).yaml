@@ -1,0 +1,39 @@
+step1Request:
+  contents:
+    - role: user
+      parts:
+        - text: Say hello!
+  tools:
+    - functionDeclarations:
+        - name: structured_data
+          description: Say a word
+          parameters:
+            type: object
+            properties:
+              say:
+                type: string
+                description: A single word to say
+            required:
+              - say
+  tool_config:
+    function_calling_config:
+      mode: ANY
+      allowed_function_names:
+        - structured_data
+step2RawChunks:
+  - content:
+      role: model
+      parts:
+        - functionCall:
+            name: call
+            args:
+              function: structured_data
+              say: hello
+              extension: default_api
+    index: 0
+step3KurtEvents:
+  - chunk: '{"say":"hello"}'
+  - finished: true
+    text: '{"say":"hello"}'
+    data:
+      say: hello

@@ -1,0 +1,74 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  messages:
+    - role: user
+      content: Say hello!
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: Hello
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "!"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " How"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " can"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " I"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " assist"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " you"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " today"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "?"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: stop
+step3KurtEvents:
+  - chunk: Hello
+  - chunk: "!"
+  - chunk: " How"
+  - chunk: " can"
+  - chunk: " I"
+  - chunk: " assist"
+  - chunk: " you"
+  - chunk: " today"
+  - chunk: "?"
+  - finished: true
+    text: Hello! How can I assist you today?

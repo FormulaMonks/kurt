@@ -1,0 +1,94 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  messages:
+    - role: user
+      content: Say hello!
+  tools:
+    - type: function
+      function:
+        name: structured_data
+        description: Say a word
+        parameters:
+          type: object
+          properties:
+            say:
+              type: string
+              description: A single word to say
+          required:
+            - say
+          additionalProperties: false
+          description: Say a word
+          $schema: http://json-schema.org/draft-07/schema#
+  tool_choice:
+    type: function
+    function:
+      name: structured_data
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: null
+      tool_calls:
+        - index: 0
+          id: call_lKgSLvb9PnL0DHqSusGKEVev
+          type: function
+          function:
+            name: structured_data
+            arguments: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '{"'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: say
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '":"'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: hello
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '"}'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: stop
+step3KurtEvents:
+  - chunk: '{"'
+  - chunk: say
+  - chunk: '":"'
+  - chunk: hello
+  - chunk: '"}'
+  - finished: true
+    text: '{"say":"hello"}'
+    data:
+      say: hello

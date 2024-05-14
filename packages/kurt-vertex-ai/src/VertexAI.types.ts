@@ -27,7 +27,7 @@ export type VertexAIRequest = GenerateContentRequest & {
 export type VertexAISchema = FunctionDeclarationSchema
 export type VertexAITool = FunctionDeclaration
 export type VertexAIResponse = Promise<{
-  stream: AsyncGenerator<VertexAIResponseChunk>
+  stream: AsyncIterable<VertexAIResponseChunk>
 }>
 export type VertexAIResponseChunk = {
   candidates?: VertexAIResponseChunkCandidate[]
@@ -35,4 +35,6 @@ export type VertexAIResponseChunk = {
 export type VertexAIResponseChunkCandidate = Pick<
   GenerateContentCandidate,
   "content" | "finishReason"
->
+> & {
+  safetyRatings?: object[]
+}
