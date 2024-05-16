@@ -2,7 +2,7 @@
   "name": "@formula-monks/kurt",
   "description": "A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.0-semantically-released",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
