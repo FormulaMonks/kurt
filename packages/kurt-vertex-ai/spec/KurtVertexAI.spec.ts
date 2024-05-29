@@ -99,6 +99,12 @@ describe("KurtVertexAI", () => {
             role: "model",
             parts: [{ text: " How can I help you today?" }],
           },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
+          },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
         },
@@ -164,6 +170,12 @@ describe("KurtVertexAI", () => {
                 },
               },
             ],
+          },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
           },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
@@ -238,6 +250,12 @@ describe("KurtVertexAI", () => {
               },
             ],
           },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
+          },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
         },
@@ -310,6 +328,12 @@ describe("KurtVertexAI", () => {
                 },
               },
             ],
+          },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
           },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
@@ -407,6 +431,12 @@ describe("KurtVertexAI", () => {
                 },
               },
             ],
+          },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
           },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
@@ -532,6 +562,12 @@ describe("KurtVertexAI", () => {
           content: {
             role: "model",
             parts: [{ text: ", rounded to the nearest integer, is 324." }],
+          },
+        },
+        {
+          content: {
+            role: "model",
+            parts: [{ text: "" }],
           },
           // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
           finishReason: "STOP" as any,
