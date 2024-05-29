@@ -205,7 +205,8 @@ async function* transformStream<
 
     for (const [partIndex, part] of parts.entries()) {
       const chunk = part.text
-      const isFinal = isContentFinal && partIndex === parts.length - 1
+      const isFinal =
+        (isContentFinal && partIndex === parts.length - 1) || part.functionCall
 
       if (chunk) {
         chunks.push(chunk)
@@ -229,6 +230,7 @@ async function* transformStream<
           const text = chunks.join("")
           yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
         }
+        return // No need to send more events once we've sent a finished event
       }
     }
   }
@@ -253,7 +255,8 @@ async function* transformStreamWithOptionalTools<
 
     for (const [partIndex, part] of parts.entries()) {
       const chunk = part.text
-      const isFinal = isContentFinal && partIndex === parts.length - 1
+      const isFinal =
+        (isContentFinal && partIndex === parts.length - 1) || part.functionCall
 
       if (chunk) {
         chunks.push(chunk)
@@ -282,6 +285,7 @@ async function* transformStreamWithOptionalTools<
           const text = chunks.join("")
           yield { finished: true, text, data: undefined }
         }
+        return // No need to send more events once we've sent a finished event
       }
     }
   }
