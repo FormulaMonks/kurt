@@ -1,0 +1,444 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  max_tokens: 4096
+  temperature: 0.5
+  top_p: 0.95
+  messages:
+    - role: user
+      content: |-
+        Calculate each of the following:
+        1. 8026256882 divided by 3402398
+        2. 1185835515 divided by 348263
+        3. 90135094495 minus 89944954350
+    - role: assistant
+      tool_calls:
+        - id: call_1
+          type: function
+          function:
+            name: divide
+            arguments: '{"dividend":8026256882,"divisor":3402398}'
+    - role: tool
+      tool_call_id: call_1
+      content: '{"quotient":2359}'
+    - role: assistant
+      tool_calls:
+        - id: call_2
+          type: function
+          function:
+            name: divide
+            arguments: '{"dividend":1185835515,"divisor":348263}'
+    - role: tool
+      tool_call_id: call_2
+      content: '{"quotient":3405}'
+    - role: assistant
+      tool_calls:
+        - id: call_3
+          type: function
+          function:
+            name: subtract
+            arguments: '{"minuend":90135094495,"subtrahend":89944954350}'
+    - role: tool
+      tool_call_id: call_3
+      content: '{"quotient":190140145}'
+  tools:
+    - type: function
+      function:
+        name: subtract
+        description: Calculate a subtraction
+        parameters:
+          type: object
+          properties:
+            minuend:
+              type: number
+              description: The number to subtract from
+            subtrahend:
+              type: number
+              description: The number to subtract by
+          required:
+            - minuend
+            - subtrahend
+          additionalProperties: false
+          description: Calculate a subtraction
+          $schema: http://json-schema.org/draft-07/schema#
+    - type: function
+      function:
+        name: divide
+        description: Calculate a division
+        parameters:
+          type: object
+          properties:
+            dividend:
+              type: number
+              description: The number to be divided
+            divisor:
+              type: number
+              description: The number to divide by
+          required:
+            - dividend
+            - divisor
+          additionalProperties: false
+          description: Calculate a division
+          $schema: http://json-schema.org/draft-07/schema#
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: The
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " results"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " are"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: |
+        :
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "1"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: .
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "802"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "625"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "688"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "2"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " divided"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " by"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "340"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "239"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "8"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " is"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "235"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "9"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "\n"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "2"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: .
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "118"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "583"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "551"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "5"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " divided"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " by"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "348"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "263"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " is"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "340"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "5"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "\n"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "3"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: .
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "901"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "350"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "944"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "95"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " minus"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "899"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "449"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "543"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "50"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " is"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " "
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "190"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "140"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "145"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: stop
+step3KurtEvents:
+  - chunk: The
+  - chunk: " results"
+  - chunk: " are"
+  - chunk: |
+      :
+  - chunk: "1"
+  - chunk: .
+  - chunk: " "
+  - chunk: "802"
+  - chunk: "625"
+  - chunk: "688"
+  - chunk: "2"
+  - chunk: " divided"
+  - chunk: " by"
+  - chunk: " "
+  - chunk: "340"
+  - chunk: "239"
+  - chunk: "8"
+  - chunk: " is"
+  - chunk: " "
+  - chunk: "235"
+  - chunk: "9"
+  - chunk: "\n"
+  - chunk: "2"
+  - chunk: .
+  - chunk: " "
+  - chunk: "118"
+  - chunk: "583"
+  - chunk: "551"
+  - chunk: "5"
+  - chunk: " divided"
+  - chunk: " by"
+  - chunk: " "
+  - chunk: "348"
+  - chunk: "263"
+  - chunk: " is"
+  - chunk: " "
+  - chunk: "340"
+  - chunk: "5"
+  - chunk: "\n"
+  - chunk: "3"
+  - chunk: .
+  - chunk: " "
+  - chunk: "901"
+  - chunk: "350"
+  - chunk: "944"
+  - chunk: "95"
+  - chunk: " minus"
+  - chunk: " "
+  - chunk: "899"
+  - chunk: "449"
+  - chunk: "543"
+  - chunk: "50"
+  - chunk: " is"
+  - chunk: " "
+  - chunk: "190"
+  - chunk: "140"
+  - chunk: "145"
+  - finished: true
+    text: |-
+      The results are:
+      1. 8026256882 divided by 3402398 is 2359
+      2. 1185835515 divided by 348263 is 3405
+      3. 90135094495 minus 89944954350 is 190140145
