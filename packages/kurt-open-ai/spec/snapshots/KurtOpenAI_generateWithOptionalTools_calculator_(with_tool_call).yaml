@@ -1,0 +1,197 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  messages:
+    - role: user
+      content: What's 9876356 divided by 30487, rounded to the nearest integer?
+  tools:
+    - type: function
+      function:
+        name: subtract
+        description: Calculate a subtraction
+        parameters:
+          type: object
+          properties:
+            minuend:
+              type: number
+              description: The number to subtract from
+            subtrahend:
+              type: number
+              description: The number to subtract by
+          required:
+            - minuend
+            - subtrahend
+          additionalProperties: false
+          description: Calculate a subtraction
+          $schema: http://json-schema.org/draft-07/schema#
+    - type: function
+      function:
+        name: divide
+        description: Calculate a division
+        parameters:
+          type: object
+          properties:
+            dividend:
+              type: number
+              description: The number to be divided
+            divisor:
+              type: number
+              description: The number to divide by
+          required:
+            - dividend
+            - divisor
+          additionalProperties: false
+          description: Calculate a division
+          $schema: http://json-schema.org/draft-07/schema#
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: null
+      tool_calls:
+        - index: 0
+          id: call_mIgkbptSgcrqLtG7yoqwtAhh
+          type: function
+          function:
+            name: divide
+            arguments: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '{"'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: div
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: idend
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '":'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "987"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "635"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "6"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: ',"'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: div
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: isor
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '":'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "304"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "87"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "}"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: tool_calls
+step3KurtEvents:
+  - chunk: '{"'
+  - chunk: div
+  - chunk: idend
+  - chunk: '":'
+  - chunk: "987"
+  - chunk: "635"
+  - chunk: "6"
+  - chunk: ',"'
+  - chunk: div
+  - chunk: isor
+  - chunk: '":'
+  - chunk: "304"
+  - chunk: "87"
+  - chunk: "}"
+  - finished: true
+    text: '{"dividend":9876356,"divisor":30487}'
+    data:
+      name: divide
+      args:
+        dividend: 9876356
+        divisor: 30487

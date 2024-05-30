@@ -1,0 +1,70 @@
+step1Request:
+  contents:
+    - role: user
+      parts:
+        - text: What's 9876356 divided by 30487, rounded to the nearest integer?
+    - role: model
+      parts:
+        - functionCall:
+            name: divide
+            args:
+              dividend: 9876356
+              divisor: 30487
+    - role: model
+      parts:
+        - functionResponse:
+            name: divide
+            response:
+              quotient: 323.95302915996984
+  tools:
+    - functionDeclarations:
+        - name: subtract
+          description: Calculate a subtraction
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+        - name: divide
+          description: Calculate a division
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+step2RawChunks:
+  - content:
+      role: model
+      parts:
+        - text: That
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: "'s about 324."
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: ""
+    finishReason: STOP
+    index: 0
+step3KurtEvents:
+  - chunk: That
+  - chunk: "'s about 324."
+  - finished: true
+    text: "That's about 324."
