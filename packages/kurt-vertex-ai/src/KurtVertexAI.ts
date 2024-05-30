@@ -14,6 +14,7 @@ import type {
   KurtSchemaResult,
   KurtSchemaResultMaybe,
   KurtMessage,
+  KurtSamplingOptions,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -74,6 +75,7 @@ export class KurtVertexAI
 
   generateRawEvents(options: {
     messages: VertexAIMessage[]
+    sampling: Required<KurtSamplingOptions>
     tools: { [key: string]: VertexAITool }
     forceTool?: string | undefined
   }): AsyncIterable<VertexAIResponseChunk> {
@@ -81,7 +83,14 @@ export class KurtVertexAI
       model: this.options.model,
     }) as VertexAIGenerativeModel
 
-    const req: VertexAIRequest = { contents: options.messages }
+    const req: VertexAIRequest = {
+      generationConfig: {
+        maxOutputTokens: options.sampling.maxOutputTokens,
+        temperature: options.sampling.temperature,
+        topP: options.sampling.topP,
+      },
+      contents: options.messages,
+    }
 
     const tools = Object.values(options.tools)
     if (tools.length > 0) req.tools = [{ functionDeclarations: tools }]

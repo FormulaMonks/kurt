@@ -1,0 +1,134 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  max_tokens: 100
+  temperature: 1
+  top_p: 1
+  messages:
+    - role: user
+      content: Compose a haiku about a mountain stream at night.
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: Sha
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: ft
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " of"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " moon"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: light
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " gl"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: ows
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "\n"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: Mountain
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " stream"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " flows"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " silently"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "\n"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: Nature
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: "'s"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: " l"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: ull
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      content: aby
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: stop
+step3KurtEvents:
+  - chunk: Sha
+  - chunk: ft
+  - chunk: " of"
+  - chunk: " moon"
+  - chunk: light
+  - chunk: " gl"
+  - chunk: ows
+  - chunk: "\n"
+  - chunk: Mountain
+  - chunk: " stream"
+  - chunk: " flows"
+  - chunk: " silently"
+  - chunk: "\n"
+  - chunk: Nature
+  - chunk: "'s"
+  - chunk: " l"
+  - chunk: ull
+  - chunk: aby
+  - finished: true
+    text: |-
+      Shaft of moonlight glows
+      Mountain stream flows silently
+      Nature's lullaby

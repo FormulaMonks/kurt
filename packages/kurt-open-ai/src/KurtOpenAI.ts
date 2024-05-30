@@ -12,6 +12,7 @@ import type {
   KurtSchemaResult,
   KurtSchemaResultMaybe,
   KurtSchema,
+  KurtSamplingOptions,
 } from "@formula-monks/kurt"
 import type {
   OpenAI,
@@ -83,12 +84,16 @@ export class KurtOpenAI
 
   generateRawEvents(options: {
     messages: OpenAIMessage[]
+    sampling: Required<KurtSamplingOptions>
     tools: { [key: string]: OpenAITool }
     forceTool?: string
   }): AsyncIterable<OpenAIResponseChunk> {
     const req: OpenAIRequest = {
       stream: true,
       model: this.options.model,
+      max_tokens: options.sampling.maxOutputTokens,
+      temperature: options.sampling.temperature,
+      top_p: options.sampling.topP,
       messages: options.messages,
     }
 
