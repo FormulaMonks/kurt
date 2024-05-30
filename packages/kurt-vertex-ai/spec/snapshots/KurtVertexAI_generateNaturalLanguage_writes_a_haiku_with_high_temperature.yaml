@@ -1,0 +1,48 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 100
+    temperature: 1
+    topP: 1
+  contents:
+    - role: user
+      parts:
+        - text: Compose a haiku about a mountain stream at night.
+step2RawChunks:
+  - content:
+      role: model
+      parts:
+        - text: Moon
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: |2-
+             paints silver path,
+            Water sings to sleeping stones,
+            Night sighs on the
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: |2-
+             wind.
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: ""
+    finishReason: STOP
+    index: 0
+step3KurtEvents:
+  - chunk: Moon
+  - chunk: |2-
+       paints silver path,
+      Water sings to sleeping stones,
+      Night sighs on the
+  - chunk: |2-
+       wind.
+  - finished: true
+    text: |-
+      Moon paints silver path,
+      Water sings to sleeping stones,
+      Night sighs on the wind.

@@ -1,4 +1,8 @@
 step1Request:
+  generationConfig:
+    maxOutputTokens: 4096
+    temperature: 0.5
+    topP: 0.95
   contents:
     - role: user
       parts:
