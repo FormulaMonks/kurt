@@ -1,0 +1,88 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 4096
+    temperature: 0.5
+    topP: 0.95
+  contents:
+    - role: user
+      parts:
+        - text: |-
+            Calculate each of the following:
+            1. 8026256882 divided by 3402398
+            2. 1185835515 divided by 348263
+            3. 90135094495 minus 89944954350
+  tools:
+    - functionDeclarations:
+        - name: subtract
+          description: Calculate a subtraction
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+        - name: divide
+          description: Calculate a division
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+step2RawChunks:
+  - content:
+      role: model
+      parts:
+        - functionCall:
+            name: divide
+            args:
+              dividend: 8026256882
+              divisor: 3402398
+        - functionCall:
+            name: divide
+            args:
+              dividend: 1185835515
+              divisor: 348263
+        - functionCall:
+            name: subtract
+            args:
+              minuend: 90135094495
+              subtrahend: 89944954350
+    index: 0
+step3KurtEvents:
+  - chunk: '{"dividend":8026256882,"divisor":3402398}'
+  - chunk: "\n"
+  - chunk: '{"dividend":1185835515,"divisor":348263}'
+  - chunk: "\n"
+  - chunk: '{"minuend":90135094495,"subtrahend":89944954350}'
+  - finished: true
+    text: |-
+      {"dividend":8026256882,"divisor":3402398}
+      {"dividend":1185835515,"divisor":348263}
+      {"minuend":90135094495,"subtrahend":89944954350}
+    data:
+      name: divide
+      args:
+        dividend: 8026256882
+        divisor: 3402398
+    additionalData:
+      - name: divide
+        args:
+          dividend: 1185835515
+          divisor: 348263
+      - name: subtract
+        args:
+          minuend: 90135094495
+          subtrahend: 89944954350
