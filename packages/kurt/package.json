@@ -3,6 +3,12 @@
   "description": "A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
   "license": "MIT",
   "version": "1.0.0",
+  "homepage": "https://github.com/FormulaMonks/kurt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FormulaMonks/kurt.git",
+    "directory": "packages/kurt"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
