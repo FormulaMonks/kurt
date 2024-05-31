@@ -240,8 +240,9 @@ async function* transformStreamWithOptionalTools<
   tools: S,
   rawEvents: AsyncIterable<OpenAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
-  const chunks: string[] = []
-  let functionName: string | undefined
+  const textChunks: string[] = []
+  const dataChunks: string[][] = []
+  const functionNames: string[] = []
 
   for await (const rawEvent of rawEvents) {
     const choice = rawEvent.choices[0]
@@ -249,36 +250,67 @@ async function* transformStreamWithOptionalTools<
 
     const textChunk = choice.delta.content
     if (textChunk) {
-      chunks.push(textChunk)
+      textChunks.push(textChunk)
       yield { chunk: textChunk }
     }
 
-    const functionCall = choice.delta.tool_calls?.at(0)?.function
-    functionName ||= functionCall?.name
-    const dataChunk = functionCall?.arguments
-    if (dataChunk) {
-      chunks.push(dataChunk)
-      yield { chunk: dataChunk }
+    const functionCall = choice.delta.tool_calls?.at(0)
+    if (functionCall?.function) {
+      const {
+        index,
+        function: { name, arguments: dataChunk },
+      } = functionCall
+
+      if (name !== undefined) {
+        functionNames[index] = name
+      }
+      if (dataChunk) {
+        // biome-ignore lint/suspicious/noAssignInExpressions: this single-line lazy initialization pattern is good, actually
+        ;(dataChunks[index] ||= []).push(dataChunk)
+        textChunks.push(dataChunk)
+        yield { chunk: dataChunk }
+      } else if (index > 0) {
+        // Insert a line break chunk in between parallel tool calls.
+        const lineBreakChunk = "\n"
+        textChunks.push(lineBreakChunk)
+        yield { chunk: lineBreakChunk }
+      }
     }
 
     const isFinal = choice.finish_reason !== null
 
     if (isFinal) {
-      const text = chunks.join("")
-      if (functionName) {
-        const schema = tools[functionName]
-        if (!schema) {
-          throw new Error(
-            `OpenAI tried to call tool ${functionName} which isn't in the tool set ${JSON.stringify(
-              Object.keys(tools)
-            )}}`
-          )
+      const text = textChunks.join("")
+      if (dataChunks.length > 0) {
+        const allData: D[] = dataChunks.map((chunks, index) => {
+          const name = functionNames[index]
+          if (!name)
+            throw new Error("OpenAI tried to call a tool with no function name")
+
+          const schema = tools[name]
+          if (!schema) {
+            throw new Error(
+              `OpenAI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
+                Object.keys(tools)
+              )}}`
+            )
+          }
+
+          return {
+            name,
+            args: schema.parse(JSON.parse(chunks.join(""))),
+          } as D
+        })
+
+        // biome-ignore lint/style/noNonNullAssertion: we already validated above that length > 0
+        const data = allData[0]!
+        const additionalData = allData.slice(1)
+
+        if (additionalData.length > 0) {
+          yield { finished: true, text, data, additionalData }
+        } else {
+          yield { finished: true, text, data }
         }
-        const data = {
-          name: functionName,
-          args: schema.parse(JSON.parse(text)),
-        } as D
-        yield { finished: true, text, data }
       } else {
         yield { finished: true, text, data: undefined }
       }

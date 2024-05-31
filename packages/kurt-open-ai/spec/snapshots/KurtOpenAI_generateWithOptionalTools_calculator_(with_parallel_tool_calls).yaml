@@ -1,0 +1,379 @@
+step1Request:
+  stream: true
+  model: gpt-3.5-turbo-0125
+  max_tokens: 4096
+  temperature: 0.5
+  top_p: 0.95
+  messages:
+    - role: user
+      content: |-
+        Calculate each of the following:
+        1. 8026256882 divided by 3402398
+        2. 1185835515 divided by 348263
+        3. 90135094495 minus 89944954350
+  tools:
+    - type: function
+      function:
+        name: subtract
+        description: Calculate a subtraction
+        parameters:
+          type: object
+          properties:
+            minuend:
+              type: number
+              description: The number to subtract from
+            subtrahend:
+              type: number
+              description: The number to subtract by
+          required:
+            - minuend
+            - subtrahend
+          additionalProperties: false
+          description: Calculate a subtraction
+          $schema: http://json-schema.org/draft-07/schema#
+    - type: function
+      function:
+        name: divide
+        description: Calculate a division
+        parameters:
+          type: object
+          properties:
+            dividend:
+              type: number
+              description: The number to be divided
+            divisor:
+              type: number
+              description: The number to divide by
+          required:
+            - dividend
+            - divisor
+          additionalProperties: false
+          description: Calculate a division
+          $schema: http://json-schema.org/draft-07/schema#
+step2RawChunks:
+  - index: 0
+    delta:
+      role: assistant
+      content: null
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          id: call_3mVJOu69Aewi1MO55KjPxX98
+          type: function
+          function:
+            name: divide
+            arguments: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: '{"di'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: viden
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: 'd": 80'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: "2625"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: 6882,
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: ' "divi'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: sor"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: ": 340"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 0
+          function:
+            arguments: 2398}
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          id: call_9FmCDa3aWw6TnBD84s6D1Zx3
+          type: function
+          function:
+            name: divide
+            arguments: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: '{"di'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: viden
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: 'd": 11'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: "8583"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: 5515,
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: ' "divi'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: sor"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: ": 348"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 1
+          function:
+            arguments: 263}
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          id: call_mNmwVVVBWf7LQfFw7DPSBAfj
+          type: function
+          function:
+            name: subtract
+            arguments: ""
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: '{"mi'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: nuend
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: '": 901'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: "3509"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: 4495,
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: ' "subt'
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: rahe
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: 'nd": '
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: "899449"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: "5435"
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta:
+      tool_calls:
+        - index: 2
+          function:
+            arguments: 0}
+    logprobs: null
+    finish_reason: null
+  - index: 0
+    delta: {}
+    logprobs: null
+    finish_reason: tool_calls
+step3KurtEvents:
+  - chunk: '{"di'
+  - chunk: viden
+  - chunk: 'd": 80'
+  - chunk: "2625"
+  - chunk: 6882,
+  - chunk: ' "divi'
+  - chunk: sor"
+  - chunk: ": 340"
+  - chunk: 2398}
+  - chunk: "\n"
+  - chunk: '{"di'
+  - chunk: viden
+  - chunk: 'd": 11'
+  - chunk: "8583"
+  - chunk: 5515,
+  - chunk: ' "divi'
+  - chunk: sor"
+  - chunk: ": 348"
+  - chunk: 263}
+  - chunk: "\n"
+  - chunk: '{"mi'
+  - chunk: nuend
+  - chunk: '": 901'
+  - chunk: "3509"
+  - chunk: 4495,
+  - chunk: ' "subt'
+  - chunk: rahe
+  - chunk: 'nd": '
+  - chunk: "899449"
+  - chunk: "5435"
+  - chunk: 0}
+  - finished: true
+    text: |-
+      {"dividend": 8026256882, "divisor": 3402398}
+      {"dividend": 1185835515, "divisor": 348263}
+      {"minuend": 90135094495, "subtrahend": 89944954350}
+    data:
+      name: divide
+      args:
+        dividend: 8026256882
+        divisor: 3402398
+    additionalData:
+      - name: divide
+        args:
+          dividend: 1185835515
+          divisor: 348263
+      - name: subtract
+        args:
+          minuend: 90135094495
+          subtrahend: 89944954350
