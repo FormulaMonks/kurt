@@ -309,13 +309,13 @@ async function* transformStreamWithOptionalTools<
             yield { chunk: text }
           }
 
-          // biome-ignore lint/style/noNonNullAssertion: we already validated above that length > 0
-          const data = allData[0]!
-          const additionalData = allData.slice(1)
+          if (!isNonEmptyArray(allData))
+            throw new Error("Empty here is impossible but TS doesn't know it")
+          const [data, ...additionalData] = allData
           const text = chunks.join("")
 
           if (additionalData.length > 0) {
-            yield { finished: true, text, data, additionalData }
+            yield { finished: true, text, data: data as D, additionalData }
           } else {
             yield { finished: true, text, data }
           }
@@ -356,4 +356,12 @@ function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
     // If all the alternative strategies failed, throw the original error.
     throw firstParseError
   }
+}
+
+/**
+ * Return true if this array has at least one element, also refining the
+ * Typescript type to indicate that the first element won't be undefined.
+ */
+function isNonEmptyArray<T>(array: T[]): array is [T, ...T[]] {
+  return array.length > 0
 }
