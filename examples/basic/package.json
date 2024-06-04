@@ -1,0 +1,27 @@
+{
+  "name": "basic-example",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "tsx --env-file=.env ./src/main.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "18.19.32",
+    "tsx": "^4.11.2",
+    "typescript": "5.4.5"
+  },
+  "dependencies": {
+    "@formula-monks/kurt": "workspace:*",
+    "@formula-monks/kurt-open-ai": "workspace:*",
+    "@formula-monks/kurt-vertex-ai": "workspace:*",
+    "@google-cloud/vertexai": "1.1.0",
+    "openai": "^4.40.0",
+    "zod": "^3.23.5"
+  }
+}

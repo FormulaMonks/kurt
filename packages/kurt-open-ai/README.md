@@ -6,28 +6,6 @@ This package implements an adapter for Kurt that works with [OpenAI's GPT models
 
 [Read here for more information about Kurt](https://github.com/FormulaMonks/kurt/blob/main/README.md).
 
-## Usage Example
+## Examples
 
-```ts
-import { Kurt } from "@formula-monks/kurt"
-import { KurtOpenAI } from "@formula-monks/kurt-open-ai"
-import { OpenAI } from "openai"
-import { z } from "zod"
-
-const kurt = new Kurt(
-  new KurtOpenAI({
-    openAI: new OpenAI(),
-    model: "gpt-3.5-turbo-0125", // or any other supported model
-  })
-)
-
-const stream = kurt.generateStructuredData({ // or any other generation method
-  prompt: "Say hello!",
-  schema: z.object({
-    say: z.string().describe("A single word to say"),
-  }),
-})
-
-const { data } = await stream.result
-console.log(data) // { say: "hello" }
-```
+Check the [example folder](https://github.com/FormulaMonks/kurt/tree/main/examples)
