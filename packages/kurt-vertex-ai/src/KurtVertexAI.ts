@@ -265,31 +265,60 @@ async function* transformStreamWithOptionalTools<
     for (const [partIndex, part] of parts.entries()) {
       const chunk = part.text
       const isFinal =
-        (isContentFinal && partIndex === parts.length - 1) || part.functionCall
+        (isContentFinal || part.functionCall) && partIndex === parts.length - 1
 
       if (chunk) {
         chunks.push(chunk)
         yield { chunk }
       }
       if (isFinal) {
-        const { functionCall } = part
-        if (functionCall) {
-          const { name } = functionCall
-          const schema = tools[name]
-          if (!schema) {
-            throw new Error(
-              `Vertex AI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
-                Object.keys(tools)
-              )}}`
-            )
+        if (part.functionCall) {
+          const allData = parts.map((part) => {
+            if (!part.functionCall) {
+              throw new Error(
+                `Vertex AI mixed function calls with non-function calls in the same raw stream event: ${JSON.stringify(
+                  rawEvent
+                )}`
+              )
+            }
+
+            const { name } = part.functionCall
+
+            const schema = tools[name]
+            if (!schema) {
+              throw new Error(
+                `Vertex AI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
+                  Object.keys(tools)
+                )}}`
+              )
+            }
+            return {
+              name,
+              args: applySchemaToFuzzyStructure(schema, part.functionCall),
+            } as D
+          })
+
+          // Emit a text chunk for each tool call (with line breaks in between).
+          for (const [dataIndex, data] of allData.entries()) {
+            if (dataIndex > 0) {
+              chunks.push("\n")
+              yield { chunk: "\n" }
+            }
+            const text = JSON.stringify(data.args)
+            chunks.push(text)
+            yield { chunk: text }
           }
-          const data = {
-            name,
-            args: applySchemaToFuzzyStructure(schema, functionCall),
-          } as D
-          const text = JSON.stringify(data.args)
-          yield { chunk: text }
-          yield { finished: true, text, data }
+
+          if (!isNonEmptyArray(allData))
+            throw new Error("Empty here is impossible but TS doesn't know it")
+          const [data, ...additionalData] = allData
+          const text = chunks.join("")
+
+          if (additionalData.length > 0) {
+            yield { finished: true, text, data: data as D, additionalData }
+          } else {
+            yield { finished: true, text, data }
+          }
         } else {
           const text = chunks.join("")
           yield { finished: true, text, data: undefined }
@@ -327,4 +356,12 @@ function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
     // If all the alternative strategies failed, throw the original error.
     throw firstParseError
   }
+}
+
+/**
+ * Return true if this array has at least one element, also refining the
+ * Typescript type to indicate that the first element won't be undefined.
+ */
+function isNonEmptyArray<T>(array: T[]): array is [T, ...T[]] {
+  return array.length > 0
 }

@@ -1,0 +1,141 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 4096
+    temperature: 0.5
+    topP: 0.95
+  contents:
+    - role: user
+      parts:
+        - text: |-
+            Calculate each of the following:
+            1. 8026256882 divided by 3402398
+            2. 1185835515 divided by 348263
+            3. 90135094495 minus 89944954350
+    - role: model
+      parts:
+        - functionCall:
+            name: divide
+            args:
+              dividend: 8026256882
+              divisor: 3402398
+    - role: model
+      parts:
+        - functionResponse:
+            name: divide
+            response:
+              quotient: 2359
+    - role: model
+      parts:
+        - functionCall:
+            name: divide
+            args:
+              dividend: 1185835515
+              divisor: 348263
+    - role: model
+      parts:
+        - functionResponse:
+            name: divide
+            response:
+              quotient: 3405
+    - role: model
+      parts:
+        - functionCall:
+            name: subtract
+            args:
+              minuend: 90135094495
+              subtrahend: 89944954350
+    - role: model
+      parts:
+        - functionResponse:
+            name: subtract
+            response:
+              quotient: 190140145
+  tools:
+    - functionDeclarations:
+        - name: subtract
+          description: Calculate a subtraction
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+        - name: divide
+          description: Calculate a division
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+step2RawChunks:
+  - content:
+      role: model
+      parts:
+        - text: "1"
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: . 8026256882 divided by 3
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: |-
+            402398 is 2359.
+            2.
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: |2-
+             1185835515 divided by 348263 is 3405.
+            3. 9
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: 0135094495 minus 89944954350 is 1901401
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: |
+            45.
+    index: 0
+  - content:
+      role: model
+      parts:
+        - text: ""
+    finishReason: STOP
+    index: 0
+step3KurtEvents:
+  - chunk: "1"
+  - chunk: . 8026256882 divided by 3
+  - chunk: |-
+      402398 is 2359.
+      2.
+  - chunk: |2-
+       1185835515 divided by 348263 is 3405.
+      3. 9
+  - chunk: 0135094495 minus 89944954350 is 1901401
+  - chunk: |
+      45.
+  - finished: true
+    text: |
+      1. 8026256882 divided by 3402398 is 2359.
+      2. 1185835515 divided by 348263 is 3405.
+      3. 90135094495 minus 89944954350 is 190140145.
