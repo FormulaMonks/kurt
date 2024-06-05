@@ -34,6 +34,9 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm run test
 
+      # Validate that the prepublish hook works.
+      - run: pnpm run prepublish
+
       # Finally, release (actual publishing only happens on the main branch).
       - run: pnpm run release
         env:

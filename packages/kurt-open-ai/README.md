@@ -8,4 +8,4 @@ This package implements an adapter for Kurt that works with [OpenAI's GPT models
 
 ## Examples
 
-Check the [example folder](https://github.com/FormulaMonks/kurt/tree/main/examples)
+[This example code](../../examples/basic/src/openai.ts) shows how to set up and use Kurt with OpenAI.
