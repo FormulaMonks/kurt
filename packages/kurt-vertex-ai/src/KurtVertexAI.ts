@@ -159,38 +159,41 @@ function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
   return vertexAIMessages
 }
 
+/**
+ * Mutate the given JSON object (recursively) to remove the given key,
+ * at every object within its deeply nested structure.
+ */
+function recursivelyRemoveJSONProperty<K extends string>(
+  value: unknown,
+  key: K
+) {
+  // Do nothing for non-objects (and no, null, you're not really an object).
+  if (typeof value !== "object" || value === null) return
+
+  // If it's an array, run recursively run on each element.
+  if (Array.isArray(value)) {
+    for (const child of value) recursivelyRemoveJSONProperty(child, key)
+    return
+  }
+
+  // Otherwise, it's an object, so we can remove the property (if present).
+  if (key in value) delete value[key as keyof typeof value]
+
+  // And then we recursively run on each other property of the object.
+  for (const child of Object.values(value)) {
+    recursivelyRemoveJSONProperty(child, key)
+  }
+}
+
 function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
   zodSchema: KurtSchema<T>
 ) {
   // Vertex AI supports only a limited version of JSON schema,
   // so we need to make modifications here to make it work properly.
-  const schema = zodToJsonSchema(zodSchema, {
-    $refStrategy: "none",
-  })
-
+  const schema = zodToJsonSchema(zodSchema, { $refStrategy: "none" })
   schema.description = undefined
-
-  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
-  function removeAdditionalProperties(obj: any) {
-    if (typeof obj !== "object") return obj
-    if (Array.isArray(obj)) return obj.forEach(removeAdditionalProperties)
-    for (const [key, value] of Object.entries(obj)) {
-      if (key === "additionalProperties") delete obj[key]
-      removeAdditionalProperties(value)
-    }
-  }
-  removeAdditionalProperties(schema)
-
-  // biome-ignore lint/suspicious/noExplicitAny: TODO: no any
-  function removeDollarSchema(obj: any) {
-    if (typeof obj !== "object") return obj
-    if (Array.isArray(obj)) return obj.forEach(removeDollarSchema)
-    for (const [key, value] of Object.entries(obj)) {
-      if (key === "$schema") delete obj[key]
-      removeDollarSchema(value)
-    }
-  }
-  removeDollarSchema(schema)
+  recursivelyRemoveJSONProperty(schema, "additionalProperties")
+  recursivelyRemoveJSONProperty(schema, "$schema")
 
   return schema as VertexAISchema
 }
