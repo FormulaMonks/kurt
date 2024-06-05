@@ -8,9 +8,12 @@ This package implements the core functionality of Kurt, providing the common int
 
 # Examples
 
+Check the [example folder](https://github.com/FormulaMonks/kurt/tree/main/examples)
+
 ## Create Kurt with your LLM of choice
 
 You can see usage examples for setup with different adapters in the respective adapters' documentation:
+
 - [Setup with OpenAI](https://github.com/FormulaMonks/kurt/blob/main/packages/kurt-open-ai/README.md)
 - [Setup with Vertex AI](https://github.com/FormulaMonks/kurt/blob/main/packages/kurt-vertex-ai/README.md)
 

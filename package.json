@@ -17,6 +17,7 @@
     "prepare": "husky",
     "build": "pnpm turbo build",
     "test": "pnpm turbo test",
+    "type-check": "pnpm turbo type-check",
     "check": "pnpm turbo check",
     "lint": "pnpm turbo lint",
     "format": "pnpm turbo format",

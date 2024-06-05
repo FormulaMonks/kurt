@@ -26,6 +26,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test
       - run: pnpm run build
+      - run: pnpm run type-check
 
       # Validate that the tests pass without the pnpm overrides that alter
       # the intra-monorepo dependencies for local development.
