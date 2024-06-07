@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "run-s start:*",
+    "start:agnostic": "tsx --env-file=.env ./src/model-agnostic.ts",
     "start:vertex": "tsx --env-file=.env ./src/vertex.ts",
     "start:openai": "tsx --env-file=.env ./src/openai.ts",
     "type-check": "tsc --noEmit"
