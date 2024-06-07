@@ -15,6 +15,7 @@
     },
     "check": {},
     "format": {},
-    "lint": {}
+    "lint": {},
+    "prepublish": {}
   }
 }

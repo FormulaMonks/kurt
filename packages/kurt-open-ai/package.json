@@ -19,6 +19,7 @@
     "format": "pnpm biome format --write .",
     "lint": "pnpm biome lint --apply .",
     "check": "pnpm biome check .",
+    "prepublish": "../../scripts/interpolate-example-code.sh README.md",
     "release": "pnpm exec semantic-release"
   },
   "release": {
