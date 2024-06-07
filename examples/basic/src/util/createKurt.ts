@@ -8,8 +8,8 @@ import { VertexAI } from "@google-cloud/vertexai"
 
 const DEFAULT_MODEL = "gpt-4o"
 
-export const createKurt = (model: string | undefined): Kurt => {
-  const adapter = findAdapter(model ?? DEFAULT_MODEL)
+export const createKurt = (model = DEFAULT_MODEL): Kurt => {
+  const adapter = findAdapter(model)
   if (!adapter) throw new Error(`Model ${model} is not supported.`)
   return new Kurt(adapter)
 }
