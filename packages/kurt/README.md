@@ -8,7 +8,7 @@ This package implements the core functionality of Kurt, providing the common int
 
 # Examples
 
-Check the [example folder](https://github.com/FormulaMonks/kurt/tree/main/examples)
+Check the [examples folder](https://github.com/FormulaMonks/kurt/tree/main/examples) for runnable example files.
 
 ## Create Kurt with your LLM of choice
 
@@ -21,33 +21,7 @@ You can see usage examples for setup with different adapters in the respective a
 
 The most basic use case for an LLM is to ask it to generate some text.
 
-```ts
-const stream = kurt.generateNaturalLanguage({
-  prompt: "Say hello!",
-})
-
-for await (const event of stream) {
-  console.log(event)
-}
-// { chunk: "Hello" }
-// { chunk: "!" }
-// { chunk: " How" }
-// { chunk: " can" }
-// { chunk: " I" }
-// { chunk: " assist" }
-// { chunk: " you" }
-// { chunk: " today" }
-// { chunk: "?" }
-// {
-//   finished: true,
-//   text: "Hello! How can I assist you today?",
-//   data: undefined,
-// }
-
-const { text } = await stream.result
-console.log(text)
-// "Hello! How can I assist you today?"
-```
+[This example code](../../examples/basic/src/natural-language.ts) shows how to use Kurt to generate natural language.
 
 ## Generate Structured Data Output
 
@@ -57,30 +31,7 @@ Using the `zod` library as a convenient way to specify a JSON schema in TypeScri
 
 For best results, be sure to include descriptions of every field in the schema, as these will be used by the LLM as documentation to determine how best to fill the fields with data.
 
-```ts
-import { z } from "zod"
-
-const stream = kurt.generateStructuredData({
-  prompt: "Say hello!",
-  schema: z.object({
-    say: z.string().describe("A single word to say"),
-  }),
-})
-
-for await (const event of stream) {
-  console.log(event)
-}
-// { chunk: '{"' }
-// { chunk: "say" }
-// { chunk: '":"' }
-// { chunk: "hello" }
-// { chunk: '"}' }
-// { finished: true, text: '{"say":"hello"}', data: { say: "hello" } }
-
-const { data } = await stream.result
-console.log(data)
-// { say: "hello" }
-```
+[This example code](../../examples/basic/src/structured-data.ts) shows how to use Kurt to generate structured data.
 
 ## Generate With Optional Tools
 
@@ -92,57 +43,4 @@ As above, we can use the `zod` library to conveniently declare the JSON schema f
 
 Again, for best results, we should include helpful descriptions of each tool schema, and each field within them, so that the LLM can make a more informed decision about how to use the tools.
 
-```ts
-import { z } from "zod"
-
-const prompt =
-  "What's 9876356 divided by 30487, rounded to the nearest integer?"
-
-const tools = {
-  subtract: z
-    .object({
-      minuend: z.number().describe("The number to subtract from"),
-      subtrahend: z.number().describe("The number to subtract by"),
-    })
-    .describe("Calculate a subtraction expression"),
-  divide: z
-    .object({
-      dividend: z.number().describe("The number to be divided"),
-      divisor: z.number().describe("The number to divide by"),
-    })
-    .describe("Calculate a division expression"),
-}
-
-// Run Kurt in a loop until it produces a natural language response,
-// or until we reach a maximum number of iterations.
-const extraMessages: KurtMessage[] = []
-const MAX_ITERATIONS = 3
-for (let i = 0; i < MAX_ITERATIONS; i++) {
-  const { text, data } = await kurt.generateWithOptionalTools({
-    prompt,
-    tools,
-  }).result
-
-  // If there is data in the result, it means the LLM made a tool call.
-  if (data) {
-    const { name, args } = data
-    let result = {}
-    if (name === "divide") {
-      result = { quotient: args.dividend / args.divisor }
-    } else if (name === "subtract") {
-      result = { difference: args.minuend - args.subtrahend }
-    }
-    const toolCall = { name, args, result }
-    extraMessages.push({ role: "model", toolCall })
-    console.log(toolCall)
-    // {
-    //   name: "divide",
-    //   args: { dividend: 9876356, divisor: 30487 },
-    //   result: { quotient: 323.95302915996984 },
-    // }
-  } else {
-    console.log(text) // "The answer, rounded to the nearest integer, is 324."
-    break
-  }
-}
-```
+[This example code](../../examples/basic/src/with-optional-tools.ts) shows how to use Kurt to generate in a loop with optional tools.

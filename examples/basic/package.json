@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "run-s start:*",
-    "start:agnostic": "tsx --env-file=.env ./src/model-agnostic.ts",
+    "start:natural-language": "tsx --env-file=.env ./src/natural-language.ts",
+    "start:structured-data": "tsx --env-file=.env ./src/structured-data.ts",
+    "start:with-optional-tools": "tsx --env-file=.env ./src/with-optional-tools.ts",
     "start:vertex": "tsx --env-file=.env ./src/vertex.ts",
     "start:openai": "tsx --env-file=.env ./src/openai.ts",
     "type-check": "tsc --noEmit"
