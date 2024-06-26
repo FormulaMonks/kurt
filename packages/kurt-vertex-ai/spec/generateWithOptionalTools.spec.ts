@@ -50,7 +50,7 @@ describe("KurtVertexAI generateWithOptionalTools", () => {
         ],
       })
     )
-    expect(result.text).toEqual("That's about 324.")
+    expect(result.text).toEqual("That's about 324. \n")
   })
 
   test("calculator (with parallel tool calls)", async () => {
@@ -123,7 +123,7 @@ describe("KurtVertexAI generateWithOptionalTools", () => {
       [
         "1. 8026256882 divided by 3402398 is 2359.",
         "2. 1185835515 divided by 348263 is 3405.",
-        "3. 90135094495 minus 89944954350 is 190140145.",
+        "3. 90135094495 minus 89944954350 is 190140145. ",
         "",
       ].join("\n")
     )

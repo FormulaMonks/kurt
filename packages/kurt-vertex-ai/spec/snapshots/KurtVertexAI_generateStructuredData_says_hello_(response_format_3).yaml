@@ -25,18 +25,33 @@ step1Request:
       allowed_function_names:
         - structured_data
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - functionCall:
-            name: call
-            args: { say: "hello" }
-            function: structured_data
-            extension: default_api"
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - functionCall:
+                name: call
+                args: { say: "hello" }
+                function: structured_data
+                extension: default_api"
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 16
+      candidatesTokenCount: 8
+      totalTokenCount: 21
 step3KurtEvents:
   - chunk: '{"say":"hello"}'
   - finished: true
     text: '{"say":"hello"}'
     data:
       say: hello
+    metadata:
+      totalInputTokens: 16
+      totalOutputTokens: 8

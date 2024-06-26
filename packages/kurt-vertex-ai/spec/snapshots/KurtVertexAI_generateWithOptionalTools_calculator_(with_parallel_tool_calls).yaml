@@ -42,25 +42,37 @@ step1Request:
               - dividend
               - divisor
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - functionCall:
-            name: divide
-            args:
-              dividend: 8026256882
-              divisor: 3402398
-        - functionCall:
-            name: divide
-            args:
-              dividend: 1185835515
-              divisor: 348263
-        - functionCall:
-            name: subtract
-            args:
-              minuend: 90135094495
-              subtrahend: 89944954350
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - functionCall:
+                name: divide
+                args:
+                  divisor: 3402398
+                  dividend: 8026256882
+            - functionCall:
+                name: divide
+                args:
+                  divisor: 348263
+                  dividend: 1185835515
+            - functionCall:
+                name: subtract
+                args:
+                  minuend: 90135094495
+                  subtrahend: 89944954350
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 123
+      candidatesTokenCount: 12
+      totalTokenCount: 135
 step3KurtEvents:
   - chunk: '{"dividend":8026256882,"divisor":3402398}'
   - chunk: "\n"
@@ -86,3 +98,6 @@ step3KurtEvents:
         args:
           minuend: 90135094495
           subtrahend: 89944954350
+    metadata:
+      totalInputTokens: 123
+      totalOutputTokens: 12

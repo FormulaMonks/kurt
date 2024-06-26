@@ -51,24 +51,37 @@ step1Request:
               - dividend
               - divisor
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - text: That
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: "'s about 324."
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: ""
-    finishReason: STOP
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: That
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |
+                's about 324. 
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 74
+      candidatesTokenCount: 11
+      totalTokenCount: 85
 step3KurtEvents:
   - chunk: That
-  - chunk: "'s about 324."
+  - chunk: |
+      's about 324. 
   - finished: true
-    text: "That's about 324."
+    text: |
+      That's about 324. 
+    metadata:
+      totalInputTokens: 74
+      totalOutputTokens: 11

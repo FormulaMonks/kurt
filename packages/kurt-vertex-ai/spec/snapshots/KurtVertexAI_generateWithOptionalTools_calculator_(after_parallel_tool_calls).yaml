@@ -81,47 +81,58 @@ step1Request:
               - dividend
               - divisor
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - text: "1"
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: . 8026256882 divided by 3
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: |-
-            402398 is 2359.
-            2.
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: |2-
-             1185835515 divided by 348263 is 3405.
-            3. 9
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: 0135094495 minus 89944954350 is 1901401
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: |
-            45.
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: ""
-    finishReason: STOP
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: "1"
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: . 8026256882 divided by 3
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |-
+                402398 is 2359.
+                2.
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |2-
+                 1185835515 divided by 348263 is 3405.
+                3. 9
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: 0135094495 minus 89944954350 is 1901401
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |
+                45. 
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 144
+      candidatesTokenCount: 102
+      totalTokenCount: 246
 step3KurtEvents:
   - chunk: "1"
   - chunk: . 8026256882 divided by 3
@@ -133,9 +144,12 @@ step3KurtEvents:
       3. 9
   - chunk: 0135094495 minus 89944954350 is 1901401
   - chunk: |
-      45.
+      45. 
   - finished: true
     text: |
       1. 8026256882 divided by 3402398 is 2359.
       2. 1185835515 divided by 348263 is 3405.
-      3. 90135094495 minus 89944954350 is 190140145.
+      3. 90135094495 minus 89944954350 is 190140145. 
+    metadata:
+      totalInputTokens: 144
+      totalOutputTokens: 102

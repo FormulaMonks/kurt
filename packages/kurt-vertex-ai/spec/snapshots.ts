@@ -44,7 +44,7 @@ export async function snapshotAndMock<T>(
   // Here's the data structure we will use to snapshot a request/response cycle.
   const snapshot: {
     step1Request?: VertexAIRequest
-    step2RawChunks: VertexAIResponseChunkCandidate[]
+    step2RawChunks: VertexAIResponseChunk[]
     step3KurtEvents: KurtStreamEvent<T>[]
   } = {
     step1Request: undefined,
@@ -75,7 +75,7 @@ export async function snapshotAndMock<T>(
               snapshot.step2RawChunks = savedRawChunks
               async function* generator(): AsyncIterable<VertexAIResponseChunk> {
                 for await (const rawChunk of savedRawChunks) {
-                  yield { candidates: [rawChunk] }
+                  yield rawChunk
                 }
               }
               return { stream: generator() }
@@ -95,9 +95,14 @@ export async function snapshotAndMock<T>(
               for await (const rawEvent of response.stream) {
                 const candidate = rawEvent.candidates?.at(0)
                 if (candidate) {
-                  const rawChunk = { ...candidate }
+                  const partialCandidate = { ...candidate }
                   // biome-ignore lint/performance/noDelete: we don't care about performance in this test code
-                  delete rawChunk.safetyRatings
+                  delete partialCandidate.safetyRatings
+
+                  const rawChunk = {
+                    candidates: [partialCandidate],
+                    usageMetadata: rawEvent.usageMetadata,
+                  }
                   snapshot.step2RawChunks.push(rawChunk)
                 }
 

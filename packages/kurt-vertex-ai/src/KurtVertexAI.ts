@@ -15,6 +15,7 @@ import type {
   KurtSchemaResultMaybe,
   KurtMessage,
   KurtSamplingOptions,
+  KurtResult,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -22,8 +23,11 @@ import type {
   VertexAIMessage,
   VertexAIRequest,
   VertexAIResponseChunk,
+  VertexAIResponseChunkCandidate,
+  VertexAIResponseFunctionCall,
   VertexAISchema,
   VertexAITool,
+  VertexAIUsageMetadata,
 } from "./VertexAI.types"
 
 // These models support function calling.
@@ -206,45 +210,54 @@ async function* transformStream<
   schema: S,
   rawEvents: AsyncIterable<VertexAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D>> {
+  let lastRawEvent: VertexAIResponseChunk | undefined
   const chunks: string[] = []
+  const functionCalls: VertexAIResponseFunctionCall[] = []
 
   for await (const rawEvent of rawEvents) {
+    lastRawEvent = rawEvent
+
     const choice = rawEvent.candidates?.at(0)
     if (!choice) continue
 
-    const isContentFinal = choice.finishReason !== undefined
-    const { parts } = choice.content
+    for (const part of choice.content.parts) {
+      const { functionCall } = part
+      if (functionCall) functionCalls.push(functionCall)
 
-    for (const [partIndex, part] of parts.entries()) {
       const chunk = part.text
-      const isFinal =
-        (isContentFinal && partIndex === parts.length - 1) || part.functionCall
-
       if (chunk) {
         chunks.push(chunk)
         yield { chunk }
       }
-      if (isFinal) {
-        if (schema) {
-          const { functionCall } = part
-          if (!functionCall) {
-            throw new Error(
-              `Expected function call in final chunk, but got ${JSON.stringify(
-                part
-              )}`
-            )
-          }
-          const data = applySchemaToFuzzyStructure(schema, functionCall) as D
-          const text = JSON.stringify(data)
-          yield { chunk: text }
-          yield { finished: true, text, data }
-        } else {
-          const text = chunks.join("")
-          yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
-        }
-        return // No need to send more events once we've sent a finished event
-      }
     }
+  }
+
+  const rawEvent = lastRawEvent
+  if (rawEvent) {
+    const metadata = convertMetadata(rawEvent)
+
+    if (schema) {
+      const functionCall = functionCalls[0]
+      if (!functionCall) throw new Error("Expected function call, but got none")
+      if (functionCalls.length > 1)
+        throw new Error(
+          `Expected just function call, but got ${functionCalls.length}`
+        )
+
+      const data = applySchemaToFuzzyStructure(schema, functionCall) as D
+      const text = JSON.stringify(data)
+      yield { chunk: text }
+      yield { finished: true, text, data, metadata }
+    } else {
+      const text = chunks.join("")
+      yield {
+        finished: true,
+        text,
+        data: undefined,
+        metadata,
+      } as KurtStreamEvent<D>
+    }
+    return // No need to send more events once we've sent a finished event
   }
 }
 
@@ -256,79 +269,82 @@ async function* transformStreamWithOptionalTools<
   tools: S,
   rawEvents: AsyncIterable<VertexAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
+  let lastRawEvent: VertexAIResponseChunk | undefined
   const chunks: string[] = []
+  const functionCalls: VertexAIResponseFunctionCall[] = []
 
   for await (const rawEvent of rawEvents) {
+    lastRawEvent = rawEvent
+
     const choice = rawEvent.candidates?.at(0)
     if (!choice) continue
 
-    const isContentFinal = choice.finishReason !== undefined
-    const { parts } = choice.content
+    for (const part of choice.content.parts) {
+      const { functionCall } = part
+      if (functionCall) functionCalls.push(functionCall)
 
-    for (const [partIndex, part] of parts.entries()) {
       const chunk = part.text
-      const isFinal =
-        (isContentFinal || part.functionCall) && partIndex === parts.length - 1
-
       if (chunk) {
         chunks.push(chunk)
         yield { chunk }
       }
-      if (isFinal) {
-        if (part.functionCall) {
-          const allData = parts.map((part) => {
-            if (!part.functionCall) {
-              throw new Error(
-                `Vertex AI mixed function calls with non-function calls in the same raw stream event: ${JSON.stringify(
-                  rawEvent
-                )}`
-              )
-            }
-
-            const { name } = part.functionCall
-
-            const schema = tools[name]
-            if (!schema) {
-              throw new Error(
-                `Vertex AI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
-                  Object.keys(tools)
-                )}}`
-              )
-            }
-            return {
-              name,
-              args: applySchemaToFuzzyStructure(schema, part.functionCall),
-            } as D
-          })
-
-          // Emit a text chunk for each tool call (with line breaks in between).
-          for (const [dataIndex, data] of allData.entries()) {
-            if (dataIndex > 0) {
-              chunks.push("\n")
-              yield { chunk: "\n" }
-            }
-            const text = JSON.stringify(data.args)
-            chunks.push(text)
-            yield { chunk: text }
-          }
-
-          if (!isNonEmptyArray(allData))
-            throw new Error("Empty here is impossible but TS doesn't know it")
-          const [data, ...additionalData] = allData
-          const text = chunks.join("")
-
-          if (additionalData.length > 0) {
-            yield { finished: true, text, data: data as D, additionalData }
-          } else {
-            yield { finished: true, text, data }
-          }
-        } else {
-          const text = chunks.join("")
-          yield { finished: true, text, data: undefined }
-        }
-        return // No need to send more events once we've sent a finished event
-      }
     }
+  }
+
+  const rawEvent = lastRawEvent
+  if (rawEvent) {
+    const metadata = convertMetadata(rawEvent)
+
+    if (functionCalls.length >= 0) {
+      const allData = functionCalls.map((functionCall) => {
+        const { name } = functionCall
+
+        const schema = tools[name]
+        if (!schema) {
+          throw new Error(
+            `Vertex AI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
+              Object.keys(tools)
+            )}}`
+          )
+        }
+        return {
+          name,
+          args: applySchemaToFuzzyStructure(schema, functionCall),
+        } as D
+      })
+
+      // Emit a text chunk for each tool call (with line breaks in between).
+      for (const [dataIndex, data] of allData.entries()) {
+        if (dataIndex > 0) {
+          chunks.push("\n")
+          yield { chunk: "\n" }
+        }
+        const text = JSON.stringify(data.args)
+        chunks.push(text)
+        yield { chunk: text }
+      }
+
+      // if (!isNonEmptyArray(allData))
+      //   throw new Error("Empty here is impossible but TS doesn't know it")
+      const [data, ...additionalData] = allData
+      const text = chunks.join("")
+
+      if (additionalData.length > 0) {
+        yield {
+          finished: true,
+          text,
+          data: data as D,
+          additionalData,
+          metadata,
+        }
+      } else {
+        yield { finished: true, text, data, metadata }
+      }
+    } else {
+      const text = chunks.join("")
+      yield { finished: true, text, data: undefined, metadata }
+    }
+    return // No need to send more events once we've sent a finished event
   }
 }
 
@@ -367,4 +383,16 @@ function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
  */
 function isNonEmptyArray<T>(array: T[]): array is [T, ...T[]] {
   return array.length > 0
+}
+
+/**
+ * Convert the raw metadata from Vertex AI into Kurt's metadata format.
+ */
+function convertMetadata(info: {
+  usageMetadata?: VertexAIUsageMetadata
+}): KurtResult["metadata"] {
+  return {
+    totalInputTokens: info.usageMetadata?.promptTokenCount,
+    totalOutputTokens: info.usageMetadata?.candidatesTokenCount,
+  }
 }

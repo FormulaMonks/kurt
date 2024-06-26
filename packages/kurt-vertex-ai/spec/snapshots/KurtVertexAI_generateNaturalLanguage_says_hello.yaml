@@ -8,24 +8,37 @@ step1Request:
       parts:
         - text: Say hello!
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - text: Hello!
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: " How can I assist you today?"
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: ""
-    finishReason: STOP
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: Hello
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |
+                ! 👋  😊
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 3
+      candidatesTokenCount: 7
+      totalTokenCount: 10
 step3KurtEvents:
-  - chunk: Hello!
-  - chunk: " How can I assist you today?"
+  - chunk: Hello
+  - chunk: |
+      ! 👋  😊
   - finished: true
-    text: Hello! How can I assist you today?
+    text: |
+      Hello! 👋  😊
+    metadata:
+      totalInputTokens: 3
+      totalOutputTokens: 7

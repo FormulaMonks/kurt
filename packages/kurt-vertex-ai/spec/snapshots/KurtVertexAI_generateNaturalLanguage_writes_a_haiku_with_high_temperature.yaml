@@ -8,41 +8,52 @@ step1Request:
       parts:
         - text: Compose a haiku about a mountain stream at night.
 step2RawChunks:
-  - content:
-      role: model
-      parts:
-        - text: Moon
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: |2-
-             paints silver path,
-            Water sings to sleeping stones,
-            Night sighs on the
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: |2-
-             wind.
-    index: 0
-  - content:
-      role: model
-      parts:
-        - text: ""
-    finishReason: STOP
-    index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: Moon
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |2-
+                 bathes silver stream,
+                Whispers flow through sleeping wood,
+                Stones dream
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |2
+                 in the dark.
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 10
+      candidatesTokenCount: 23
+      totalTokenCount: 33
 step3KurtEvents:
   - chunk: Moon
   - chunk: |2-
-       paints silver path,
-      Water sings to sleeping stones,
-      Night sighs on the
-  - chunk: |2-
-       wind.
+       bathes silver stream,
+      Whispers flow through sleeping wood,
+      Stones dream
+  - chunk: |2
+       in the dark.
   - finished: true
-    text: |-
-      Moon paints silver path,
-      Water sings to sleeping stones,
-      Night sighs on the wind.
+    text: |
+      Moon bathes silver stream,
+      Whispers flow through sleeping wood,
+      Stones dream in the dark.
+    metadata:
+      totalInputTokens: 10
+      totalOutputTokens: 23
