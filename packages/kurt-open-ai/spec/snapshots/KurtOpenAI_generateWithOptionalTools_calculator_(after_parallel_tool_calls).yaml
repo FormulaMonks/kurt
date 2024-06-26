@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -81,308 +83,539 @@ step1Request:
           description: Calculate a division
           $schema: http://json-schema.org/draft-07/schema#
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: The
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " results"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " are"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: |
-        :
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "1"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: .
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "802"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "625"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "688"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "2"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " divided"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " by"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "340"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "239"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "8"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " is"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "235"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "9"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "\n"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "2"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: .
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "118"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "583"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "551"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "5"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " divided"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " by"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "348"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "263"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " is"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "340"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "5"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "\n"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "3"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: .
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "901"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "350"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "944"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "95"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " minus"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "899"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "449"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "543"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "50"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " is"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "190"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "140"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "145"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: stop
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Here
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " are"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " the"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " results"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " of"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " the"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " calculations"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |+
+            :
+
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "1"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "802"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "625"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "688"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "2"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " divided"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " by"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "340"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "239"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "8"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " is"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "235"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "9"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |
+            .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "2"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "118"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "583"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "551"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "5"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " divided"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " by"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "348"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "263"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " is"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "340"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "5"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |
+            .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "3"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "901"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "350"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "944"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "95"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " minus"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "899"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "449"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "543"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "50"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " is"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "190"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "140"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "145"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: stop
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 272
+      completion_tokens: 63
+      total_tokens: 335
 step3KurtEvents:
-  - chunk: The
-  - chunk: " results"
+  - chunk: Here
   - chunk: " are"
-  - chunk: |
+  - chunk: " the"
+  - chunk: " results"
+  - chunk: " of"
+  - chunk: " the"
+  - chunk: " calculations"
+  - chunk: |+
       :
+
   - chunk: "1"
   - chunk: .
   - chunk: " "
@@ -400,7 +633,8 @@ step3KurtEvents:
   - chunk: " "
   - chunk: "235"
   - chunk: "9"
-  - chunk: "\n"
+  - chunk: |
+      .
   - chunk: "2"
   - chunk: .
   - chunk: " "
@@ -417,7 +651,8 @@ step3KurtEvents:
   - chunk: " "
   - chunk: "340"
   - chunk: "5"
-  - chunk: "\n"
+  - chunk: |
+      .
   - chunk: "3"
   - chunk: .
   - chunk: " "
@@ -436,9 +671,15 @@ step3KurtEvents:
   - chunk: "190"
   - chunk: "140"
   - chunk: "145"
+  - chunk: .
   - finished: true
     text: |-
-      The results are:
-      1. 8026256882 divided by 3402398 is 2359
-      2. 1185835515 divided by 348263 is 3405
-      3. 90135094495 minus 89944954350 is 190140145
+      Here are the results of the calculations:
+
+      1. 8026256882 divided by 3402398 is 2359.
+      2. 1185835515 divided by 348263 is 3405.
+      3. 90135094495 minus 89944954350 is 190140145.
+    metadata:
+      totalInputTokens: 272
+      totalOutputTokens: 63
+      systemFingerprint: fp_5bf7397cd3

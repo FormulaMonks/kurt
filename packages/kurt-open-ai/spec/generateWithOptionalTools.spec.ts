@@ -52,7 +52,7 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
       })
     )
     expect(result.text).toEqual(
-      "Rounded to the nearest integer, the result is 324."
+      "9876356 divided by 30487, rounded to the nearest integer, is approximately 324."
     )
   })
 
@@ -124,10 +124,11 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
     )
     expect(result.text).toEqual(
       [
-        "The results are:",
-        "1. 8026256882 divided by 3402398 is 2359",
-        "2. 1185835515 divided by 348263 is 3405",
-        "3. 90135094495 minus 89944954350 is 190140145",
+        "Here are the results of the calculations:",
+        "",
+        "1. 8026256882 divided by 3402398 is 2359.",
+        "2. 1185835515 divided by 348263 is 3405.",
+        "3. 90135094495 minus 89944954350 is 190140145.",
       ].join("\n")
     )
   })

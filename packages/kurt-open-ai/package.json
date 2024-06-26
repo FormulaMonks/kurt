@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@formula-monks/kurt": "^1.0.0",
-    "openai": "^4.40.0",
+    "openai": "^4.51.0",
     "zod": "^3.23.5",
     "zod-to-json-schema": "^3.23.0"
   },

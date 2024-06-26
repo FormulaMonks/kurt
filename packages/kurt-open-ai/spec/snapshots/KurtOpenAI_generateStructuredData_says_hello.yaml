@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -28,63 +30,90 @@ step1Request:
     function:
       name: structured_data
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: null
-      tool_calls:
-        - index: 0
-          id: call_lKgSLvb9PnL0DHqSusGKEVev
-          type: function
-          function:
-            name: structured_data
-            arguments: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '{"'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: say
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '":"'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: hello
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '"}'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: stop
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: null
+          tool_calls:
+            - index: 0
+              id: call_oZj1FnPJSZCVbFYtpNYPAm7P
+              type: function
+              function:
+                name: structured_data
+                arguments: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '{"'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: say
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '":"'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: hello
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '"}'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: stop
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 66
+      completion_tokens: 5
+      total_tokens: 71
 step3KurtEvents:
   - chunk: '{"'
   - chunk: say
@@ -95,3 +124,7 @@ step3KurtEvents:
     text: '{"say":"hello"}'
     data:
       say: hello
+    metadata:
+      totalInputTokens: 66
+      totalOutputTokens: 5
+      systemFingerprint: fp_5bf7397cd3

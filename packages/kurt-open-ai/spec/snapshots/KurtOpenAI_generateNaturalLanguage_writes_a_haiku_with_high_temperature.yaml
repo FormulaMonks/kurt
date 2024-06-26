@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 100
   temperature: 1
   top_p: 1
@@ -8,127 +10,201 @@ step1Request:
     - role: user
       content: Compose a haiku about a mountain stream at night.
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: Sha
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: ft
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " of"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " moon"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: light
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " gl"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: ows
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "\n"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: Mountain
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " stream"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " flows"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " silently"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "\n"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: Nature
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "'s"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " l"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: ull
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: aby
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: stop
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Moon
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: light
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " gently"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " gle"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: ams
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |
+            ,
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Wh
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: ispers
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " of"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " the"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " stream"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " below"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |
+            ,
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Stars
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " in"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " water"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " dream"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: stop
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 18
+      completion_tokens: 18
+      total_tokens: 36
 step3KurtEvents:
-  - chunk: Sha
-  - chunk: ft
-  - chunk: " of"
-  - chunk: " moon"
+  - chunk: Moon
   - chunk: light
-  - chunk: " gl"
-  - chunk: ows
-  - chunk: "\n"
-  - chunk: Mountain
+  - chunk: " gently"
+  - chunk: " gle"
+  - chunk: ams
+  - chunk: |
+      ,
+  - chunk: Wh
+  - chunk: ispers
+  - chunk: " of"
+  - chunk: " the"
   - chunk: " stream"
-  - chunk: " flows"
-  - chunk: " silently"
-  - chunk: "\n"
-  - chunk: Nature
-  - chunk: "'s"
-  - chunk: " l"
-  - chunk: ull
-  - chunk: aby
+  - chunk: " below"
+  - chunk: |
+      ,
+  - chunk: Stars
+  - chunk: " in"
+  - chunk: " water"
+  - chunk: " dream"
+  - chunk: .
   - finished: true
     text: |-
-      Shaft of moonlight glows
-      Mountain stream flows silently
-      Nature's lullaby
+      Moonlight gently gleams,
+      Whispers of the stream below,
+      Stars in water dream.
+    metadata:
+      totalInputTokens: 18
+      totalOutputTokens: 18
+      systemFingerprint: fp_5bf7397cd3

@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -57,88 +59,213 @@ step1Request:
           description: Calculate a division
           $schema: http://json-schema.org/draft-07/schema#
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: Rounded
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " to"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " the"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " nearest"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " integer"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: ","
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " the"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " result"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " is"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " "
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "324"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "."
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: stop
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "987"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "635"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "6"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " divided"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " by"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "304"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "87"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: ","
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " rounded"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " to"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " the"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " nearest"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " integer"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: ","
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " is"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " approximately"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " "
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "324"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: .
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: stop
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 166
+      completion_tokens: 21
+      total_tokens: 187
 step3KurtEvents:
-  - chunk: Rounded
+  - chunk: "987"
+  - chunk: "635"
+  - chunk: "6"
+  - chunk: " divided"
+  - chunk: " by"
+  - chunk: " "
+  - chunk: "304"
+  - chunk: "87"
+  - chunk: ","
+  - chunk: " rounded"
   - chunk: " to"
   - chunk: " the"
   - chunk: " nearest"
   - chunk: " integer"
   - chunk: ","
-  - chunk: " the"
-  - chunk: " result"
   - chunk: " is"
+  - chunk: " approximately"
   - chunk: " "
   - chunk: "324"
-  - chunk: "."
+  - chunk: .
   - finished: true
-    text: Rounded to the nearest integer, the result is 324.
+    text: 9876356 divided by 30487, rounded to the nearest integer, is approximately
+      324.
+    metadata:
+      totalInputTokens: 166
+      totalOutputTokens: 21
+      systemFingerprint: fp_5bf7397cd3

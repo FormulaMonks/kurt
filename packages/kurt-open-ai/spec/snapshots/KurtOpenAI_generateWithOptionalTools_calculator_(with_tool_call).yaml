@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -47,135 +49,189 @@ step1Request:
           description: Calculate a division
           $schema: http://json-schema.org/draft-07/schema#
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: null
-      tool_calls:
-        - index: 0
-          id: call_mIgkbptSgcrqLtG7yoqwtAhh
-          type: function
-          function:
-            name: divide
-            arguments: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '{"'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: div
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: idend
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '":'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "987"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "635"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "6"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: ',"'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: div
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: isor
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: '":'
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "304"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "87"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      tool_calls:
-        - index: 0
-          function:
-            arguments: "}"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: tool_calls
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: null
+          tool_calls:
+            - index: 0
+              id: call_SJChZ90kT3b6xTA0BOfgW8tF
+              type: function
+              function:
+                name: divide
+                arguments: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '{"'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: div
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: idend
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '":'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "987"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "635"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "6"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: ',"'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: div
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: isor
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '":'
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "304"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "87"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "}"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: tool_calls
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 125
+      completion_tokens: 22
+      total_tokens: 147
 step3KurtEvents:
   - chunk: '{"'
   - chunk: div
@@ -198,3 +254,7 @@ step3KurtEvents:
       args:
         dividend: 9876356
         divisor: 30487
+    metadata:
+      totalInputTokens: 125
+      totalOutputTokens: 22
+      systemFingerprint: fp_5bf7397cd3

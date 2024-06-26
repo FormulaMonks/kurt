@@ -3,6 +3,7 @@ import type {
   KurtAdapterV1,
   KurtMessage,
   KurtStreamEvent,
+  KurtStreamEventChunk,
   KurtSchemaInner,
   KurtSchemaInnerMap,
   KurtSchemaInnerMaybe,
@@ -13,6 +14,7 @@ import type {
   KurtSchemaResultMaybe,
   KurtSchema,
   KurtSamplingOptions,
+  KurtResult,
 } from "@formula-monks/kurt"
 import type {
   OpenAI,
@@ -90,6 +92,7 @@ export class KurtOpenAI
   }): AsyncIterable<OpenAIResponseChunk> {
     const req: OpenAIRequest = {
       stream: true,
+      stream_options: { include_usage: true },
       model: this.options.model,
       max_tokens: options.sampling.maxOutputTokens,
       temperature: options.sampling.temperature,
@@ -201,8 +204,11 @@ async function* transformStream<
   rawEvents: AsyncIterable<OpenAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D>> {
   const chunks: string[] = []
+  let lastRawEvent: OpenAIResponseChunk | undefined
 
   for await (const rawEvent of rawEvents) {
+    lastRawEvent = rawEvent
+
     const choice = rawEvent.choices[0]
     if (!choice) continue
 
@@ -217,17 +223,26 @@ async function* transformStream<
       chunks.push(dataChunk)
       yield { chunk: dataChunk }
     }
+  }
 
-    const isFinal = choice.finish_reason !== null
+  const rawEvent = lastRawEvent
+  if (rawEvent) {
+    const text = chunks.join("")
+    const metadata: KurtResult["metadata"] = {}
+    if (rawEvent.usage) {
+      metadata.totalInputTokens = rawEvent.usage?.prompt_tokens
+      metadata.totalOutputTokens = rawEvent.usage?.completion_tokens
+    }
+    if (rawEvent.system_fingerprint) {
+      metadata.systemFingerprint = rawEvent.system_fingerprint
+    }
 
-    if (isFinal) {
-      const text = chunks.join("")
-      if (schema) {
-        const data = schema.parse(JSON.parse(text)) as D
-        yield { finished: true, text, data }
-      } else {
-        yield { finished: true, text, data: undefined } as KurtStreamEvent<D>
-      }
+    if (schema) {
+      const data = schema.parse(JSON.parse(text)) as D
+      yield { finished: true, text, data, metadata }
+    } else {
+      const data = undefined
+      yield { finished: true, text, data, metadata } as KurtStreamEvent<D>
     }
   }
 }
@@ -243,8 +258,11 @@ async function* transformStreamWithOptionalTools<
   const textChunks: string[] = []
   const dataChunks: string[][] = []
   const functionNames: string[] = []
+  let lastRawEvent: OpenAIResponseChunk | undefined
 
   for await (const rawEvent of rawEvents) {
+    lastRawEvent = rawEvent
+
     const choice = rawEvent.choices[0]
     if (!choice) continue
 
@@ -276,44 +294,52 @@ async function* transformStreamWithOptionalTools<
         yield { chunk: lineBreakChunk }
       }
     }
+  }
 
-    const isFinal = choice.finish_reason !== null
+  const rawEvent = lastRawEvent
+  if (rawEvent) {
+    const metadata: KurtResult["metadata"] = {}
+    if (rawEvent.usage) {
+      metadata.totalInputTokens = rawEvent.usage?.prompt_tokens
+      metadata.totalOutputTokens = rawEvent.usage?.completion_tokens
+    }
+    if (rawEvent.system_fingerprint) {
+      metadata.systemFingerprint = rawEvent.system_fingerprint
+    }
 
-    if (isFinal) {
-      const text = textChunks.join("")
-      if (dataChunks.length > 0) {
-        const allData: D[] = dataChunks.map((chunks, index) => {
-          const name = functionNames[index]
-          if (!name)
-            throw new Error("OpenAI tried to call a tool with no function name")
+    const text = textChunks.join("")
+    if (dataChunks.length > 0) {
+      const allData: D[] = dataChunks.map((chunks, index) => {
+        const name = functionNames[index]
+        if (!name)
+          throw new Error("OpenAI tried to call a tool with no function name")
 
-          const schema = tools[name]
-          if (!schema) {
-            throw new Error(
-              `OpenAI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
-                Object.keys(tools)
-              )}}`
-            )
-          }
-
-          return {
-            name,
-            args: schema.parse(JSON.parse(chunks.join(""))),
-          } as D
-        })
-
-        if (!isNonEmptyArray(allData))
-          throw new Error("Empty here is impossible but TS doesn't know it")
-        const [data, ...additionalData] = allData
-
-        if (additionalData.length > 0) {
-          yield { finished: true, text, data, additionalData }
-        } else {
-          yield { finished: true, text, data }
+        const schema = tools[name]
+        if (!schema) {
+          throw new Error(
+            `OpenAI tried to call tool ${name} which isn't in the tool set ${JSON.stringify(
+              Object.keys(tools)
+            )}}`
+          )
         }
+
+        return {
+          name,
+          args: schema.parse(JSON.parse(chunks.join(""))),
+        } as D
+      })
+
+      if (!isNonEmptyArray(allData))
+        throw new Error("Empty here is impossible but TS doesn't know it")
+      const [data, ...additionalData] = allData
+
+      if (additionalData.length > 0) {
+        yield { finished: true, text, data, additionalData, metadata }
       } else {
-        yield { finished: true, text, data: undefined }
+        yield { finished: true, text, data, metadata }
       }
+    } else {
+      yield { finished: true, text, data: undefined, metadata }
     }
   }
 }
