@@ -1,6 +1,8 @@
 step1Request:
   stream: true
-  model: gpt-3.5-turbo-0125
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -8,61 +10,100 @@ step1Request:
     - role: user
       content: Say hello!
 step2RawChunks:
-  - index: 0
-    delta:
-      role: assistant
-      content: ""
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: Hello
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "!"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " How"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " can"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " I"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " assist"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " you"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: " today"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta:
-      content: "?"
-    logprobs: null
-    finish_reason: null
-  - index: 0
-    delta: {}
-    logprobs: null
-    finish_reason: stop
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Hello
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "!"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " How"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " can"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " I"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " assist"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " you"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " today"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: "?"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: stop
+    system_fingerprint: fp_5bf7397cd3
+    usage: null
+  - choices: []
+    system_fingerprint: fp_5bf7397cd3
+    usage:
+      prompt_tokens: 10
+      completion_tokens: 9
+      total_tokens: 19
 step3KurtEvents:
   - chunk: Hello
   - chunk: "!"
@@ -75,3 +116,7 @@ step3KurtEvents:
   - chunk: "?"
   - finished: true
     text: Hello! How can I assist you today?
+    metadata:
+      totalInputTokens: 10
+      totalOutputTokens: 9
+      systemFingerprint: fp_5bf7397cd3

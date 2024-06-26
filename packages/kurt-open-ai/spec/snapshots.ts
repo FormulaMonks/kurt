@@ -34,7 +34,7 @@ export async function snapshotAndMock<T>(
   // Here's the data structure we will use to snapshot a request/response cycle.
   const snapshot: {
     step1Request?: OpenAIRequest
-    step2RawChunks: OpenAIResponseChunk["choices"][number][]
+    step2RawChunks: OpenAIResponseChunk[]
     step3KurtEvents: KurtStreamEvent<T>[]
   } = {
     step1Request: undefined,
@@ -62,7 +62,7 @@ export async function snapshotAndMock<T>(
             snapshot.step2RawChunks = savedRawChunks
             async function* generator(): AsyncIterable<OpenAIResponseChunk> {
               for await (const rawChunk of savedRawChunks) {
-                yield { choices: [rawChunk] }
+                yield rawChunk
               }
             }
             return generator()
@@ -72,12 +72,16 @@ export async function snapshotAndMock<T>(
           const realOpenAI = new RealOpenAI()
           const response = await realOpenAI.chat.completions.create(request)
           async function* gen() {
-            for await (const rawEvent of response) {
-              const choice = rawEvent.choices[0]
-              if (choice) snapshot.step2RawChunks.push(choice)
+            for await (const rawChunk of response) {
+              // Snapshot the parts we care about from the raw chunk.
+              snapshot.step2RawChunks.push({
+                choices: rawChunk.choices,
+                system_fingerprint: rawChunk.system_fingerprint,
+                usage: (rawChunk as OpenAIResponseChunk).usage,
+              })
 
-              // Yield the raw event to the adapter.
-              yield rawEvent
+              // Yield the raw chunk to the adapter.
+              yield rawChunk
             }
           }
           return gen()
@@ -87,7 +91,7 @@ export async function snapshotAndMock<T>(
   } as unknown as OpenAI
 
   // Run the test case function with a new instance of Kurt.
-  const kurt = new Kurt(new KurtOpenAI({ openAI, model: "gpt-3.5-turbo-0125" }))
+  const kurt = new Kurt(new KurtOpenAI({ openAI, model: "gpt-4o-2024-05-13" }))
   const stream = testCaseFn(kurt)
 
   // Save the final stream of Kurt events.

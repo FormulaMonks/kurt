@@ -24,9 +24,9 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
     )
     expect(result.text).toEqual(
       [
-        "Shaft of moonlight glows",
-        "Mountain stream flows silently",
-        "Nature's lullaby",
+        "Moonlight gently gleams,",
+        "Whispers of the stream below,",
+        "Stars in water dream.",
       ].join("\n")
     )
   })

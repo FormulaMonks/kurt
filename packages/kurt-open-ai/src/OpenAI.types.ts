@@ -5,6 +5,7 @@ import type {
   FunctionParameters,
   ChatCompletionTool,
   ChatCompletionChunk,
+  CompletionUsage,
 } from "openai/resources/index"
 
 export type OpenAI = RealOpenAI
@@ -19,4 +20,6 @@ export type OpenAIResponseChunk = {
     ChatCompletionChunk["choices"][number],
     "delta" | "finish_reason"
   >[]
+  usage?: Pick<CompletionUsage, "prompt_tokens" | "completion_tokens"> | null
+  system_fingerprint?: string | null
 }
