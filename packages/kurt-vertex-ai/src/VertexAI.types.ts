@@ -6,6 +6,7 @@ import type {
   GenerateContentCandidate,
   FunctionDeclaration,
   FunctionDeclarationSchema,
+  UsageMetadata,
 } from "@google-cloud/vertexai"
 
 export type VertexAI = RealVertexAI
@@ -31,6 +32,7 @@ export type VertexAIResponse = Promise<{
 }>
 export type VertexAIResponseChunk = {
   candidates?: VertexAIResponseChunkCandidate[]
+  usageMetadata?: VertexAIUsageMetadata
 }
 export type VertexAIResponseChunkCandidate = Pick<
   GenerateContentCandidate,
@@ -38,3 +40,7 @@ export type VertexAIResponseChunkCandidate = Pick<
 > & {
   safetyRatings?: object[]
 }
+export type VertexAIResponseFunctionCall = NonNullable<
+  VertexAIResponseChunkCandidate["content"]["parts"][number]["functionCall"]
+>
+export type VertexAIUsageMetadata = UsageMetadata

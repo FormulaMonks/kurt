@@ -8,7 +8,7 @@ describe("KurtVertexAI generateNaturalLanguage", () => {
         prompt: "Say hello!",
       })
     )
-    expect(result.text).toEqual("Hello! How can I assist you today?")
+    expect(result.text).toEqual("Hello! 👋  😊\n")
   })
 
   test("writes a haiku with high temperature", async () => {
@@ -24,9 +24,10 @@ describe("KurtVertexAI generateNaturalLanguage", () => {
     )
     expect(result.text).toEqual(
       [
-        "Moon paints silver path,",
-        "Water sings to sleeping stones,",
-        "Night sighs on the wind.",
+        "Moon bathes silver stream,",
+        "Whispers flow through sleeping wood,",
+        "Stones dream in the dark.",
+        "",
       ].join("\n")
     )
   })
