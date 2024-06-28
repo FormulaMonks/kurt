@@ -1,4 +1,5 @@
 export * from "./Kurt"
 export * from "./KurtAdapter"
+export * from "./KurtError"
 export * from "./KurtStream"
 export * from "./KurtSchema"
