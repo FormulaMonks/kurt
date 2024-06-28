@@ -1,0 +1,82 @@
+step1Request:
+  stream: true
+  stream_options:
+    include_usage: true
+  model: gpt-4o-2024-05-13
+  max_tokens: 5
+  temperature: 0.5
+  top_p: 0.95
+  messages:
+    - role: user
+      content: Compose a haiku about content length limitations.
+step2RawChunks:
+  - choices:
+      - index: 0
+        delta:
+          role: assistant
+          content: ""
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: Words
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " constrained"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " by"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: " bounds"
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta:
+          content: |
+            ,
+        logprobs: null
+        finish_reason: null
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices:
+      - index: 0
+        delta: {}
+        logprobs: null
+        finish_reason: length
+    system_fingerprint: fp_d576307f90
+    usage: null
+  - choices: []
+    system_fingerprint: fp_d576307f90
+    usage:
+      prompt_tokens: 16
+      completion_tokens: 5
+      total_tokens: 21
+step3KurtEvents:
+  - chunk: Words
+  - chunk: " constrained"
+  - chunk: " by"
+  - chunk: " bounds"
+  - chunk: |
+      ,

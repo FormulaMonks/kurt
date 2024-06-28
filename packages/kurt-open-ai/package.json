@@ -27,7 +27,7 @@
     "extends": "semantic-release-monorepo"
   },
   "dependencies": {
-    "@formula-monks/kurt": "^1.0.0",
+    "@formula-monks/kurt": "^1.4.0",
     "openai": "^4.51.0",
     "zod": "^3.23.5",
     "zod-to-json-schema": "^3.23.0"
