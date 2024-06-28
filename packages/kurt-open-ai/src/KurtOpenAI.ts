@@ -1,20 +1,24 @@
 import { zodToJsonSchema } from "zod-to-json-schema"
-import type {
-  KurtAdapterV1,
-  KurtMessage,
-  KurtStreamEvent,
-  KurtStreamEventChunk,
-  KurtSchemaInner,
-  KurtSchemaInnerMap,
-  KurtSchemaInnerMaybe,
-  KurtSchemaMap,
-  KurtSchemaMapSingleResult,
-  KurtSchemaMaybe,
-  KurtSchemaResult,
-  KurtSchemaResultMaybe,
-  KurtSchema,
-  KurtSamplingOptions,
-  KurtResult,
+import {
+  type KurtAdapterV1,
+  type KurtMessage,
+  type KurtStreamEvent,
+  type KurtStreamEventChunk,
+  type KurtSchemaInner,
+  type KurtSchemaInnerMap,
+  type KurtSchemaInnerMaybe,
+  type KurtSchemaMap,
+  type KurtSchemaMapSingleResult,
+  type KurtSchemaMaybe,
+  type KurtSchemaResult,
+  type KurtSchemaResultMaybe,
+  type KurtSchema,
+  type KurtSamplingOptions,
+  type KurtResult,
+  KurtResultLimitError,
+  KurtResultBlockedError,
+  KurtResultParseError,
+  KurtResultValidateError,
 } from "@formula-monks/kurt"
 import type {
   OpenAI,
@@ -24,6 +28,7 @@ import type {
   OpenAISchema,
   OpenAITool,
 } from "./OpenAI.types"
+import { ZodError } from "zod"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = [
@@ -123,14 +128,14 @@ export class KurtOpenAI
   transformNaturalLanguageFromRawEvents(
     rawEvents: AsyncIterable<OpenAIResponseChunk>
   ): AsyncIterable<KurtStreamEvent<undefined>> {
-    return transformStream(undefined, rawEvents)
+    return transformStream(this, undefined, rawEvents)
   }
 
   transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
     schema: KurtSchema<I>,
     rawEvents: AsyncIterable<OpenAIResponseChunk>
   ): AsyncIterable<KurtStreamEvent<KurtSchemaResult<I>>> {
-    return transformStream(schema, rawEvents)
+    return transformStream(this, schema, rawEvents)
   }
 
   transformWithOptionalToolsFromRawEvents<I extends KurtSchemaInnerMap>(
@@ -141,7 +146,7 @@ export class KurtOpenAI
       I,
       KurtSchemaMap<I>,
       KurtSchemaMapSingleResult<I>
-    >(tools, rawEvents)
+    >(this, tools, rawEvents)
   }
 }
 
@@ -200,45 +205,21 @@ async function* transformStream<
   S extends KurtSchemaMaybe<I>,
   D extends KurtSchemaResultMaybe<I>,
 >(
+  adapter: KurtOpenAI,
   schema: S,
   rawEvents: AsyncIterable<OpenAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D>> {
-  const chunks: string[] = []
-  let lastRawEvent: OpenAIResponseChunk | undefined
+  const state = new StreamState(adapter)
+  for await (const event of state.observeAndTransform(rawEvents)) yield event
+  throwIfStreamWasInterrupted(state)
 
-  for await (const rawEvent of rawEvents) {
-    lastRawEvent = rawEvent
-
-    const choice = rawEvent.choices[0]
-    if (!choice) continue
-
-    const textChunk = choice.delta.content
-    if (textChunk) {
-      chunks.push(textChunk)
-      yield { chunk: textChunk }
-    }
-
-    const dataChunk = choice.delta.tool_calls?.at(0)?.function?.arguments
-    if (dataChunk) {
-      chunks.push(dataChunk)
-      yield { chunk: dataChunk }
-    }
-  }
-
-  const rawEvent = lastRawEvent
+  const { textChunks, lastRawEvent: rawEvent } = state
   if (rawEvent) {
-    const text = chunks.join("")
-    const metadata: KurtResult["metadata"] = {}
-    if (rawEvent.usage) {
-      metadata.totalInputTokens = rawEvent.usage?.prompt_tokens
-      metadata.totalOutputTokens = rawEvent.usage?.completion_tokens
-    }
-    if (rawEvent.system_fingerprint) {
-      metadata.systemFingerprint = rawEvent.system_fingerprint
-    }
+    const text = textChunks.join("")
+    const metadata = convertMetadata(rawEvent)
 
     if (schema) {
-      const data = schema.parse(JSON.parse(text)) as D
+      const data = parseAndValidateData(adapter, schema, text) as D
       yield { finished: true, text, data, metadata }
     } else {
       const data = undefined
@@ -252,60 +233,22 @@ async function* transformStreamWithOptionalTools<
   S extends KurtSchemaMap<I>,
   D extends KurtSchemaMapSingleResult<I>,
 >(
+  adapter: KurtOpenAI,
   tools: S,
   rawEvents: AsyncIterable<OpenAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
-  const textChunks: string[] = []
-  const dataChunks: string[][] = []
-  const functionNames: string[] = []
-  let lastRawEvent: OpenAIResponseChunk | undefined
+  const state = new StreamState(adapter)
+  for await (const event of state.observeAndTransform(rawEvents)) yield event
+  throwIfStreamWasInterrupted(state)
 
-  for await (const rawEvent of rawEvents) {
-    lastRawEvent = rawEvent
-
-    const choice = rawEvent.choices[0]
-    if (!choice) continue
-
-    const textChunk = choice.delta.content
-    if (textChunk) {
-      textChunks.push(textChunk)
-      yield { chunk: textChunk }
-    }
-
-    const functionCall = choice.delta.tool_calls?.at(0)
-    if (functionCall?.function) {
-      const {
-        index,
-        function: { name, arguments: dataChunk },
-      } = functionCall
-
-      if (name !== undefined) {
-        functionNames[index] = name
-      }
-      if (dataChunk) {
-        // biome-ignore lint/suspicious/noAssignInExpressions: this single-line lazy initialization pattern is good, actually
-        ;(dataChunks[index] ||= []).push(dataChunk)
-        textChunks.push(dataChunk)
-        yield { chunk: dataChunk }
-      } else if (index > 0) {
-        // Insert a line break chunk in between parallel tool calls.
-        const lineBreakChunk = "\n"
-        textChunks.push(lineBreakChunk)
-        yield { chunk: lineBreakChunk }
-      }
-    }
-  }
-
-  const rawEvent = lastRawEvent
+  const {
+    textChunks,
+    dataChunks,
+    functionNames,
+    lastRawEvent: rawEvent,
+  } = state
   if (rawEvent) {
-    const metadata: KurtResult["metadata"] = {}
-    if (rawEvent.usage) {
-      metadata.totalInputTokens = rawEvent.usage?.prompt_tokens
-      metadata.totalOutputTokens = rawEvent.usage?.completion_tokens
-    }
-    if (rawEvent.system_fingerprint) {
-      metadata.systemFingerprint = rawEvent.system_fingerprint
-    }
+    const metadata = convertMetadata(rawEvent)
 
     const text = textChunks.join("")
     if (dataChunks.length > 0) {
@@ -325,7 +268,7 @@ async function* transformStreamWithOptionalTools<
 
         return {
           name,
-          args: schema.parse(JSON.parse(chunks.join(""))),
+          args: parseAndValidateData(adapter, schema, chunks.join("")),
         } as D
       })
 
@@ -350,4 +293,128 @@ async function* transformStreamWithOptionalTools<
  */
 function isNonEmptyArray<T>(array: T[]): array is [T, ...T[]] {
   return array.length > 0
+}
+
+class StreamState {
+  readonly textChunks: string[] = []
+  readonly dataChunks: string[][] = []
+  readonly functionNames: string[] = []
+  finishReason:
+    | OpenAIResponseChunk["choices"][number]["finish_reason"]
+    | undefined
+  lastRawEvent: OpenAIResponseChunk | undefined
+
+  constructor(readonly adapter: KurtOpenAI) {}
+
+  async *observeAndTransform(rawEvents: AsyncIterable<OpenAIResponseChunk>) {
+    for await (const rawEvent of rawEvents) {
+      this.lastRawEvent = rawEvent
+
+      const choice = rawEvent.choices[0]
+      if (!choice) continue
+
+      if (choice.finish_reason) this.finishReason = choice.finish_reason
+
+      const textChunk = choice.delta.content
+      if (textChunk) {
+        this.textChunks.push(textChunk)
+        yield { chunk: textChunk }
+      }
+
+      const functionCall = choice.delta.tool_calls?.at(0)
+      if (functionCall?.function) {
+        const {
+          index,
+          function: { name, arguments: dataChunk },
+        } = functionCall
+
+        if (name !== undefined) {
+          this.functionNames[index] = name
+        }
+        if (dataChunk) {
+          // biome-ignore lint/suspicious/noAssignInExpressions: this single-line lazy initialization pattern is good, actually
+          ;(this.dataChunks[index] ||= []).push(dataChunk)
+          this.textChunks.push(dataChunk)
+          yield { chunk: dataChunk }
+        } else if (index > 0) {
+          // Insert a line break chunk in between parallel tool calls.
+          const lineBreakChunk = "\n"
+          this.textChunks.push(lineBreakChunk)
+          yield { chunk: lineBreakChunk }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Throw a relevant `KurtResultError` if the stream was interrupted
+ * for any (foreseeable) reason.
+ */
+function throwIfStreamWasInterrupted(state: StreamState) {
+  const finishReason = state.finishReason
+  switch (finishReason) {
+    case "length":
+      throw new KurtResultLimitError(state.adapter, state.textChunks.join(""))
+
+    case "content_filter":
+      // For troubleshooting OpenAI's filter, note that they have an [endpoint](
+      // https://platform.openai.com/docs/guides/moderation/overview) where you
+      // can check what kind of "harm" categories are getting triggered for
+      // a given chunk of content.
+      throw new KurtResultBlockedError(
+        state.adapter,
+        state.textChunks.join(""),
+        finishReason
+      )
+  }
+}
+
+/**
+ * Parse the argument data from a tool call.
+ */
+function parseData(adapter: KurtOpenAI, text: string) {
+  try {
+    return JSON.parse(text)
+  } catch (error: unknown) {
+    if (error instanceof SyntaxError)
+      throw new KurtResultParseError(adapter, text, error)
+
+    throw error // (re-throw all other errors)
+  }
+}
+
+/**
+ * Parse and validate the structured data from a tool call.
+ */
+function parseAndValidateData<I extends KurtSchemaInner>(
+  adapter: KurtOpenAI,
+  schema: KurtSchema<I>,
+  text: string
+): KurtSchemaResult<I> {
+  const rawData = parseData(adapter, text)
+
+  try {
+    return schema.parse(rawData)
+  } catch (error: unknown) {
+    if (error instanceof ZodError)
+      throw new KurtResultValidateError(adapter, schema, text, rawData, error)
+
+    throw error // (re-throw all other errors)
+  }
+}
+
+/**
+ * Convert the raw metadata from an OpenAI event into Kurt's metadata format.
+ */
+function convertMetadata(rawEvent: OpenAIResponseChunk) {
+  const metadata: KurtResult["metadata"] = {}
+  if (rawEvent.usage) {
+    metadata.totalInputTokens = rawEvent.usage?.prompt_tokens
+    metadata.totalOutputTokens = rawEvent.usage?.completion_tokens
+  }
+  if (rawEvent.system_fingerprint) {
+    metadata.systemFingerprint = rawEvent.system_fingerprint
+  }
+  return metadata
 }
