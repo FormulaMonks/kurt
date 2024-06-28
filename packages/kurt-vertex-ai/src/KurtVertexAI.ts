@@ -1,21 +1,24 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
 
 import zodToJsonSchema from "zod-to-json-schema"
-import type {
-  KurtAdapterV1,
-  KurtStreamEvent,
-  KurtSchema,
-  KurtSchemaInner,
-  KurtSchemaInnerMap,
-  KurtSchemaInnerMaybe,
-  KurtSchemaMap,
-  KurtSchemaMapSingleResult,
-  KurtSchemaMaybe,
-  KurtSchemaResult,
-  KurtSchemaResultMaybe,
-  KurtMessage,
-  KurtSamplingOptions,
-  KurtResult,
+import {
+  type KurtAdapterV1,
+  type KurtStreamEvent,
+  type KurtSchema,
+  type KurtSchemaInner,
+  type KurtSchemaInnerMap,
+  type KurtSchemaInnerMaybe,
+  type KurtSchemaMap,
+  type KurtSchemaMapSingleResult,
+  type KurtSchemaMaybe,
+  type KurtSchemaResult,
+  type KurtSchemaResultMaybe,
+  type KurtMessage,
+  type KurtSamplingOptions,
+  type KurtResult,
+  KurtResultValidateError,
+  KurtResultLimitError,
+  KurtResultBlockedError,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -29,6 +32,7 @@ import type {
   VertexAITool,
   VertexAIUsageMetadata,
 } from "./VertexAI.types"
+import { ZodError } from "zod"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = ["gemini-1.0-pro", "gemini-1.5-pro"] as const
@@ -120,14 +124,14 @@ export class KurtVertexAI
   transformNaturalLanguageFromRawEvents(
     rawEvents: AsyncIterable<VertexAIResponseChunk>
   ): AsyncIterable<KurtStreamEvent<undefined>> {
-    return transformStream(undefined, rawEvents)
+    return transformStream(this, undefined, rawEvents)
   }
 
   transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
     schema: KurtSchema<I>,
     rawEvents: AsyncIterable<VertexAIResponseChunk>
   ): AsyncIterable<KurtStreamEvent<KurtSchemaResult<I>>> {
-    return transformStream(schema, rawEvents)
+    return transformStream(this, schema, rawEvents)
   }
 
   transformWithOptionalToolsFromRawEvents<I extends KurtSchemaInnerMap>(
@@ -138,7 +142,7 @@ export class KurtVertexAI
       I,
       KurtSchemaMap<I>,
       KurtSchemaMapSingleResult<I>
-    >(tools, rawEvents)
+    >(this, tools, rawEvents)
   }
 }
 
@@ -207,32 +211,15 @@ async function* transformStream<
   S extends KurtSchemaMaybe<I>,
   D extends KurtSchemaResultMaybe<I>,
 >(
+  adapter: KurtVertexAI,
   schema: S,
   rawEvents: AsyncIterable<VertexAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D>> {
-  let lastRawEvent: VertexAIResponseChunk | undefined
-  const chunks: string[] = []
-  const functionCalls: VertexAIResponseFunctionCall[] = []
+  const state = new StreamState(adapter)
+  for await (const event of state.observeAndTransform(rawEvents)) yield event
+  throwIfStreamWasInterrupted(state)
 
-  for await (const rawEvent of rawEvents) {
-    lastRawEvent = rawEvent
-
-    const choice = rawEvent.candidates?.at(0)
-    if (!choice) continue
-
-    for (const part of choice.content.parts) {
-      const { functionCall } = part
-      if (functionCall) functionCalls.push(functionCall)
-
-      const chunk = part.text
-      if (chunk) {
-        chunks.push(chunk)
-        yield { chunk }
-      }
-    }
-  }
-
-  const rawEvent = lastRawEvent
+  const { chunks, functionCalls, lastRawEvent: rawEvent } = state
   if (rawEvent) {
     const metadata = convertMetadata(rawEvent)
 
@@ -244,7 +231,11 @@ async function* transformStream<
           `Expected just function call, but got ${functionCalls.length}`
         )
 
-      const data = applySchemaToFuzzyStructure(schema, functionCall) as D
+      const data = applySchemaToFuzzyStructure(
+        adapter,
+        schema,
+        functionCall
+      ) as D
       const text = JSON.stringify(data)
       yield { chunk: text }
       yield { finished: true, text, data, metadata }
@@ -266,32 +257,15 @@ async function* transformStreamWithOptionalTools<
   S extends KurtSchemaMap<I>,
   D extends KurtSchemaMapSingleResult<I>,
 >(
+  adapter: KurtVertexAI,
   tools: S,
   rawEvents: AsyncIterable<VertexAIResponseChunk>
 ): AsyncGenerator<KurtStreamEvent<D | undefined>> {
-  let lastRawEvent: VertexAIResponseChunk | undefined
-  const chunks: string[] = []
-  const functionCalls: VertexAIResponseFunctionCall[] = []
+  const state = new StreamState(adapter)
+  for await (const event of state.observeAndTransform(rawEvents)) yield event
+  throwIfStreamWasInterrupted(state)
 
-  for await (const rawEvent of rawEvents) {
-    lastRawEvent = rawEvent
-
-    const choice = rawEvent.candidates?.at(0)
-    if (!choice) continue
-
-    for (const part of choice.content.parts) {
-      const { functionCall } = part
-      if (functionCall) functionCalls.push(functionCall)
-
-      const chunk = part.text
-      if (chunk) {
-        chunks.push(chunk)
-        yield { chunk }
-      }
-    }
-  }
-
-  const rawEvent = lastRawEvent
+  const { chunks, functionCalls, lastRawEvent: rawEvent } = state
   if (rawEvent) {
     const metadata = convertMetadata(rawEvent)
 
@@ -309,7 +283,7 @@ async function* transformStreamWithOptionalTools<
         }
         return {
           name,
-          args: applySchemaToFuzzyStructure(schema, functionCall),
+          args: applySchemaToFuzzyStructure(adapter, schema, functionCall),
         } as D
       })
 
@@ -348,12 +322,41 @@ async function* transformStreamWithOptionalTools<
   }
 }
 
+class StreamState {
+  lastRawEvent: VertexAIResponseChunk | undefined
+  readonly chunks: string[] = []
+  readonly functionCalls: VertexAIResponseFunctionCall[] = []
+
+  constructor(readonly adapter: KurtVertexAI) {}
+
+  async *observeAndTransform(rawEvents: AsyncIterable<VertexAIResponseChunk>) {
+    for await (const rawEvent of rawEvents) {
+      this.lastRawEvent = rawEvent
+
+      const choice = rawEvent.candidates?.at(0)
+      if (!choice) continue
+
+      for (const part of choice.content.parts) {
+        const { functionCall } = part
+        if (functionCall) this.functionCalls.push(functionCall)
+
+        const chunk = part.text
+        if (chunk) {
+          this.chunks.push(chunk)
+          yield { chunk }
+        }
+      }
+    }
+  }
+}
+
 // Vertex AI sometimes gives wonky results that are nested weirdly.
 // This function tries to account for the different scenarios we've seen.
 //
 // If a new scenario is seen, we can add a test for it in KurtVertexAI.spec.ts
 // and then add new logic here as needed to handle the new scenario.
 function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
+  adapter: KurtVertexAI,
   schema: KurtSchema<I>,
   input: { name: string; args: object }
 ): KurtSchemaResult<I> {
@@ -372,7 +375,21 @@ function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
       } catch {}
     }
 
-    // If all the alternative strategies failed, throw the original error.
+    // If all the alternative strategies failed, we'll need to re-throw.
+
+    // Assuming this is indeed a `ZodError` as expected, we'll wrap it in
+    // a `KurtResultValidateError` to provide full context.
+    if (firstParseError instanceof ZodError) {
+      throw new KurtResultValidateError(
+        adapter,
+        schema,
+        JSON.stringify(args),
+        args,
+        firstParseError
+      )
+    }
+
+    // Otherwise we fall back to re-throwing whatever the unexpected error was.
     throw firstParseError
   }
 }
@@ -383,6 +400,36 @@ function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
  */
 function isNonEmptyArray<T>(array: T[]): array is [T, ...T[]] {
   return array.length > 0
+}
+
+/**
+ * Throw a relevant `KurtResultError` if the stream was interrupted
+ * for any (foreseeable) reason.
+ */
+function throwIfStreamWasInterrupted(state: StreamState) {
+  const finishReason = state.lastRawEvent?.candidates?.at(0)?.finishReason
+  switch (finishReason) {
+    case undefined:
+    case "STOP":
+    case "FINISH_REASON_UNSPECIFIED":
+      return // (no error thrown here)
+
+    case "MAX_TOKENS":
+      throw new KurtResultLimitError(state.adapter, state.chunks.join(""))
+
+    default:
+      // Google blocks results for all kinds of varied reasons, and Kurt
+      // doesn't try to enumerate all of them in its error classes,
+      // particularly because the Google categories seem to overlap in
+      // potentially nebulous and under-specified ways.
+      // Therefore we lump them all together as `KurtResultBlockedError`,
+      // and just include the original finish reason as context.
+      throw new KurtResultBlockedError(
+        state.adapter,
+        state.chunks.join(""),
+        finishReason
+      )
+  }
 }
 
 /**

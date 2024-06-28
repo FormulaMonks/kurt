@@ -7,6 +7,7 @@ import type {
   FunctionDeclaration,
   FunctionDeclarationSchema,
   UsageMetadata,
+  FinishReason,
 } from "@google-cloud/vertexai"
 
 export type VertexAI = RealVertexAI
@@ -43,4 +44,5 @@ export type VertexAIResponseChunkCandidate = Pick<
 export type VertexAIResponseFunctionCall = NonNullable<
   VertexAIResponseChunkCandidate["content"]["parts"][number]["functionCall"]
 >
+export type VertexAIFinishReach = FinishReason
 export type VertexAIUsageMetadata = UsageMetadata

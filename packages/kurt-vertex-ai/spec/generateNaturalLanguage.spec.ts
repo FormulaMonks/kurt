@@ -1,5 +1,6 @@
 import { describe, test, expect } from "@jest/globals"
-import { snapshotAndMock } from "./snapshots"
+import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
+import { KurtResultLimitError } from "@formula-monks/kurt"
 
 describe("KurtVertexAI generateNaturalLanguage", () => {
   test("says hello", async () => {
@@ -29,6 +30,23 @@ describe("KurtVertexAI generateNaturalLanguage", () => {
         "Stones dream in the dark.",
         "",
       ].join("\n")
+    )
+  })
+
+  test("throws a limit error", async () => {
+    await snapshotAndMockWithError(
+      (kurt) =>
+        kurt.generateNaturalLanguage({
+          prompt: "Compose a haiku about content length limitations.",
+          sampling: { maxOutputTokens: 5 }, // too few for a haiku
+        }),
+
+      (errorAny) => {
+        expect(errorAny).toBeInstanceOf(KurtResultLimitError)
+        const error = errorAny as KurtResultLimitError
+
+        expect(error.text).toEqual("Words cut short, confined")
+      }
     )
   })
 })
