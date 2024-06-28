@@ -1,0 +1,30 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 5
+    temperature: 0.5
+    topP: 0.95
+  contents:
+    - role: user
+      parts:
+        - text: Compose a haiku about content length limitations.
+step2RawChunks:
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: Words
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: " cut short, confined"
+        finishReason: MAX_TOKENS
+        index: 0
+    usageMetadata:
+      promptTokenCount: 8
+      candidatesTokenCount: 5
+      totalTokenCount: 13
+step3KurtEvents:
+  - chunk: Words
+  - chunk: " cut short, confined"

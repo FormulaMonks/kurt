@@ -122,18 +122,46 @@ export async function snapshotAndMock<T>(
   const stream = testCaseFn(kurt)
 
   // Save the final stream of Kurt events.
-  for await (const event of stream) snapshot.step3KurtEvents.push(event)
-
-  if (savedSnapshot) {
-    // If we had a saved snapshot, our new snapshot should match.
-    expect(stringifyYaml(snapshot)).toEqual(stringifyYaml(savedSnapshot))
-  } else {
-    // Otherwise, we need to save the snapshot, and we'll warn about it,
-    // because it's not a truly passing test yet.
-    console.warn(`Writing new snapshot to ${snapshotFilename}`)
-    dumpYaml(snapshotFilename, snapshot)
+  try {
+    for await (const event of stream) snapshot.step3KurtEvents.push(event)
+  } finally {
+    if (savedSnapshot) {
+      // If we had a saved snapshot, our new snapshot should match.
+      expect(stringifyYaml(snapshot)).toEqual(stringifyYaml(savedSnapshot))
+    } else {
+      // Otherwise, we need to save the snapshot, and we'll warn about it,
+      // because it's not a truly passing test yet.
+      console.warn(`Writing new snapshot to ${snapshotFilename}`)
+      dumpYaml(snapshotFilename, snapshot)
+    }
   }
 
   // Return the KurtStream in case the caller wants to do additional assertions.
   return await stream.result
+}
+
+export async function snapshotAndMockWithError<T>(
+  testCaseFn: (kurt: Kurt) => KurtStream<T>,
+  errorCheckFn: (error: Error) => void
+) {
+  try {
+    await snapshotAndMock(testCaseFn)
+    expectedErrorToBeThrownBeforeThisPoint()
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error &&
+      error.constructor.name.includes("Jest")
+    )
+      throw error
+
+    expect(error).toBeInstanceOf(Error)
+    errorCheckFn(error as Error)
+  }
+}
+
+function expectedErrorToBeThrownBeforeThisPoint() {
+  const expected = "error to be thrown"
+  const actual = "no error was thrown"
+  expect(actual).toBe(expected)
 }
