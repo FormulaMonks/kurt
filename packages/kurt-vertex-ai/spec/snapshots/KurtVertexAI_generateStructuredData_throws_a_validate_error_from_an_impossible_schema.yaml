@@ -1,0 +1,49 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 4096
+    temperature: 0.5
+    topP: 0.95
+  contents:
+    - role: user
+      parts:
+        - text: Say hello!
+  tools:
+    - functionDeclarations:
+        - name: structured_data
+          description: Say a word
+          parameters:
+            type: object
+            properties:
+              say:
+                type: string
+                pattern: (?=IMPOSSIBLE)hello
+                description: A single word to say
+            required:
+              - say
+  tool_config:
+    function_calling_config:
+      mode: ANY
+      allowed_function_names:
+        - structured_data
+step2RawChunks:
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - functionCall:
+                name: structured_data
+                args:
+                  say: hello
+        index: 0
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 16
+      candidatesTokenCount: 5
+      totalTokenCount: 21
+step3KurtEvents: []
