@@ -1,6 +1,7 @@
 import { describe, test, expect } from "@jest/globals"
 import { z } from "zod"
-import { snapshotAndMock } from "./snapshots"
+import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
+import { KurtResultLimitError } from "@formula-monks/kurt"
 
 const calculatorTools = {
   subtract: z
@@ -132,4 +133,35 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
       ].join("\n")
     )
   })
+
+  // The below test is commented out because this test case currently breaks
+  // OpenAI's API (causes a 5xx server error).
+  //
+  // I'm leaving it in here as a comment so we can re-enable it if OpenAI
+  // eventually fixes their system to handle this case (hopefully somebody
+  // on their team will see the 5xx errors and investigate).
+
+  // test("limit error (with parallel tool calls)", async () => {
+  //   await snapshotAndMockWithError(
+  //     (kurt) =>
+  //       kurt.generateWithOptionalTools({
+  //         prompt: [
+  //           "Calculate each of the following:",
+  //           "1. 8026256882 divided by 3402398",
+  //           "2. 1185835515 divided by 348263",
+  //           "3. 90135094495 minus 89944954350",
+  //         ].join("\n"),
+  //         tools: calculatorTools,
+  //         sampling: { maxOutputTokens: 20 },
+  //       }),
+  //
+  //     (errorAny) => {
+  //       console.error(errorAny)
+  //       expect(errorAny).toBeInstanceOf(KurtResultLimitError)
+  //       const error = errorAny as KurtResultLimitError
+  //
+  //       expect(error.text).toEqual("TODO: fill in")
+  //     }
+  //   )
+  // })
 })
