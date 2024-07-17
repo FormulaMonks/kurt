@@ -1,4 +1,9 @@
 import type { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
+import { fromJSONSchema7 } from "./KurtSchema.fromJSONSchema7"
+
+export const KurtSchema = {
+  fromJSONSchema7,
+}
 
 /**
  * The inner shape of a Kurt schema; used as a type parameter for functions
