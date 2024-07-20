@@ -6,6 +6,8 @@ test("KurtOpenAI.isSupportedModel", () => {
   // https://platform.openai.com/docs/models/overview
   expect(KurtOpenAI.isSupportedModel("gpt-4o")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4o-2024-05-13")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4o-mini")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4o-mini-2024-07-18")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4-turbo")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4-turbo-2024-04-09")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4-turbo-preview")).toBe(true)
