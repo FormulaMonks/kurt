@@ -67,6 +67,40 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
 
+  examples/capabilities:
+    dependencies:
+      '@formula-monks/kurt':
+        specifier: workspace:^
+        version: link:../../packages/kurt
+      '@formula-monks/kurt-open-ai':
+        specifier: workspace:*
+        version: link:../../packages/kurt-open-ai
+      '@formula-monks/kurt-vertex-ai':
+        specifier: workspace:*
+        version: link:../../packages/kurt-vertex-ai
+      '@google-cloud/vertexai':
+        specifier: 1.1.0
+        version: 1.1.0
+      openai:
+        specifier: ^4.51.0
+        version: 4.51.0
+      zod:
+        specifier: ^3.23.5
+        version: 3.23.6
+    devDependencies:
+      '@types/node':
+        specifier: 18.19.32
+        version: 18.19.32
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      tsx:
+        specifier: ^4.11.2
+        version: 4.11.2
+      typescript:
+        specifier: 5.4.5
+        version: 5.4.5
+
   packages/kurt:
     dependencies:
       zod:

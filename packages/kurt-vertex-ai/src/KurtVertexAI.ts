@@ -336,12 +336,17 @@ class StreamState {
       const choice = rawEvent.candidates?.at(0)
       if (!choice) continue
 
+      console.log(choice.content)
       for (const part of choice.content.parts) {
         const { functionCall } = part
-        if (functionCall) this.functionCalls.push(functionCall)
+        if (functionCall) {
+          console.log("functionCall", JSON.stringify(part.functionCall))
+          this.functionCalls.push(functionCall)
+        }
 
         const chunk = part.text
         if (chunk) {
+          console.log("text", part.text)
           this.chunks.push(chunk)
           yield { chunk }
         }

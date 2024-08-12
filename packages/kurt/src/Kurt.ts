@@ -332,6 +332,13 @@ export const KurtSamplingOptionsDefault = {
    * without any "top tokens" filtering being applied before sampling.
    */
   topP: 0.95,
+
+  // /**
+  //  * Specify a particular seed to use for the pseudo-random number generator
+  //  * that is used during token sampling. This can be useful for getting
+  //  * deterministic results when you want to reproduce a particular output.
+  //  */
+  // seed: undefined as number | undefined,
 }
 
 export interface KurtGenerateNaturalLanguageOptions {

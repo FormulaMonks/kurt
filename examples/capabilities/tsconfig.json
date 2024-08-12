@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "downlevelIteration": true,
+    "lib": ["esnext"],
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "target": "es2022"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
