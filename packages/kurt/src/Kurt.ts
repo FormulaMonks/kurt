@@ -198,6 +198,27 @@ export type KurtMessage = {
   text: string
 
   /**
+   * When present, this is an image data message, with a base64-encoded image.
+   * This is often used with "multi-modal" LLMs that support image mode input.
+   *
+   * Not all LLM providers or underlying models support this kind of message.
+   * Check your LLM provider's documentation for confirmaton.
+   */
+  imageData: {
+    /**
+     * The IANA standard MIME type of the inline image data.
+     *
+     * Not all MIME types are supported by all LLM providers.
+     * "image/png" and "image/jpeg" are the most commonly supported.
+     * Check your LLM provider's documentation for the right list.
+     */
+    mimeType: string
+
+    /** Base64-encoded image data, as a string. */
+    base64Data: string
+  }
+
+  /**
    * When present, this is a tool call message, with structured data input
    * in the `args` object, and structured data output in the `result` object.
    *
