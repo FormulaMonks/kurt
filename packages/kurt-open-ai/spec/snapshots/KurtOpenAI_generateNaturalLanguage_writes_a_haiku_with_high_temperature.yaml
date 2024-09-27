@@ -8,7 +8,9 @@ step1Request:
   top_p: 1
   messages:
     - role: user
-      content: Compose a haiku about a mountain stream at night.
+      content:
+        - type: text
+          text: Compose a haiku about a mountain stream at night.
 step2RawChunks:
   - choices:
       - index: 0

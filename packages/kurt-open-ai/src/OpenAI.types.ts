@@ -1,7 +1,11 @@
 import type { OpenAI as RealOpenAI } from "openai"
 import type {
   ChatCompletionCreateParamsStreaming,
-  ChatCompletionMessageParam,
+  ChatCompletionSystemMessageParam,
+  ChatCompletionUserMessageParam,
+  ChatCompletionAssistantMessageParam,
+  ChatCompletionToolMessageParam,
+  ChatCompletionContentPart,
   FunctionParameters,
   ChatCompletionTool,
   ChatCompletionChunk,
@@ -11,7 +15,12 @@ import type {
 export type OpenAI = RealOpenAI
 
 export type OpenAIRequest = ChatCompletionCreateParamsStreaming
-export type OpenAIMessage = ChatCompletionMessageParam
+export type OpenAIMessage =
+  | ChatCompletionSystemMessageParam
+  | (ChatCompletionUserMessageParam & { content: ChatCompletionContentPart[] })
+  | ChatCompletionAssistantMessageParam
+  | ChatCompletionToolMessageParam
+
 export type OpenAISchema = FunctionParameters
 export type OpenAITool = ChatCompletionTool
 export type OpenAIResponse = Promise<AsyncIterable<OpenAIResponseChunk>>

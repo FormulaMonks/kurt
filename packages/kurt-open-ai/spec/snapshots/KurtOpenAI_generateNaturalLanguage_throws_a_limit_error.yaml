@@ -8,7 +8,9 @@ step1Request:
   top_p: 0.95
   messages:
     - role: user
-      content: Compose a haiku about content length limitations.
+      content:
+        - type: text
+          text: Compose a haiku about content length limitations.
 step2RawChunks:
   - choices:
       - index: 0

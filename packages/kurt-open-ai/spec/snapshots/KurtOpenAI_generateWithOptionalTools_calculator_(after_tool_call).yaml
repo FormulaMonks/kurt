@@ -8,7 +8,9 @@ step1Request:
   top_p: 0.95
   messages:
     - role: user
-      content: What's 9876356 divided by 30487, rounded to the nearest integer?
+      content:
+        - type: text
+          text: What's 9876356 divided by 30487, rounded to the nearest integer?
     - role: assistant
       tool_calls:
         - id: call_1
