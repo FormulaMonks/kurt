@@ -29,8 +29,8 @@
   "dependencies": {
     "@formula-monks/kurt": "^1.4.0",
     "@google-cloud/vertexai": "1.1.0",
-    "zod": "^3.23.5",
-    "zod-to-json-schema": "^3.23.0"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
