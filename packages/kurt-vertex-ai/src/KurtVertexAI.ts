@@ -150,7 +150,7 @@ function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
   const vertexAIMessages: VertexAIMessage[] = []
 
   for (const message of messages) {
-    const { role, text, toolCall } = message
+    const { role, text, toolCall, imageData } = message
     if (text) {
       vertexAIMessages.push({ role, parts: [{ text }] })
     } else if (toolCall) {
@@ -159,6 +159,10 @@ function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
       const functionResponse = { name, response: result }
       vertexAIMessages.push({ role, parts: [{ functionCall }] })
       vertexAIMessages.push({ role, parts: [{ functionResponse }] })
+    } else if (imageData) {
+      const { mimeType, base64Data } = imageData
+      const inlineData = { mimeType, data: base64Data }
+      vertexAIMessages.push({ role, parts: [{ inlineData }] })
     } else {
       throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
     }

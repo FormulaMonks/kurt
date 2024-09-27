@@ -8,11 +8,13 @@ step1Request:
   top_p: 0.95
   messages:
     - role: user
-      content: |-
-        Calculate each of the following:
-        1. 8026256882 divided by 3402398
-        2. 1185835515 divided by 348263
-        3. 90135094495 minus 89944954350
+      content:
+        - type: text
+          text: |-
+            Calculate each of the following:
+            1. 8026256882 divided by 3402398
+            2. 1185835515 divided by 348263
+            3. 90135094495 minus 89944954350
   tools:
     - type: function
       function:

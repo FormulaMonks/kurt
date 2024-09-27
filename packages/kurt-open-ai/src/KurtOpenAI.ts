@@ -159,12 +159,30 @@ const openAIRoleMapping = {
 
 function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
   const openAIMessages: OpenAIMessage[] = []
+  const addMessage = (message: OpenAIMessage) => {
+    // If we have two messages with the `user` role, we must combine them
+    // into a multi-part message (a constraint which presumably made sense
+    // to some OpenAI engineer at some time, but is now totally inscrutable).
+    const lastMessage = openAIMessages[openAIMessages.length - 1]
+    if (lastMessage && lastMessage.role === "user" && message.role === "user") {
+      const lastContent = lastMessage.content
+      const nextContent = message.content
+      for (const part of nextContent) lastContent.push(part)
+    } else {
+      openAIMessages.push(message)
+    }
+  }
 
   for (const [messageIndex, message] of messages.entries()) {
-    const { text, toolCall } = message
+    const { text, toolCall, imageData } = message
     if (text) {
       const role = openAIRoleMapping[message.role]
-      openAIMessages.push({ role, content: text })
+
+      if (role === "user") {
+        addMessage({ role, content: [{ type: "text", text }] })
+      } else {
+        addMessage({ role, content: text })
+      }
     } else if (toolCall) {
       const { name, args, result } = toolCall
 
@@ -178,7 +196,7 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
       // We generate a simple sequential id here to satisfy OpenAI's API.
       const id = `call_${messageIndex}`
 
-      openAIMessages.push({
+      addMessage({
         role: "assistant",
         tool_calls: [
           {
@@ -188,13 +206,26 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
           },
         ],
       })
-      openAIMessages.push({
+      addMessage({
         role: "tool",
         tool_call_id: id,
         content: JSON.stringify(result),
       })
+    } else if (imageData && message.role === "user") {
+      const { mimeType, base64Data } = imageData
+
+      // OpenAI only supports the following MIME types, according to these docs:
+      // https://platform.openai.com/docs/guides/vision
+      if (!mimeType.match(/^image\/(jpg|png|webp|gif)$/))
+        throw new Error(`Unsupported image MIME type: ${mimeType}`) // TODO: Use a subclass of KurtError
+
+      const url = `data:${mimeType};base64,${base64Data}`
+      addMessage({
+        role: "user", // only supported for the user role
+        content: [{ type: "image_url", image_url: { url } }],
+      })
     } else {
-      throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
+      throw new Error(`Unsupported KurtMessage: ${JSON.stringify(message)}`) // TODO: Use a subclass of KurtError
     }
   }
 

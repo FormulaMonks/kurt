@@ -8,7 +8,9 @@ step1Request:
   top_p: 0.95
   messages:
     - role: user
-      content: Say hello!
+      content:
+        - type: text
+          text: Say hello!
 step2RawChunks:
   - choices:
       - index: 0
