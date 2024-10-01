@@ -216,7 +216,7 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
 
       // OpenAI only supports the following MIME types, according to these docs:
       // https://platform.openai.com/docs/guides/vision
-      if (!mimeType.match(/^image\/(jpg|png|webp|gif)$/))
+      if (!mimeType.match(/^image\/(jpeg|png|webp|gif)$/))
         throw new Error(`Unsupported image MIME type: ${mimeType}`) // TODO: Use a subclass of KurtError
 
       const url = `data:${mimeType};base64,${base64Data}`
