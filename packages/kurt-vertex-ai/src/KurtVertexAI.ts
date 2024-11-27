@@ -91,13 +91,26 @@ export class KurtVertexAI
       model: this.options.model,
     }) as VertexAIGenerativeModel
 
+    // VertexAI requires that system messages be sent as a single message,
+    // so we filter them out from the main messages array to send separately.
+    const normalMessages = options.messages.filter((m) => m.role !== "system")
+    const systemMessages = options.messages.filter((m) => m.role === "system")
+    const singleSystemMessage: VertexAIMessage | undefined =
+      systemMessages.length === 0
+        ? undefined
+        : {
+            role: "system",
+            parts: systemMessages.flatMap((m) => m.parts),
+          }
+
     const req: VertexAIRequest = {
       generationConfig: {
         maxOutputTokens: options.sampling.maxOutputTokens,
         temperature: options.sampling.temperature,
         topP: options.sampling.topP,
       },
-      contents: options.messages,
+      contents: normalMessages,
+      systemInstruction: singleSystemMessage,
     }
 
     const tools = Object.values(options.tools)
