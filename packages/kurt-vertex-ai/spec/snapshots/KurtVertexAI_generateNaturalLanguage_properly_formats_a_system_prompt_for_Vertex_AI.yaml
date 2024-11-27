@@ -1,0 +1,43 @@
+step1Request:
+  generationConfig:
+    maxOutputTokens: 4096
+    temperature: 0.5
+    topP: 0.95
+  contents:
+    - role: user
+      parts:
+        - text: Say hello!
+  systemInstruction:
+    role: system
+    parts:
+      - text: Don't be evil.
+step2RawChunks:
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: Hello
+        index: 0
+    usageMetadata: {}
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: |
+                ! 👋  😊
+        finishReason: STOP
+        index: 0
+    usageMetadata:
+      promptTokenCount: 9
+      candidatesTokenCount: 6
+      totalTokenCount: 15
+step3KurtEvents:
+  - chunk: Hello
+  - chunk: |
+      ! 👋  😊
+  - finished: true
+    text: |
+      Hello! 👋  😊
+    metadata:
+      totalInputTokens: 9
+      totalOutputTokens: 6

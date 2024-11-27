@@ -12,6 +12,16 @@ describe("KurtVertexAI generateNaturalLanguage", () => {
     expect(result.text).toEqual("Hello! 👋  😊\n")
   })
 
+  test("properly formats a system prompt for Vertex AI", async () => {
+    const result = await snapshotAndMock((kurt) =>
+      kurt.generateNaturalLanguage({
+        systemPrompt: "Don't be evil.", // sometimes Google needs to remind themselves
+        prompt: "Say hello!",
+      })
+    )
+    expect(result.text).toEqual("Hello! 👋  😊\n")
+  })
+
   test("writes a haiku with high temperature", async () => {
     const result = await snapshotAndMock((kurt) =>
       kurt.generateNaturalLanguage({
