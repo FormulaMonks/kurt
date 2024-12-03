@@ -13,4 +13,4 @@ The cache entries are YAML files, which can be easily inspected and modified for
 
 ## Examples
 
-[This example code](../../examples/basic/src/openai.ts) shows how to set up and use Kurt with OpenAI.
+[This example code](../../examples/basic/src/cache.ts) shows how to set up and use KurtCache with KurtOpenAI (though it also works with other adapters).
