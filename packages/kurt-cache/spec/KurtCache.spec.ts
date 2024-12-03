@@ -1,5 +1,5 @@
 import { describe, test, expect } from "@jest/globals"
-import { readFileSync, readdirSync, rmdir, rmdirSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync, rmdirSync } from "node:fs"
 import { randomBytes } from "node:crypto"
 import {
   Kurt,
@@ -65,7 +65,7 @@ describe("KurtCache", () => {
   test("when cache misses, runs the adapter setup fn just once", async () => {
     // Remove the cache dir first, to demonstrate that the cache dir will be
     // automatically created by the KurtCache adapter.
-    rmdirSync(cacheDir, { recursive: true })
+    if (existsSync(cacheDir)) rmdirSync(cacheDir, { recursive: true })
 
     // Use a random string to ensure an initial cache miss for this test run.
     const random = randomBytes(8).toString("hex")
