@@ -1,0 +1,2 @@
+// Ignore the test cache directory (but NOT the test-retain cache directory)
+.kurt-cache/test
