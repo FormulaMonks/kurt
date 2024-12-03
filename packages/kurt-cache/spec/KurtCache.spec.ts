@@ -1,5 +1,11 @@
 import { describe, test, expect } from "@jest/globals"
-import { existsSync, readFileSync, readdirSync, rmdirSync } from "node:fs"
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  rmdirSync,
+} from "node:fs"
 import { randomBytes } from "node:crypto"
 import {
   Kurt,
@@ -18,50 +24,15 @@ import { KurtCache } from "../src"
 import { zodToJsonSchema } from "zod-to-json-schema"
 import type { NonEmptyTuple } from "type-fest"
 
+// Define the cache directories that will be used by this test.
 const cacheDir = `${__dirname}/../.kurt-cache/test`
 const cacheDirRetain = `${cacheDir}-retain`
 
+// A convenience function to make the test cases succinct one-liners.
+const gen = async (kurt: Kurt, prompt: string) =>
+  (await kurt.generateNaturalLanguage({ prompt }).result).text
+
 describe("KurtCache", () => {
-  test("when cache hits, works without running the adapter fn", async () => {
-    // We compare with a hard-coded hash here to test that the hash function is
-    // stable/deterministic across library versions of KurtCache.
-    //
-    // If you find yourself needing to change this hash value, it means
-    // that you're breaking all existing cache entries, which is a breaking
-    // change for users of KurtCache who rely on it for their test suites.
-    const hash =
-      "ad557ba1818e8013f9e2fbc9598c034e263c96c5fe7edd491e75be8ce450f5c9"
-
-    // Assert that the cache file entry already exists (it has been
-    // committed into the repo and retained there)
-    const cached = readFileSync(`${cacheDirRetain}/stub-${hash}.yaml`, "utf8")
-    expect(cached).toContain("text: This was cached on disk")
-
-    // Use the cache adapter configured appropriately to find the cache entry.
-    let adapterFnCallCount = 0
-    const kurt = new Kurt(
-      new KurtCache(cacheDirRetain, "stub", () => {
-        adapterFnCallCount++
-        // If you need to replace the cache entry, comment out the below error,
-        // and un-comment the line below it that sets up the stub adapter.
-        throw new Error("This should not be called")
-        // return new StubAdapter([["This was cached", " on disk"]])
-      })
-    )
-
-    // Expect the cache hit to return the result text from the file.
-    const stream = kurt.generateNaturalLanguage({ prompt: "Was this cached?" })
-    expect((await stream.result).text).toEqual("This was cached on disk")
-
-    // Expect that the adapter setup function was never called.
-    expect(adapterFnCallCount).toEqual(0)
-
-    // Expect that the cache file entry was not modified.
-    expect(readFileSync(`${cacheDirRetain}/stub-${hash}.yaml`, "utf8")).toEqual(
-      cached
-    )
-  })
-
   test("when cache misses, runs the adapter setup fn just once", async () => {
     // Remove the cache dir first, to demonstrate that the cache dir will be
     // automatically created by the KurtCache adapter.
@@ -83,24 +54,65 @@ describe("KurtCache", () => {
       })
     )
 
-    // A convenience function to make the test cases succinct one-liners.
-    const gen = async (prompt: string) =>
-      (await kurt.generateNaturalLanguage({ prompt }).result).text
-
     // Expect the canned responses from the stub adapter to be returned,
     // with cache misses on the first call for each prompt, but with
     // cache hits on subsequent calls using a prior prompt.
-    expect(await gen(`Hello ${random}`)).toEqual(`World ${random}`)
-    expect(await gen(`foo ${random}`)).toEqual(`bar ${random}`)
-    expect(await gen(`Hello ${random}`)).toEqual(`World ${random}`)
-    expect(await gen(`foo ${random}`)).toEqual(`bar ${random}`)
-    expect(await gen(`foo ${random}`)).toEqual(`bar ${random}`)
+    expect(await gen(kurt, `Hello ${random}`)).toEqual(`World ${random}`)
+    expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
+    expect(await gen(kurt, `Hello ${random}`)).toEqual(`World ${random}`)
+    expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
+    expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
 
     // Expect that the adapter setup function was called just once.
     expect(adapterFnCallCount).toEqual(1)
 
     // Expect that the cache dir contains exactly two files.
     expect(readdirSync(cacheDir)).toHaveLength(2)
+  })
+
+  test("when cache hits, works without running the adapter fn", async () => {
+    // We compare with a hard-coded hash here to test that the hash function is
+    // stable/deterministic across library versions of KurtCache.
+    //
+    // If you find yourself needing to change this hash value, it means
+    // that you're breaking all existing cache entries, which is a breaking
+    // change for users of KurtCache who rely on it for their test suites.
+    const hash =
+      "ad557ba1818e8013f9e2fbc9598c034e263c96c5fe7edd491e75be8ce450f5c9"
+    const filePath = `${cacheDirRetain}/stub-${hash}.yaml`
+
+    // Assert that the cache file entry already exists (it has been
+    // committed into the repo and retained there)
+    const cached = readFileSync(filePath, "utf8")
+    expect(cached).toContain("text: This was cached on disk")
+
+    // Use the cache adapter configured appropriately to find the cache entry.
+    let adapterFnCallCount = 0
+    const kurt = new Kurt(
+      new KurtCache(cacheDirRetain, "stub", () => {
+        adapterFnCallCount++
+        return new StubAdapter([["This was cached", " on disk"]])
+      })
+    )
+
+    // Expect the cache hit to return the result text from the file.
+    expect(await gen(kurt, "Was this cached?")).toEqual(
+      "This was cached on disk"
+    )
+
+    // Expect that the adapter setup function was never called.
+    expect(adapterFnCallCount).toEqual(0)
+
+    // Expect that the cache file entry was not modified.
+    expect(readFileSync(filePath, "utf8")).toEqual(cached)
+
+    // Delete the cache file and prove that it regenerates exactly the same.
+    rmSync(filePath)
+    expect(await gen(kurt, "Was this cached?")).toEqual(
+      "This was cached on disk"
+    )
+    expect(adapterFnCallCount).toEqual(1)
+    expect(readFileSync(filePath, "utf8")).toEqual(cached)
   })
 })
 
