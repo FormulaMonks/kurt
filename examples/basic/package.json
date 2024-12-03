@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@formula-monks/kurt": "workspace:*",
+    "@formula-monks/kurt-cache": "workspace:*",
     "@formula-monks/kurt-open-ai": "workspace:*",
     "@formula-monks/kurt-vertex-ai": "workspace:*",
     "@google-cloud/vertexai": "1.1.0",

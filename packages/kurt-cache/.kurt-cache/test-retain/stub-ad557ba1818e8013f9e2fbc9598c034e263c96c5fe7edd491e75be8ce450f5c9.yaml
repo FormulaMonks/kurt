@@ -1,0 +1,13 @@
+messages:
+  - role: user
+    text: Was this cached?
+sampling:
+  maxOutputTokens: 4096
+  temperature: 0.5
+  topP: 0.95
+tools: {}
+response:
+  - chunk: This was cached
+  - chunk: " on disk"
+  - finished: true
+    text: This was cached on disk

@@ -1,0 +1,44 @@
+{
+  "name": "@formula-monks/kurt-cache",
+  "description": "Caching plugin for Kurt - A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
+  "license": "MIT",
+  "version": "1.0.0",
+  "homepage": "https://github.com/FormulaMonks/kurt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FormulaMonks/kurt.git",
+    "directory": "packages/kurt-cache"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --build",
+    "prepack": "pnpm run build",
+    "format": "pnpm biome format --write .",
+    "lint": "pnpm biome lint --apply .",
+    "check": "pnpm biome check .",
+    "prepublish": "../../scripts/interpolate-example-code.sh README.md",
+    "release": "pnpm exec semantic-release"
+  },
+  "release": {
+    "branches": ["main"],
+    "extends": "semantic-release-monorepo"
+  },
+  "dependencies": {
+    "@formula-monks/kurt": "^1.4.0",
+    "yaml": "^2.4.5",
+    "zod-to-json-schema": "^3.23.3"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/node": "^18.19.32",
+    "jest": "^29.7.0",
+    "semantic-release": "^23.0.8",
+    "semantic-release-monorepo": "^8.0.2",
+    "ts-jest": "^29.1.2",
+    "type-fest": "^4.30.0",
+    "typescript": "^5.4.5"
+  }
+}
