@@ -1,4 +1,5 @@
 import { describe, test, expect } from "@jest/globals"
+import { z } from "zod"
 import {
   existsSync,
   readFileSync,
@@ -29,8 +30,17 @@ const cacheDir = `${__dirname}/../.kurt-cache/test`
 const cacheDirRetain = `${cacheDir}-retain`
 
 // A convenience function to make the test cases succinct one-liners.
-const gen = async (kurt: Kurt, prompt: string) =>
-  (await kurt.generateNaturalLanguage({ prompt }).result).text
+async function gen(
+  kurt: Kurt,
+  prompt: string,
+  schema?: KurtSchema<KurtSchemaInner>
+) {
+  const stream = schema
+    ? kurt.generateStructuredData({ prompt, schema })
+    : kurt.generateNaturalLanguage({ prompt })
+  const result = await stream.result
+  return schema ? result.data : result.text
+}
 
 describe("KurtCache", () => {
   test("when cache misses, runs the adapter setup fn just once", async () => {
@@ -74,31 +84,33 @@ describe("KurtCache", () => {
     // We compare with a hard-coded hash here to test that the hash function is
     // stable/deterministic across library versions of KurtCache.
     //
-    // If you find yourself needing to change this hash value, it means
+    // If you find yourself needing to change this hash value when you didn't
+    // change the prompt or schema used in the test, it probably means
     // that you're breaking all existing cache entries, which is a breaking
     // change for users of KurtCache who rely on it for their test suites.
     const hash =
-      "ad557ba1818e8013f9e2fbc9598c034e263c96c5fe7edd491e75be8ce450f5c9"
+      "b8a5a99fa499ef332c4a599d5b1eff433fc0ee7cd6995e86fb7dbfd8b9ffe999"
     const filePath = `${cacheDirRetain}/stub-${hash}.yaml`
 
     // Assert that the cache file entry already exists (it has been
     // committed into the repo and retained there)
     const cached = readFileSync(filePath, "utf8")
-    expect(cached).toContain("text: This was cached on disk")
+    expect(cached).toContain("text: '{\"cached\":true}'")
 
     // Use the cache adapter configured appropriately to find the cache entry.
     let adapterFnCallCount = 0
     const kurt = new Kurt(
       new KurtCache(cacheDirRetain, "stub", () => {
         adapterFnCallCount++
-        return new StubAdapter([["This was cached", " on disk"]])
+        return new StubAdapter([['{"cached":', "true}"]])
       })
     )
 
     // Expect the cache hit to return the result text from the file.
-    expect(await gen(kurt, "Was this cached?")).toEqual(
-      "This was cached on disk"
-    )
+    const schema = z.object({ cached: z.boolean() }).strict()
+    expect(await gen(kurt, "Was this cached?", schema)).toEqual({
+      cached: true,
+    })
 
     // Expect that the adapter setup function was never called.
     expect(adapterFnCallCount).toEqual(0)
@@ -108,9 +120,9 @@ describe("KurtCache", () => {
 
     // Delete the cache file and prove that it regenerates exactly the same.
     rmSync(filePath)
-    expect(await gen(kurt, "Was this cached?")).toEqual(
-      "This was cached on disk"
-    )
+    expect(await gen(kurt, "Was this cached?", schema)).toEqual({
+      cached: true,
+    })
     expect(adapterFnCallCount).toEqual(1)
     expect(readFileSync(filePath, "utf8")).toEqual(cached)
   })
@@ -198,11 +210,16 @@ class StubAdapter
     yield { finished: true, text, data: undefined }
   }
 
-  transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
+  async *transformStructuredDataFromRawEvents<I extends KurtSchemaInner>(
     schema: KurtSchema<I>,
     rawEvents: AsyncIterable<{ bytes: string }>
   ): AsyncIterable<KurtStreamEvent<KurtSchemaResult<I>>> {
-    throw new Error("Not implemented because tests here don't use it")
+    let text = ""
+    for await (const { bytes } of rawEvents) {
+      text += bytes
+      yield { chunk: bytes }
+    }
+    yield { finished: true, text, data: schema.parse(JSON.parse(text)) }
   }
 
   transformWithOptionalToolsFromRawEvents<I extends KurtSchemaInnerMap>(

@@ -1,0 +1,28 @@
+messages:
+  - role: user
+    text: Was this cached?
+sampling:
+  maxOutputTokens: 4096
+  temperature: 0.5
+  topP: 0.95
+tools:
+  structured_data:
+    name: structured_data
+    description: ""
+    parameters:
+      type: object
+      properties:
+        cached:
+          type: boolean
+      required:
+        - cached
+      additionalProperties: false
+      $schema: http://json-schema.org/draft-07/schema#
+forceTool: structured_data
+response:
+  - chunk: '{"cached":'
+  - chunk: true}
+  - finished: true
+    text: '{"cached":true}'
+    data:
+      cached: true
