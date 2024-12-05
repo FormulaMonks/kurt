@@ -14,7 +14,7 @@ import type {
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { createHash, type Hash } from "node:crypto"
 import { stringify as stringifyYAML, parse as parseYAML } from "yaml"
-import { zodToJsonSchema } from "zod-to-json-schema"
+import { zodToJsonSchema, type JsonSchema7ObjectType } from "zod-to-json-schema"
 
 type CacheData = {
   messages: KurtMessage[]
@@ -23,7 +23,7 @@ type CacheData = {
     [key: string]: {
       name: string
       description: string
-      parameters: KurtSchema<KurtSchemaInner>
+      parameters: JsonSchema7ObjectType
     }
   }
   forceTool?: string
@@ -100,7 +100,15 @@ export class KurtCache<A extends KurtAdapter>
   }
 
   generateRawEvents(
-    options: Omit<CacheData, "response">
+    options: Omit<CacheData, "response" | "tools"> & {
+      tools: {
+        [key: string]: {
+          name: string
+          description: string
+          parameters: KurtSchema<KurtSchemaInner>
+        }
+      }
+    }
   ): AsyncIterable<AdapterRawEvent<A>> {
     // Hash the incoming options to determine the cache key.
     const digest = createHash("sha256")
@@ -120,7 +128,20 @@ export class KurtCache<A extends KurtAdapter>
     const adapter = this.lazyAdapter()
     return new ResponseEventsShouldCache(
       cacheFilePath,
-      options,
+      {
+        ...options,
+        tools: Object.fromEntries(
+          Object.entries(options.tools).map(([name, tool]) => [
+            name,
+            {
+              ...tool,
+              parameters: zodToJsonSchema(
+                tool.parameters
+              ) as JsonSchema7ObjectType,
+            },
+          ])
+        ),
+      },
       adapter.generateRawEvents({
         messages: adapter.transformToRawMessages(options.messages),
         sampling: options.sampling,
