@@ -5,6 +5,7 @@ sampling:
   maxOutputTokens: 4096
   temperature: 0.5
   topP: 0.95
+  forceSchemaConstrainedTokens: false
 tools:
   structured_data:
     name: structured_data
