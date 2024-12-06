@@ -15,6 +15,26 @@ export abstract class KurtError extends Error {
 }
 
 /**
+ * Base class for all Kurt errors thrown for rejected requests.
+ */
+export abstract class KurtRequestError extends KurtError {}
+
+/**
+ * Thrown by a Kurt adapter when the request tried to use a capability or
+ * feature that isn't supported by this particular adapter (but might be
+ * supported by other adapters, or by the same adapter class if instantiated
+ * with different configuration, such as selecting a different LLM snapshot).
+ */
+export class KurtCapabilityError extends KurtError {
+  constructor(
+    readonly adapter: KurtAdapter,
+    readonly missingCapability: string
+  ) {
+    super(`This adapter doesn't support: ${missingCapability}`)
+  }
+}
+
+/**
  * Base class for all Kurt errors thrown when handling a result stream.
  */
 export abstract class KurtResultError extends KurtError {}

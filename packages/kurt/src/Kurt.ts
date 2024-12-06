@@ -353,6 +353,25 @@ export const KurtSamplingOptionsDefault = {
    * without any "top tokens" filtering being applied before sampling.
    */
   topP: 0.95,
+
+  /**
+   * When true, structured data generation and/or tool calls will always use
+   * schema-aware constrained token sampling, rather than conditionally
+   * doing so, or falling back to relying only on the LLM's training for
+   * responding with structured data schemas.
+   *
+   * This gives a hard guarantee that the output will match the schema,
+   * but for some underlying LLM providers this may introduce more constraints
+   * on the kinds of JSON Schemas that are supported, which explains why
+   * it might not be the default behavior for a particular adapter.
+   *
+   * If this feature is unavailable for a particular adapter, the adapter
+   * should throw a `KurtCapabilityError` when this option is set to true.
+   *
+   * If this feature is available without downsides, the adapter should silently
+   * enable this feature regardless of the option being set to true or false.
+   */
+  forceSchemaConstrainedTokens: false,
 }
 
 export interface KurtGenerateNaturalLanguageOptions {

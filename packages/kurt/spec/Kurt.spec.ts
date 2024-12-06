@@ -30,6 +30,7 @@ describe("Kurt", () => {
         maxOutputTokens: 1024,
         temperature: 0.1,
         topP: 0.5,
+        forceSchemaConstrainedTokens: true,
       }
       const { adapter, kurt } = createV1({ sampling })
 
@@ -45,6 +46,7 @@ describe("Kurt", () => {
         maxOutputTokens: 1024,
         temperature: 0.1,
         topP: 0.5,
+        forceSchemaConstrainedTokens: true,
       }
       kurt.generateNaturalLanguage({ prompt: "Hello!", sampling })
 
