@@ -19,6 +19,7 @@ import {
   KurtResultValidateError,
   KurtResultLimitError,
   KurtResultBlockedError,
+  KurtCapabilityError,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -90,6 +91,13 @@ export class KurtVertexAI
     const llm = this.options.vertexAI.getGenerativeModel({
       model: this.options.model,
     }) as VertexAIGenerativeModel
+
+    if (options.sampling.forceSchemaConstrainedTokens) {
+      throw new KurtCapabilityError(
+        this,
+        "forceSchemaConstrainedTokens is not available for Vertex AI"
+      )
+    }
 
     // VertexAI requires that system messages be sent as a single message,
     // so we filter them out from the main messages array to send separately.
