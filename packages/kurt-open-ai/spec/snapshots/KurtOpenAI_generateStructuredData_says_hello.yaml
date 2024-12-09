@@ -2,11 +2,15 @@ step1Request:
   stream: true
   stream_options:
     include_usage: true
-  model: gpt-4o-2024-05-13
+  model: gpt-4o-mini-2024-07-18
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
   messages:
+    - role: system
+      content:
+        - type: text
+          text: Respond with JSON.
     - role: user
       content:
         - type: text
@@ -31,6 +35,8 @@ step1Request:
     type: function
     function:
       name: structured_data
+  response_format:
+    type: json_object
 step2RawChunks:
   - choices:
       - index: 0
@@ -39,14 +45,15 @@ step2RawChunks:
           content: null
           tool_calls:
             - index: 0
-              id: call_oZj1FnPJSZCVbFYtpNYPAm7P
+              id: call_9x7qX8eO6DgWYP8h1xc5kHsl
               type: function
               function:
                 name: structured_data
                 arguments: ""
+          refusal: null
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
@@ -57,7 +64,7 @@ step2RawChunks:
                 arguments: '{"'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
@@ -68,7 +75,7 @@ step2RawChunks:
                 arguments: say
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
@@ -79,7 +86,7 @@ step2RawChunks:
                 arguments: '":"'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
@@ -90,7 +97,7 @@ step2RawChunks:
                 arguments: hello
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
@@ -101,21 +108,29 @@ step2RawChunks:
                 arguments: '"}'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta: {}
         logprobs: null
         finish_reason: stop
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices: []
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_bba3c8e70b
     usage:
-      prompt_tokens: 66
+      prompt_tokens: 70
       completion_tokens: 5
-      total_tokens: 71
+      total_tokens: 75
+      prompt_tokens_details:
+        cached_tokens: 0
+        audio_tokens: 0
+      completion_tokens_details:
+        reasoning_tokens: 0
+        audio_tokens: 0
+        accepted_prediction_tokens: 0
+        rejected_prediction_tokens: 0
 step3KurtEvents:
   - chunk: '{"'
   - chunk: say
@@ -127,6 +142,6 @@ step3KurtEvents:
     data:
       say: hello
     metadata:
-      totalInputTokens: 66
+      totalInputTokens: 70
       totalOutputTokens: 5
-      systemFingerprint: fp_5bf7397cd3
+      systemFingerprint: fp_bba3c8e70b

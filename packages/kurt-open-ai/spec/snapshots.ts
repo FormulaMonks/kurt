@@ -13,7 +13,7 @@ import type {
   OpenAIResponse,
   OpenAIResponseChunk,
 } from "../src/OpenAI.types"
-import { KurtOpenAI } from "../src/KurtOpenAI"
+import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src/KurtOpenAI"
 
 function snapshotFilenameFor(testName: string | undefined) {
   return `${__dirname}/snapshots/${testName?.replace(/ /g, "_")}.yaml`
@@ -29,6 +29,7 @@ function dumpYaml(filename: string, data: object) {
 }
 
 export async function snapshotAndMock<T>(
+  model: KurtOpenAISupportedModel,
   testCaseFn: (kurt: Kurt) => KurtStream<T>
 ) {
   // Here's the data structure we will use to snapshot a request/response cycle.
@@ -91,7 +92,7 @@ export async function snapshotAndMock<T>(
   } as unknown as OpenAI
 
   // Run the test case function with a new instance of Kurt.
-  const kurt = new Kurt(new KurtOpenAI({ openAI, model: "gpt-4o-2024-05-13" }))
+  const kurt = new Kurt(new KurtOpenAI({ openAI, model }))
   const stream = testCaseFn(kurt)
 
   // Save the final stream of Kurt events.
@@ -114,11 +115,12 @@ export async function snapshotAndMock<T>(
 }
 
 export async function snapshotAndMockWithError<T>(
+  model: KurtOpenAISupportedModel,
   testCaseFn: (kurt: Kurt) => KurtStream<T>,
   errorCheckFn: (error: Error) => void
 ) {
   try {
-    await snapshotAndMock(testCaseFn)
+    await snapshotAndMock(model, testCaseFn)
     expectedErrorToBeThrownBeforeThisPoint()
   } catch (error: unknown) {
     if (

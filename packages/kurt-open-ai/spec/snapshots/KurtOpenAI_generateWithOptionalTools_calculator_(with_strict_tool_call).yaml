@@ -2,7 +2,7 @@ step1Request:
   stream: true
   stream_options:
     include_usage: true
-  model: gpt-4o-2024-05-13
+  model: gpt-4o-mini-2024-07-18
   max_tokens: 4096
   temperature: 0.5
   top_p: 0.95
@@ -11,16 +11,6 @@ step1Request:
       content:
         - type: text
           text: What's 9876356 divided by 30487, rounded to the nearest integer?
-    - role: assistant
-      tool_calls:
-        - id: call_1
-          type: function
-          function:
-            name: divide
-            arguments: '{"dividend":9876356,"divisor":30487}'
-    - role: tool
-      tool_call_id: call_1
-      content: '{"quotient":323.95302915996984}'
   tools:
     - type: function
       function:
@@ -41,6 +31,7 @@ step1Request:
           additionalProperties: false
           description: Calculate a subtraction
           $schema: http://json-schema.org/draft-07/schema#
+        strict: true
     - type: function
       function:
         name: divide
@@ -60,190 +51,192 @@ step1Request:
           additionalProperties: false
           description: Calculate a division
           $schema: http://json-schema.org/draft-07/schema#
+        strict: true
 step2RawChunks:
   - choices:
       - index: 0
         delta:
           role: assistant
-          content: ""
+          content: null
+          tool_calls:
+            - index: 0
+              id: call_JSjy9XbYc4xyg5prbtds4JqN
+              type: function
+              function:
+                name: divide
+                arguments: ""
           refusal: null
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: "987"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '{"'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: "635"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: div
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: "6"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: idend
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " divided"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '":'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " by"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "987"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " "
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "635"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: "304"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "6"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: "87"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: ',"'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: ","
+          tool_calls:
+            - index: 0
+              function:
+                arguments: div
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " rounded"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: isor
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " to"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: '":'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " the"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "304"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " nearest"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "87"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta:
-          content: " integer"
+          tool_calls:
+            - index: 0
+              function:
+                arguments: "}"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: ","
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " is"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " approximately"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " "
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: "324"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: .
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices:
       - index: 0
         delta: {}
         logprobs: null
-        finish_reason: stop
-    system_fingerprint: fp_e37d8a480e
+        finish_reason: tool_calls
+    system_fingerprint: fp_bba3c8e70b
     usage: null
   - choices: []
-    system_fingerprint: fp_e37d8a480e
+    system_fingerprint: fp_bba3c8e70b
     usage:
-      prompt_tokens: 166
-      completion_tokens: 21
-      total_tokens: 187
+      prompt_tokens: 125
+      completion_tokens: 22
+      total_tokens: 147
       prompt_tokens_details:
         cached_tokens: 0
         audio_tokens: 0
@@ -253,30 +246,28 @@ step2RawChunks:
         accepted_prediction_tokens: 0
         rejected_prediction_tokens: 0
 step3KurtEvents:
+  - chunk: '{"'
+  - chunk: div
+  - chunk: idend
+  - chunk: '":'
   - chunk: "987"
   - chunk: "635"
   - chunk: "6"
-  - chunk: " divided"
-  - chunk: " by"
-  - chunk: " "
+  - chunk: ',"'
+  - chunk: div
+  - chunk: isor
+  - chunk: '":'
   - chunk: "304"
   - chunk: "87"
-  - chunk: ","
-  - chunk: " rounded"
-  - chunk: " to"
-  - chunk: " the"
-  - chunk: " nearest"
-  - chunk: " integer"
-  - chunk: ","
-  - chunk: " is"
-  - chunk: " approximately"
-  - chunk: " "
-  - chunk: "324"
-  - chunk: .
+  - chunk: "}"
   - finished: true
-    text: 9876356 divided by 30487, rounded to the nearest integer, is approximately
-      324.
+    text: '{"dividend":9876356,"divisor":30487}'
+    data:
+      name: divide
+      args:
+        dividend: 9876356
+        divisor: 30487
     metadata:
-      totalInputTokens: 166
-      totalOutputTokens: 21
-      systemFingerprint: fp_e37d8a480e
+      totalInputTokens: 125
+      totalOutputTokens: 22
+      systemFingerprint: fp_bba3c8e70b
