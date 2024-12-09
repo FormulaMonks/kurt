@@ -62,21 +62,21 @@ step2RawChunks:
           content: null
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
         delta:
           tool_calls:
             - index: 0
-              id: call_ktAoc80YJV28c2LbGLnuCS5d
+              id: call_PGf2wPkvmAag3xtEsDnS9B0F
               type: function
               function:
                 name: divide
                 arguments: ""
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -87,7 +87,7 @@ step2RawChunks:
                 arguments: '{"di'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -98,7 +98,7 @@ step2RawChunks:
                 arguments: viden
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -109,7 +109,7 @@ step2RawChunks:
                 arguments: 'd": 80'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -120,7 +120,7 @@ step2RawChunks:
                 arguments: "2625"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -131,7 +131,7 @@ step2RawChunks:
                 arguments: 6882,
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -142,7 +142,7 @@ step2RawChunks:
                 arguments: ' "divi'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -153,7 +153,7 @@ step2RawChunks:
                 arguments: sor"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -164,7 +164,7 @@ step2RawChunks:
                 arguments: ": 340"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -175,21 +175,21 @@ step2RawChunks:
                 arguments: 2398}
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
         delta:
           tool_calls:
             - index: 1
-              id: call_GL9pg4tobHyUhUrxzlt8BsXk
+              id: call_vBgrIZCwG8YMhcrxJCEbdq1b
               type: function
               function:
                 name: divide
                 arguments: ""
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -200,7 +200,7 @@ step2RawChunks:
                 arguments: '{"di'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -211,7 +211,7 @@ step2RawChunks:
                 arguments: viden
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -222,7 +222,7 @@ step2RawChunks:
                 arguments: 'd": 11'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -233,7 +233,7 @@ step2RawChunks:
                 arguments: "8583"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -244,7 +244,7 @@ step2RawChunks:
                 arguments: 5515,
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -255,7 +255,7 @@ step2RawChunks:
                 arguments: ' "divi'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -266,7 +266,7 @@ step2RawChunks:
                 arguments: sor"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -277,7 +277,7 @@ step2RawChunks:
                 arguments: ": 348"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -288,21 +288,21 @@ step2RawChunks:
                 arguments: 263}
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
         delta:
           tool_calls:
             - index: 2
-              id: call_uRCrAfrGiGUByuE2ShmPdM9L
+              id: call_uvfAmM0tr46k5CQnffssjiSa
               type: function
               function:
                 name: subtract
                 arguments: ""
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -313,7 +313,7 @@ step2RawChunks:
                 arguments: '{"mi'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -324,7 +324,7 @@ step2RawChunks:
                 arguments: nuend
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -335,7 +335,7 @@ step2RawChunks:
                 arguments: '": 901'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -346,7 +346,7 @@ step2RawChunks:
                 arguments: "3509"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -357,7 +357,7 @@ step2RawChunks:
                 arguments: 4495,
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -368,7 +368,7 @@ step2RawChunks:
                 arguments: ' "subt'
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -379,7 +379,7 @@ step2RawChunks:
                 arguments: rahe
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -390,7 +390,7 @@ step2RawChunks:
                 arguments: 'nd": '
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -401,7 +401,7 @@ step2RawChunks:
                 arguments: "899449"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -412,7 +412,7 @@ step2RawChunks:
                 arguments: "5435"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -423,21 +423,29 @@ step2RawChunks:
                 arguments: 0}
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
         delta: {}
         logprobs: null
         finish_reason: tool_calls
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices: []
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage:
       prompt_tokens: 154
       completion_tokens: 91
       total_tokens: 245
+      prompt_tokens_details:
+        cached_tokens: 0
+        audio_tokens: 0
+      completion_tokens_details:
+        reasoning_tokens: 0
+        audio_tokens: 0
+        accepted_prediction_tokens: 0
+        rejected_prediction_tokens: 0
 step3KurtEvents:
   - chunk: '{"di'
   - chunk: viden
@@ -492,4 +500,4 @@ step3KurtEvents:
     metadata:
       totalInputTokens: 154
       totalOutputTokens: 91
-      systemFingerprint: fp_5bf7397cd3
+      systemFingerprint: fp_e37d8a480e

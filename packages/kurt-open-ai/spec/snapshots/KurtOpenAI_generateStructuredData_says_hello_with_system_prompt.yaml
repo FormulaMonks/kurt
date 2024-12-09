@@ -10,7 +10,9 @@ step1Request:
     - role: system
       content:
         - type: text
-          text: Respond with JSON.
+          text: |-
+            Be nice.
+            Respond with JSON.
     - role: user
       content:
         - type: text
@@ -25,7 +27,6 @@ step1Request:
           properties:
             say:
               type: string
-              pattern: (?=IMPOSSIBLE)hello
               description: A single word to say
           required:
             - say
@@ -46,7 +47,7 @@ step2RawChunks:
           content: null
           tool_calls:
             - index: 0
-              id: call_o9V4SGLznZr6NCnsU2QjOdeg
+              id: call_0Ac3aIIJfKuDY7IopXG4rF2C
               type: function
               function:
                 name: structured_data
@@ -121,9 +122,9 @@ step2RawChunks:
   - choices: []
     system_fingerprint: fp_bba3c8e70b
     usage:
-      prompt_tokens: 82
+      prompt_tokens: 73
       completion_tokens: 5
-      total_tokens: 87
+      total_tokens: 78
       prompt_tokens_details:
         cached_tokens: 0
         audio_tokens: 0
@@ -138,3 +139,11 @@ step3KurtEvents:
   - chunk: '":"'
   - chunk: hello
   - chunk: '"}'
+  - finished: true
+    text: '{"say":"hello"}'
+    data:
+      say: hello
+    metadata:
+      totalInputTokens: 73
+      totalOutputTokens: 5
+      systemFingerprint: fp_bba3c8e70b

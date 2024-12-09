@@ -4,7 +4,7 @@ import { KurtResultLimitError } from "@formula-monks/kurt"
 
 describe("KurtOpenAI generateNaturalLanguage", () => {
   test("says hello", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateNaturalLanguage({
         prompt: "Say hello!",
       })
@@ -13,7 +13,7 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
   })
 
   test("writes a haiku with high temperature", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateNaturalLanguage({
         prompt: "Compose a haiku about a mountain stream at night.",
         sampling: {
@@ -34,6 +34,7 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
 
   test("throws a limit error", async () => {
     await snapshotAndMockWithError(
+      "gpt-4o-2024-05-13",
       (kurt) =>
         kurt.generateNaturalLanguage({
           prompt: "Compose a haiku about content length limitations.",
@@ -50,7 +51,7 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
   })
 
   test("describes a base64-encoded image", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateNaturalLanguage({
         prompt: "Describe this emoji, in two words.",
         extraMessages: [

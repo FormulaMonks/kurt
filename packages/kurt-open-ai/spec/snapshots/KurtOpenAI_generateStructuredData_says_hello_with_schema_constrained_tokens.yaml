@@ -7,50 +7,33 @@ step1Request:
   temperature: 0.5
   top_p: 0.95
   messages:
-    - role: system
-      content:
-        - type: text
-          text: Respond with JSON.
     - role: user
       content:
         - type: text
           text: Say hello!
-  tools:
-    - type: function
-      function:
-        name: structured_data
-        description: Say a word
-        parameters:
-          type: object
-          properties:
-            say:
-              type: string
-              pattern: (?=IMPOSSIBLE)hello
-              description: A single word to say
-          required:
-            - say
-          additionalProperties: false
-          description: Say a word
-          $schema: http://json-schema.org/draft-07/schema#
-  tool_choice:
-    type: function
-    function:
-      name: structured_data
   response_format:
-    type: json_object
+    type: json_schema
+    json_schema:
+      strict: true
+      name: structured_data
+      description: Say a word
+      schema:
+        type: object
+        properties:
+          say:
+            type: string
+            description: A single word to say
+        required:
+          - say
+        additionalProperties: false
+        description: Say a word
+        $schema: http://json-schema.org/draft-07/schema#
 step2RawChunks:
   - choices:
       - index: 0
         delta:
           role: assistant
-          content: null
-          tool_calls:
-            - index: 0
-              id: call_o9V4SGLznZr6NCnsU2QjOdeg
-              type: function
-              function:
-                name: structured_data
-                arguments: ""
+          content: ""
           refusal: null
         logprobs: null
         finish_reason: null
@@ -59,10 +42,7 @@ step2RawChunks:
   - choices:
       - index: 0
         delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '{"'
+          content: '{"'
         logprobs: null
         finish_reason: null
     system_fingerprint: fp_bba3c8e70b
@@ -70,10 +50,7 @@ step2RawChunks:
   - choices:
       - index: 0
         delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: say
+          content: say
         logprobs: null
         finish_reason: null
     system_fingerprint: fp_bba3c8e70b
@@ -81,10 +58,7 @@ step2RawChunks:
   - choices:
       - index: 0
         delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '":"'
+          content: '":"'
         logprobs: null
         finish_reason: null
     system_fingerprint: fp_bba3c8e70b
@@ -92,10 +66,7 @@ step2RawChunks:
   - choices:
       - index: 0
         delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: hello
+          content: hello
         logprobs: null
         finish_reason: null
     system_fingerprint: fp_bba3c8e70b
@@ -103,10 +74,7 @@ step2RawChunks:
   - choices:
       - index: 0
         delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '"}'
+          content: '"}'
         logprobs: null
         finish_reason: null
     system_fingerprint: fp_bba3c8e70b
@@ -121,9 +89,9 @@ step2RawChunks:
   - choices: []
     system_fingerprint: fp_bba3c8e70b
     usage:
-      prompt_tokens: 82
+      prompt_tokens: 74
       completion_tokens: 5
-      total_tokens: 87
+      total_tokens: 79
       prompt_tokens_details:
         cached_tokens: 0
         audio_tokens: 0
@@ -138,3 +106,11 @@ step3KurtEvents:
   - chunk: '":"'
   - chunk: hello
   - chunk: '"}'
+  - finished: true
+    text: '{"say":"hello"}'
+    data:
+      say: hello
+    metadata:
+      totalInputTokens: 74
+      totalOutputTokens: 5
+      systemFingerprint: fp_bba3c8e70b

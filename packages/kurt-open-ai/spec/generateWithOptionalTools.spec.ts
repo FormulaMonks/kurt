@@ -20,7 +20,7 @@ const calculatorTools = {
 
 describe("KurtOpenAI generateWithOptionalTools", () => {
   test("calculator (with tool call)", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateWithOptionalTools({
         prompt:
           "What's 9876356 divided by 30487, rounded to the nearest integer?",
@@ -34,8 +34,24 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
     expect(result.additionalData).toBeUndefined() // no parallel tool calls
   })
 
+  test("calculator (with strict tool call)", async () => {
+    const result = await snapshotAndMock("gpt-4o-mini-2024-07-18", (kurt) =>
+      kurt.generateWithOptionalTools({
+        prompt:
+          "What's 9876356 divided by 30487, rounded to the nearest integer?",
+        tools: calculatorTools,
+        sampling: { forceSchemaConstrainedTokens: true },
+      })
+    )
+    expect(result.data).toEqual({
+      name: "divide",
+      args: { dividend: 9876356, divisor: 30487 },
+    })
+    expect(result.additionalData).toBeUndefined() // no parallel tool calls
+  })
+
   test("calculator (after tool call)", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateWithOptionalTools({
         prompt:
           "What's 9876356 divided by 30487, rounded to the nearest integer?",
@@ -58,7 +74,7 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
   })
 
   test("calculator (with parallel tool calls)", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateWithOptionalTools({
         prompt: [
           "Calculate each of the following:",
@@ -86,7 +102,7 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
   })
 
   test("calculator (after parallel tool calls)", async () => {
-    const result = await snapshotAndMock((kurt) =>
+    const result = await snapshotAndMock("gpt-4o-2024-05-13", (kurt) =>
       kurt.generateWithOptionalTools({
         prompt: [
           "Calculate each of the following:",
@@ -125,7 +141,7 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
     )
     expect(result.text).toEqual(
       [
-        "Here are the results of the calculations:",
+        "Here are the results:",
         "",
         "1. 8026256882 divided by 3402398 is 2359.",
         "2. 1185835515 divided by 348263 is 3405.",

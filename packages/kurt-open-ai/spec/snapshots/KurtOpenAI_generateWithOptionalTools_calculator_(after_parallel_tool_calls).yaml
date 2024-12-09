@@ -90,9 +90,10 @@ step2RawChunks:
         delta:
           role: assistant
           content: ""
+          refusal: null
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -100,7 +101,7 @@ step2RawChunks:
           content: Here
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -108,7 +109,7 @@ step2RawChunks:
           content: " are"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -116,7 +117,7 @@ step2RawChunks:
           content: " the"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -124,31 +125,7 @@ step2RawChunks:
           content: " results"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " of"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " the"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " calculations"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -158,7 +135,7 @@ step2RawChunks:
 
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -166,7 +143,7 @@ step2RawChunks:
           content: "1"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -174,7 +151,7 @@ step2RawChunks:
           content: .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -182,7 +159,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -190,7 +167,7 @@ step2RawChunks:
           content: "802"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -198,7 +175,7 @@ step2RawChunks:
           content: "625"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -206,7 +183,7 @@ step2RawChunks:
           content: "688"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -214,7 +191,7 @@ step2RawChunks:
           content: "2"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -222,7 +199,7 @@ step2RawChunks:
           content: " divided"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -230,7 +207,7 @@ step2RawChunks:
           content: " by"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -238,7 +215,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -246,7 +223,7 @@ step2RawChunks:
           content: "340"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -254,7 +231,7 @@ step2RawChunks:
           content: "239"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -262,7 +239,7 @@ step2RawChunks:
           content: "8"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -270,7 +247,7 @@ step2RawChunks:
           content: " is"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -278,7 +255,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -286,7 +263,7 @@ step2RawChunks:
           content: "235"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -294,7 +271,7 @@ step2RawChunks:
           content: "9"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -303,7 +280,7 @@ step2RawChunks:
             .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -311,7 +288,7 @@ step2RawChunks:
           content: "2"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -319,7 +296,7 @@ step2RawChunks:
           content: .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -327,7 +304,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -335,7 +312,7 @@ step2RawChunks:
           content: "118"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -343,7 +320,7 @@ step2RawChunks:
           content: "583"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -351,7 +328,7 @@ step2RawChunks:
           content: "551"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -359,7 +336,7 @@ step2RawChunks:
           content: "5"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -367,7 +344,7 @@ step2RawChunks:
           content: " divided"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -375,7 +352,7 @@ step2RawChunks:
           content: " by"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -383,7 +360,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -391,7 +368,7 @@ step2RawChunks:
           content: "348"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -399,7 +376,7 @@ step2RawChunks:
           content: "263"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -407,7 +384,7 @@ step2RawChunks:
           content: " is"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -415,7 +392,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -423,7 +400,7 @@ step2RawChunks:
           content: "340"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -431,7 +408,7 @@ step2RawChunks:
           content: "5"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -440,7 +417,7 @@ step2RawChunks:
             .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -448,7 +425,7 @@ step2RawChunks:
           content: "3"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -456,7 +433,7 @@ step2RawChunks:
           content: .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -464,7 +441,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -472,7 +449,7 @@ step2RawChunks:
           content: "901"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -480,7 +457,7 @@ step2RawChunks:
           content: "350"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -488,7 +465,7 @@ step2RawChunks:
           content: "944"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -496,7 +473,7 @@ step2RawChunks:
           content: "95"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -504,7 +481,7 @@ step2RawChunks:
           content: " minus"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -512,7 +489,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -520,7 +497,7 @@ step2RawChunks:
           content: "899"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -528,7 +505,7 @@ step2RawChunks:
           content: "449"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -536,7 +513,7 @@ step2RawChunks:
           content: "543"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -544,7 +521,7 @@ step2RawChunks:
           content: "50"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -552,7 +529,7 @@ step2RawChunks:
           content: " is"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -560,7 +537,7 @@ step2RawChunks:
           content: " "
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -568,7 +545,7 @@ step2RawChunks:
           content: "190"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -576,7 +553,7 @@ step2RawChunks:
           content: "140"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -584,7 +561,7 @@ step2RawChunks:
           content: "145"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
@@ -592,29 +569,34 @@ step2RawChunks:
           content: .
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices:
       - index: 0
         delta: {}
         logprobs: null
         finish_reason: stop
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage: null
   - choices: []
-    system_fingerprint: fp_5bf7397cd3
+    system_fingerprint: fp_e37d8a480e
     usage:
       prompt_tokens: 272
-      completion_tokens: 63
-      total_tokens: 335
+      completion_tokens: 60
+      total_tokens: 332
+      prompt_tokens_details:
+        cached_tokens: 0
+        audio_tokens: 0
+      completion_tokens_details:
+        reasoning_tokens: 0
+        audio_tokens: 0
+        accepted_prediction_tokens: 0
+        rejected_prediction_tokens: 0
 step3KurtEvents:
   - chunk: Here
   - chunk: " are"
   - chunk: " the"
   - chunk: " results"
-  - chunk: " of"
-  - chunk: " the"
-  - chunk: " calculations"
   - chunk: |+
       :
 
@@ -676,12 +658,12 @@ step3KurtEvents:
   - chunk: .
   - finished: true
     text: |-
-      Here are the results of the calculations:
+      Here are the results:
 
       1. 8026256882 divided by 3402398 is 2359.
       2. 1185835515 divided by 348263 is 3405.
       3. 90135094495 minus 89944954350 is 190140145.
     metadata:
       totalInputTokens: 272
-      totalOutputTokens: 63
-      systemFingerprint: fp_5bf7397cd3
+      totalOutputTokens: 60
+      systemFingerprint: fp_e37d8a480e

@@ -18,6 +18,7 @@ import {
   KurtResultBlockedError,
   KurtResultParseError,
   KurtResultValidateError,
+  KurtCapabilityError,
 } from "@formula-monks/kurt"
 import type {
   OpenAI,
@@ -32,6 +33,8 @@ import { ZodError } from "zod"
 // These models support function calling.
 const COMPATIBLE_MODELS = [
   "gpt-4o",
+  "gpt-4o-2024-11-20",
+  "gpt-4o-2024-08-06",
   "gpt-4o-2024-05-13",
   "gpt-4o-mini",
   "gpt-4o-mini-2024-07-18",
@@ -82,6 +85,34 @@ export class KurtOpenAI
     return COMPATIBLE_MODELS.includes(model as KurtOpenAISupportedModel)
   }
 
+  static isSupportedModelForSchemaConstrainedTokens(model: string): boolean {
+    if (!KurtOpenAI.isSupportedModel(model)) return false
+    // gpt-4-* models do NOT support schema-constrained tokens
+    if (model.startsWith("gpt-4-")) return false
+    // gpt-3.5-* models do NOT support schema-constrained tokens
+    if (model.startsWith("gpt-3.5-")) return false
+    // gpt-4o-2024-05-13 does NOT support schema-constrained tokens
+    if (model === "gpt-4o-2024-05-13") return false
+
+    // Other supported models do support schema-constrained tokens.
+    return true
+  }
+
+  /**
+   * Throw an error if the model doesn't support schema constrained tokens.
+   */
+  private checkModelForSchemaConstrainedTokens(model: string) {
+    if (!KurtOpenAI.isSupportedModelForSchemaConstrainedTokens(model))
+      throw new KurtCapabilityError(
+        this,
+        [
+          "forceSchemaConstrainedTokens",
+          "is not available for older models, including",
+          model,
+        ].join(" ")
+      )
+  }
+
   transformToRawMessages = toOpenAIMessages
 
   transformToRawSchema = zodToJsonSchema
@@ -109,11 +140,53 @@ export class KurtOpenAI
     const tools = Object.values(options.tools)
     if (tools.length > 0) req.tools = tools
 
-    if (options.forceTool)
-      req.tool_choice = {
-        type: "function",
-        function: { name: options.forceTool },
+    if (options.sampling.forceSchemaConstrainedTokens) {
+      this.checkModelForSchemaConstrainedTokens(this.options.model)
+
+      // Mark all tools as strict, enabling schema-constrained token sampling.
+      for (const tool of tools) tool.function.strict = true
+    }
+
+    if (options.forceTool) {
+      const toolFunction = options.tools[options.forceTool]?.function
+      if (!toolFunction)
+        throw new Error(
+          `The tool ${options.forceTool} wasn't found in the tools list`
+        )
+
+      if (options.sampling.forceSchemaConstrainedTokens) {
+        // Forcing a particular tool with schema-constrained tokens is treated
+        // as a special case of the response format, instead of a tool call.
+        req.tools = undefined
+        req.response_format = {
+          type: "json_schema",
+          json_schema: {
+            strict: true,
+            name: toolFunction.name,
+            description: toolFunction.description,
+            schema: toolFunction.parameters,
+          },
+        }
+      } else {
+        req.tool_choice = {
+          type: "function",
+          function: { name: options.forceTool },
+        }
+        // If we're not using schema-constrained tokens, we can at least use
+        // JSON-constrained token sampling to force the tool call as valid JSON.
+        req.response_format = { type: "json_object" }
+
+        // OpenAI requires us to use the word JSON at least once in the prompt
+        // messages when forcing JSON-constrained token sampling.
+        // Therefore we may need to add it here.
+        if (!doesMessageListContainSubstring(options.messages, "JSON")) {
+          req.messages = withInjectedSystemPromptLine(
+            options.messages,
+            "Respond with JSON."
+          )
+        }
       }
+    }
 
     const promise = this.options.openAI.chat.completions.create(req)
 
@@ -449,4 +522,69 @@ function convertMetadata(rawEvent: OpenAIResponseChunk) {
     metadata.systemFingerprint = rawEvent.system_fingerprint
   }
   return metadata
+}
+
+/**
+ * Return true if any of the messages contain the given substring.
+ */
+function doesMessageListContainSubstring(
+  messages: OpenAIMessage[],
+  substring: string
+) {
+  for (const message of messages) {
+    const content = message.content
+    if (!content) continue
+
+    if (typeof content === "string") {
+      if (content.includes(substring)) return true
+      continue
+    }
+
+    for (const part of content) {
+      if ("text" in part && part.text?.includes(substring)) return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Return a new list of messages with the given system prompt line injected.
+ */
+function withInjectedSystemPromptLine(
+  messages: readonly OpenAIMessage[],
+  systemPromptLine: string
+): OpenAIMessage[] {
+  // Find an existing system prompt to modify.
+  const existingSystemPrompt = messages.find(
+    (message) => message.role === "system"
+  )
+
+  // If there is no existing system prompt, we'll simply add one
+  // that contains only the new desired line.
+  if (!existingSystemPrompt) {
+    return [
+      { role: "system", content: [{ type: "text", text: systemPromptLine }] },
+      ...messages,
+    ]
+  }
+
+  // If there is an existing system prompt, we'll modify it to include
+  // the new desired line as part of the last content part.
+  const existingParts: { type: "text"; text: string }[] =
+    typeof existingSystemPrompt.content === "string"
+      ? [{ type: "text", text: existingSystemPrompt.content }]
+      : (existingSystemPrompt.content as { type: "text"; text: string }[])
+  const lastPart = existingParts[existingParts.length - 1] ?? { text: "" }
+  const priorParts = existingParts.slice(0, -1)
+  const newParts: { type: "text"; text: string }[] = [
+    ...priorParts,
+    { type: "text", text: `${lastPart?.text}\n${systemPromptLine}` },
+  ]
+  return messages.map(
+    (message): OpenAIMessage =>
+      message === existingSystemPrompt
+        ? { ...message, content: newParts }
+        : message
+  )
 }
