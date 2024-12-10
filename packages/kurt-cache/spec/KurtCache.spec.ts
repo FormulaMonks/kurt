@@ -200,6 +200,14 @@ class StubAdapter
     }
     forceTool?: string
   }) {
+    // If there are tools, expect the forceTool to be set, because these tests
+    // don't use the "optional tools" feature. This lets us ensure that the
+    // forceTool is set correctly in the tests that use it.
+    if (Object.keys(options.tools).length > 0) {
+      expect(options.forceTool).toBeDefined()
+    }
+
+    // Emit the next canned response.
     for (const bytes of this.nextCannedResponse()) {
       yield { bytes }
     }

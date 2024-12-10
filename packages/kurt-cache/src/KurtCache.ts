@@ -143,8 +143,8 @@ export class KurtCache<A extends KurtAdapter>
         ),
       },
       adapter.generateRawEvents({
+        ...options,
         messages: adapter.transformToRawMessages(options.messages),
-        sampling: options.sampling,
         tools: Object.fromEntries(
           Object.entries(options.tools).map(([name, tool]) => [
             name,
