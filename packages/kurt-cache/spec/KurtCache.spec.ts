@@ -33,11 +33,12 @@ const cacheDirRetain = `${cacheDir}-retain`
 async function gen(
   kurt: Kurt,
   prompt: string,
-  schema?: KurtSchema<KurtSchemaInner>
+  schema?: KurtSchema<KurtSchemaInner>,
+  sampling?: KurtSamplingOptions
 ) {
   const stream = schema
-    ? kurt.generateStructuredData({ prompt, schema })
-    : kurt.generateNaturalLanguage({ prompt })
+    ? kurt.generateStructuredData({ prompt, schema, sampling })
+    : kurt.generateNaturalLanguage({ prompt, sampling })
   const result = await stream.result
   return schema ? result.data : result.text
 }
@@ -59,6 +60,7 @@ describe("KurtCache", () => {
         return new StubAdapter([
           ["World ", random],
           ["bar ", random],
+          ["bar2 ", random],
           ["never ", random],
         ])
       })
@@ -71,13 +73,17 @@ describe("KurtCache", () => {
     expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
     expect(await gen(kurt, `Hello ${random}`)).toEqual(`World ${random}`)
     expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
-    expect(await gen(kurt, `foo ${random}`)).toEqual(`bar ${random}`)
+    expect(
+      await gen(kurt, `foo ${random}`, undefined, {
+        forceSchemaConstrainedTokens: true,
+      })
+    ).toEqual(`bar2 ${random}`)
 
     // Expect that the adapter setup function was called just once.
     expect(adapterFnCallCount).toEqual(1)
 
-    // Expect that the cache dir contains exactly two files.
-    expect(readdirSync(cacheDir)).toHaveLength(2)
+    // Expect that the cache dir contains exactly three files.
+    expect(readdirSync(cacheDir)).toHaveLength(3)
   })
 
   test("when cache hits, works without running the adapter fn", async () => {

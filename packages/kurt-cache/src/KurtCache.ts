@@ -305,6 +305,11 @@ function hashSamplingOptions(digest: Hash, options: KurtSamplingOptions): Hash {
   mayHash(digest, "maxOutputTokens", options.maxOutputTokens)
   mayHash(digest, "temperature", options.temperature)
   mayHash(digest, "topP", options.topP)
+  mayHash(
+    digest,
+    "forceSchemaConstrainedTokens",
+    options.forceSchemaConstrainedTokens
+  )
   return digest
 }
 
@@ -357,10 +362,11 @@ function hashSchema(digest: Hash, schema: KurtSchema<KurtSchemaInner>) {
 function mayHash(
   digest: Hash,
   key: string,
-  value: string | number | undefined
+  value: string | number | boolean | undefined
 ) {
-  if (value === undefined) return
+  if (value === undefined || value === false) return
   digest.update(key)
+  if (value === true) return
   if (typeof value === "string") digest.update(value)
   else digest.update(value.toString())
 }
