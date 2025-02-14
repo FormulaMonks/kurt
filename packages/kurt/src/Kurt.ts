@@ -218,6 +218,20 @@ export type KurtMessage = {
     base64Data: string
   }
 
+  audioData: {
+    /**
+     * The IANA standard MIME type of the inline audio data.
+     *
+     * Not all MIME types are supported by all LLM providers.
+     * "audio/mpeg" is the most commonly supported.
+     * Check your LLM provider's documentation for the right list.
+     */
+    mimeType: string
+
+    /** Base64-encoded audio data, as a string. */
+    base64Data: string
+  }
+
   /**
    * When present, this is a tool call message, with structured data input
    * in the `args` object, and structured data output in the `result` object.
