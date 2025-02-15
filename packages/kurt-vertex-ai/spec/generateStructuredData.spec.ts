@@ -1,10 +1,11 @@
-import { describe, test, expect } from "@jest/globals"
+import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
 import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
 import {
   KurtCapabilityError,
   KurtResultValidateError,
 } from "@formula-monks/kurt"
+import * as fs from "node:fs"
 
 describe("KurtVertexAI generateStructuredData", () => {
   test("says hello (response format 1)", async () => {
@@ -107,5 +108,32 @@ describe("KurtVertexAI generateStructuredData", () => {
         ])
       }
     )
+  })
+
+  test("transcribes a base64-encoded audio", async () => {
+    const result = await snapshotAndMock((kurt) =>
+      kurt.generateStructuredData({
+        prompt: "Transcribe this audio file.",
+        extraMessages: [
+          {
+            role: "user",
+            audioData: {
+              mimeType: "audio/mpeg",
+              base64Data: fs.readFileSync("spec/data/HelloWorld.mp3", {
+                encoding: "base64",
+              }),
+            },
+          },
+        ],
+        schema: z
+          .object({
+            transcription: z
+              .string()
+              .describe("The transcription of the audio"),
+          })
+          .describe("Result of transcribing an audio file"),
+      })
+    )
+    expect(result.data).toEqual({ transcription: "Hello world" })
   })
 })

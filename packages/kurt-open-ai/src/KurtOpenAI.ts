@@ -247,7 +247,9 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
   }
 
   for (const [messageIndex, message] of messages.entries()) {
-    const { text, toolCall, imageData } = message
+    const { text, toolCall, imageData, audioData } = message
+    if (audioData) throw new Error("Unsupported audio data for OpenAI") // TODO: Use a subclass of KurtError
+
     if (text) {
       const role = openAIRoleMapping[message.role]
 

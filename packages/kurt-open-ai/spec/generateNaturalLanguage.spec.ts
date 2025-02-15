@@ -68,4 +68,27 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
     )
     expect(result.text).toEqual("Heart eyes")
   })
+
+  test("throws an error when a message includes inline audio data", async () => {
+    await snapshotAndMockWithError(
+      "gpt-4o-2024-05-13",
+      (kurt) =>
+        kurt.generateNaturalLanguage({
+          prompt: "Transcribe this audio file.",
+          extraMessages: [
+            {
+              role: "user",
+              audioData: {
+                mimeType: "audio/mpeg",
+                base64Data: "DUMMYDATA",
+              },
+            },
+          ],
+        }),
+      (errorAny) => {
+        expect(errorAny).toBeInstanceOf(Error)
+        expect(errorAny.message).toEqual("Unsupported audio data for OpenAI")
+      }
+    )
+  })
 })
