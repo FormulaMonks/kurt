@@ -247,9 +247,7 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
   }
 
   for (const [messageIndex, message] of messages.entries()) {
-    const { text, toolCall, imageData, audioData } = message
-    if (audioData) throw new Error("Unsupported audio data for OpenAI") // TODO: Use a subclass of KurtError
-
+    const { text, toolCall, imageData, inlineData } = message
     if (text) {
       const role = openAIRoleMapping[message.role]
 
@@ -286,8 +284,8 @@ function toOpenAIMessages(messages: KurtMessage[]): OpenAIMessage[] {
         tool_call_id: id,
         content: JSON.stringify(result),
       })
-    } else if (imageData && message.role === "user") {
-      const { mimeType, base64Data } = imageData
+    } else if ((imageData || inlineData) && message.role === "user") {
+      const { mimeType, base64Data } = inlineData ?? imageData
 
       // OpenAI only supports the following MIME types, according to these docs:
       // https://platform.openai.com/docs/guides/vision

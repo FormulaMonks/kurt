@@ -23,7 +23,7 @@ step2RawChunks:
           refusal: null
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5796ac6771
+    system_fingerprint: fp_279b0a9ade
     usage: null
   - choices:
       - index: 0
@@ -31,7 +31,7 @@ step2RawChunks:
           content: Heart
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5796ac6771
+    system_fingerprint: fp_279b0a9ade
     usage: null
   - choices:
       - index: 0
@@ -39,29 +39,35 @@ step2RawChunks:
           content: " eyes"
         logprobs: null
         finish_reason: null
-    system_fingerprint: fp_5796ac6771
+    system_fingerprint: fp_279b0a9ade
     usage: null
   - choices:
       - index: 0
         delta: {}
         logprobs: null
         finish_reason: stop
-    system_fingerprint: fp_5796ac6771
+    system_fingerprint: fp_279b0a9ade
     usage: null
   - choices: []
-    system_fingerprint: fp_5796ac6771
+    system_fingerprint: fp_279b0a9ade
     usage:
-      prompt_tokens: 270
-      completion_tokens: 2
-      total_tokens: 272
+      prompt_tokens: 455
+      completion_tokens: 3
+      total_tokens: 458
+      prompt_tokens_details:
+        cached_tokens: 0
+        audio_tokens: 0
       completion_tokens_details:
         reasoning_tokens: 0
+        audio_tokens: 0
+        accepted_prediction_tokens: 0
+        rejected_prediction_tokens: 0
 step3KurtEvents:
   - chunk: Heart
   - chunk: " eyes"
   - finished: true
     text: Heart eyes
     metadata:
-      totalInputTokens: 270
-      totalOutputTokens: 2
-      systemFingerprint: fp_5796ac6771
+      totalInputTokens: 455
+      totalOutputTokens: 3
+      systemFingerprint: fp_279b0a9ade

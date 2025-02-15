@@ -5,7 +5,7 @@ import {
   KurtCapabilityError,
   KurtResultValidateError,
 } from "@formula-monks/kurt"
-import * as fs from "node:fs"
+import { promises as fs } from "node:fs"
 
 describe("KurtVertexAI generateStructuredData", () => {
   test("says hello (response format 1)", async () => {
@@ -111,17 +111,18 @@ describe("KurtVertexAI generateStructuredData", () => {
   })
 
   test("transcribes a base64-encoded audio", async () => {
+    const base64Data = await fs.readFile("spec/data/HelloWorld.mp3", {
+      encoding: "base64",
+    })
     const result = await snapshotAndMock((kurt) =>
       kurt.generateStructuredData({
         prompt: "Transcribe this audio file.",
         extraMessages: [
           {
             role: "user",
-            audioData: {
+            inlineData: {
               mimeType: "audio/mpeg",
-              base64Data: fs.readFileSync("spec/data/HelloWorld.mp3", {
-                encoding: "base64",
-              }),
+              base64Data,
             },
           },
         ],

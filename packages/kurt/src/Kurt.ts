@@ -98,7 +98,7 @@ export class Kurt {
    * - autonomous, open-ended decision-making or action-taking
    *
    * The `data` field of the result will be `undefined` if Kurt decides to
-   * generate natural language. Otherwise it will contain a tool call.
+   * generate natural language. Otherwise, it will contain a tool call.
    *
    * Your application can decide if and how it should fulfill the tool call.
    *
@@ -198,39 +198,23 @@ export type KurtMessage = {
   text: string
 
   /**
+   * @deprecated Use `inlineData` instead.
    * When present, this is an image data message, with a base64-encoded image.
    * This is often used with "multi-modal" LLMs that support image mode input.
    *
    * Not all LLM providers or underlying models support this kind of message.
-   * Check your LLM provider's documentation for confirmaton.
+   * Check your LLM provider's documentation for confirmation.
    */
-  imageData: {
-    /**
-     * The IANA standard MIME type of the inline image data.
-     *
-     * Not all MIME types are supported by all LLM providers.
-     * "image/png" and "image/jpeg" are the most commonly supported.
-     * Check your LLM provider's documentation for the right list.
-     */
-    mimeType: string
+  imageData: KurtInlineData
 
-    /** Base64-encoded image data, as a string. */
-    base64Data: string
-  }
-
-  audioData: {
-    /**
-     * The IANA standard MIME type of the inline audio data.
-     *
-     * Not all MIME types are supported by all LLM providers.
-     * "audio/mpeg" is the most commonly supported.
-     * Check your LLM provider's documentation for the right list.
-     */
-    mimeType: string
-
-    /** Base64-encoded audio data, as a string. */
-    base64Data: string
-  }
+  /**
+   * When present, this is a base64-encoded data message (i.e. image, audio).
+   * This is often used with "multi-modal" LLMs that support image/audio mode input.
+   *
+   * Not all LLM providers or underlying models support this kind of message.
+   * Check your LLM provider's documentation for confirmation.
+   */
+  inlineData: KurtInlineData
 
   /**
    * When present, this is a tool call message, with structured data input
@@ -264,6 +248,21 @@ export type KurtMessage = {
     result: object
   }
 }>
+
+export interface KurtInlineData {
+  /**
+   * The IANA standard MIME type of the inline data.
+   *
+   * Not all MIME types are supported by all LLM providers.
+   * OpenAI's GPT, for example, supports only images.
+   * Gemini supports both images and audio.
+   * Check your LLM provider's documentation for the right list.
+   */
+  mimeType: string
+
+  /** Base64-encoded data, as a string. */
+  base64Data: string
+}
 
 export interface KurtCreateOptions {
   /**
@@ -308,7 +307,7 @@ export const KurtSamplingOptionsDefault = {
   /**
    * Maximum number of output tokens to sample from the model.
    *
-   * This is mean to be a cost control measure, to protect against scenarios
+   * This is meant to be a cost control measure, to protect against scenarios
    * where the model might get "stuck" and generate excessive output.
    *
    * When the model hits the output limit, whatever it has generated will

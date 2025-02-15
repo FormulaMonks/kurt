@@ -319,8 +319,8 @@ function hashMessages(digest: Hash, messages: KurtMessage[]): Hash {
     mayHash(digest, "text", m.text)
     mayHash(digest, "imageDataMimeType", m.imageData?.mimeType)
     mayHash(digest, "imageDataBase64Data", m.imageData?.base64Data)
-    mayHash(digest, "audioDataMimeType", m.audioData?.mimeType)
-    mayHash(digest, "audioDataBase64Data", m.audioData?.base64Data)
+    mayHash(digest, "inlineDataMimeType", m.inlineData?.mimeType)
+    mayHash(digest, "inlineDataBase64Data", m.inlineData?.base64Data)
     if (m.toolCall) {
       mayHash(digest, "toolName", m.toolCall.name)
       mayHash(digest, "toolArgs", JSON.stringify(m.toolCall.args))

@@ -42,16 +42,16 @@ step2RawChunks:
         index: 0
     usageMetadata:
       promptTokenCount: 48
-      candidatesTokenCount: 6
-      totalTokenCount: 54
+      candidatesTokenCount: 7
+      totalTokenCount: 55
       promptTokensDetails:
-        - modality: AUDIO
-          tokenCount: 25
         - modality: TEXT
           tokenCount: 23
+        - modality: AUDIO
+          tokenCount: 25
       candidatesTokensDetails:
         - modality: TEXT
-          tokenCount: 6
+          tokenCount: 7
 step3KurtEvents:
   - chunk: '{"transcription":"Hello world"}'
   - finished: true
@@ -60,4 +60,4 @@ step3KurtEvents:
       transcription: Hello world
     metadata:
       totalInputTokens: 48
-      totalOutputTokens: 6
+      totalOutputTokens: 7
