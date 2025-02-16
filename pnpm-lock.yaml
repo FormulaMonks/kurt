@@ -156,8 +156,8 @@ importers:
         specifier: workspace:^
         version: link:../kurt
       openai:
-        specifier: 4.76.0
-        version: 4.76.0(zod@3.23.8)
+        specifier: 4.85.1
+        version: 4.85.1(zod@3.23.8)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -199,8 +199,8 @@ importers:
         specifier: workspace:^
         version: link:../kurt
       '@google-cloud/vertexai':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.9.0
+        version: 1.9.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -675,6 +675,10 @@ packages:
 
   '@google-cloud/vertexai@1.1.0':
     resolution: {integrity: sha512-hfwfdlVpJ+kM6o2b5UFfPnweBcz8tgHAFRswnqUKYqLJsvKU0DDD0Z2/YKoHyAUoPJAv20qg6KlC3msNeUKUiw==}
+    engines: {node: '>=18.0.0'}
+
+  '@google-cloud/vertexai@1.9.0':
+    resolution: {integrity: sha512-8brlcJwFXI4fPuBtsDNQqCdWZmz8gV9jeEKOU0vc5H2SjehCQpXK/NwuSEr916zbhlBHtg/sU37qQQdgvh5BRA==}
     engines: {node: '>=18.0.0'}
 
   '@istanbuljs/load-nyc-config@1.1.0':
@@ -2528,6 +2532,18 @@ packages:
       zod:
         optional: true
 
+  openai@4.85.1:
+    resolution: {integrity: sha512-jkX2fntHljUvSH3MkWh4jShl10oNkb+SsCj4auKlbu2oF4KWAnmHLNR5EpnUHK1ZNW05Rp0fjbJzYwQzMsH8ZA==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   p-each-series@2.2.0:
     resolution: {integrity: sha512-ycIL2+1V32th+8scbpTvyHNaHe02z0sjgh91XXjAk+ZeXoPN4Z46DVUnzdso0aX4KckKw0FNNFHdjZ2UsZvxiA==}
     engines: {node: '>=8'}
@@ -3849,6 +3865,13 @@ snapshots:
     optional: true
 
   '@google-cloud/vertexai@1.1.0':
+    dependencies:
+      google-auth-library: 9.11.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@google-cloud/vertexai@1.9.0':
     dependencies:
       google-auth-library: 9.11.0
     transitivePeerDependencies:
@@ -6064,6 +6087,20 @@ snapshots:
       mimic-fn: 4.0.0
 
   openai@4.76.0(zod@3.23.8):
+    dependencies:
+      '@types/node': 18.19.32
+      '@types/node-fetch': 2.6.11
+      abort-controller: 3.0.0
+      agentkeepalive: 4.5.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+    optionalDependencies:
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - encoding
+
+  openai@4.85.1(zod@3.23.8):
     dependencies:
       '@types/node': 18.19.32
       '@types/node-fetch': 2.6.11
