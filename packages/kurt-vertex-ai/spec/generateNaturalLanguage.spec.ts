@@ -80,8 +80,6 @@ describe("KurtVertexAI generateNaturalLanguage", () => {
   })
 
   test("describes a base64-encoded image (inlineData)", async () => {
-    process.env.VERTEX_AI_LOCATION = "us-central1"
-    process.env.VERTEX_AI_PROJECT = "monksflow-insights-engine"
     const result = await snapshotAndMock((kurt) =>
       kurt.generateNaturalLanguage({
         prompt: "Describe this emoji, in two words.",
