@@ -1,9 +1,14 @@
 import "./VertexAI.patch.generateContentStream" // monkey-patches VertexAI GenerativeModel.prototype.generateContentStream
-
 import zodToJsonSchema from "zod-to-json-schema"
 import {
   type KurtAdapterV1,
-  type KurtStreamEvent,
+  KurtCapabilityError,
+  type KurtMessage,
+  type KurtResult,
+  KurtResultBlockedError,
+  KurtResultLimitError,
+  KurtResultValidateError,
+  type KurtSamplingOptions,
   type KurtSchema,
   type KurtSchemaInner,
   type KurtSchemaInnerMap,
@@ -13,13 +18,7 @@ import {
   type KurtSchemaMaybe,
   type KurtSchemaResult,
   type KurtSchemaResultMaybe,
-  type KurtMessage,
-  type KurtSamplingOptions,
-  type KurtResult,
-  KurtResultValidateError,
-  KurtResultLimitError,
-  KurtResultBlockedError,
-  KurtCapabilityError,
+  type KurtStreamEvent,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -27,7 +26,6 @@ import type {
   VertexAIMessage,
   VertexAIRequest,
   VertexAIResponseChunk,
-  VertexAIResponseChunkCandidate,
   VertexAIResponseFunctionCall,
   VertexAISchema,
   VertexAITool,
@@ -171,7 +169,7 @@ function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
   const vertexAIMessages: VertexAIMessage[] = []
 
   for (const message of messages) {
-    const { role, text, toolCall, imageData } = message
+    const { role, text, toolCall, imageData, inlineData } = message
     if (text) {
       vertexAIMessages.push({ role, parts: [{ text }] })
     } else if (toolCall) {
@@ -180,10 +178,10 @@ function toVertexAIMessages(messages: KurtMessage[]): VertexAIMessage[] {
       const functionResponse = { name, response: result }
       vertexAIMessages.push({ role, parts: [{ functionCall }] })
       vertexAIMessages.push({ role, parts: [{ functionResponse }] })
-    } else if (imageData) {
-      const { mimeType, base64Data } = imageData
-      const inlineData = { mimeType, data: base64Data }
-      vertexAIMessages.push({ role, parts: [{ inlineData }] })
+    } else if (imageData || inlineData) {
+      const { mimeType, base64Data } = inlineData ?? imageData
+      const dataPart = { mimeType, data: base64Data }
+      vertexAIMessages.push({ role, parts: [{ inlineData: dataPart }] })
     } else {
       throw new Error(`Invalid KurtMessage: ${JSON.stringify(message)}`)
     }
