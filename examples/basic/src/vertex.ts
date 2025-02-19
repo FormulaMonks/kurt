@@ -8,7 +8,7 @@ const vertexAdapter = new KurtVertexAI({
     project: process.env.VERTEX_AI_PROJECT ?? "my-project",
     location: process.env.VERTEX_AI_LOCATION ?? "us-central1",
   }),
-  model: "gemini-1.0-pro", // or any other supported model
+  model: "gemini-1.5-pro", // or any other supported model
 })
 
 const kurt = new Kurt(vertexAdapter)

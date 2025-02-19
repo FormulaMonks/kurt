@@ -34,7 +34,12 @@ import type {
 import { ZodError } from "zod"
 
 // These models support function calling.
-const COMPATIBLE_MODELS = ["gemini-1.0-pro", "gemini-1.5-pro"] as const
+const COMPATIBLE_MODELS = [
+  "gemini-1.5-pro",
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-8b",
+  "gemini-2.0-flash",
+] as const
 
 export type KurtVertexAISupportedModel = (typeof COMPATIBLE_MODELS)[number]
 
