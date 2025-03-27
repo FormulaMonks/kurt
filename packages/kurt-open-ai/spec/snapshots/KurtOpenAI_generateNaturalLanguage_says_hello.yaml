@@ -1,111 +1,203 @@
 step1Request:
   stream: true
-  stream_options:
-    include_usage: true
+  store: false
   model: gpt-4o-2024-05-13
-  max_tokens: 4096
+  max_output_tokens: 4096
   temperature: 0.5
   top_p: 0.95
-  messages:
+  input:
     - role: user
       content:
-        - type: text
+        - type: input_text
           text: Say hello!
 step2RawChunks:
-  - choices:
-      - index: 0
-        delta:
+  - type: response.created
+    response:
+      id: resp_67e453f7510c819194d83c4b08b34ae4030f81fae9acd657
+      object: response
+      created_at: 1743016951
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.in_progress
+    response:
+      id: resp_67e453f7510c819194d83c4b08b34ae4030f81fae9acd657
+      object: response
+      created_at: 1743016951
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.output_item.added
+    output_index: 0
+    item:
+      type: message
+      id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+      status: in_progress
+      role: assistant
+      content: []
+  - type: response.content_part.added
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    part:
+      type: output_text
+      text: ""
+      annotations: []
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: Hello
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: "!"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " How"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " can"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " I"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " assist"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " you"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: " today"
+  - type: response.output_text.delta
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    delta: "?"
+  - type: response.output_text.done
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    text: Hello! How can I assist you today?
+  - type: response.content_part.done
+    item_id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+    output_index: 0
+    content_index: 0
+    part:
+      type: output_text
+      text: Hello! How can I assist you today?
+      annotations: []
+  - type: response.output_item.done
+    output_index: 0
+    item:
+      type: message
+      id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+      status: completed
+      role: assistant
+      content:
+        - type: output_text
+          text: Hello! How can I assist you today?
+          annotations: []
+  - type: response.completed
+    response:
+      id: resp_67e453f7510c819194d83c4b08b34ae4030f81fae9acd657
+      object: response
+      created_at: 1743016951
+      status: completed
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output:
+        - type: message
+          id: msg_67e453f78df88191b58a0230f617abfe030f81fae9acd657
+          status: completed
           role: assistant
-          content: ""
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: Hello
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: "!"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " How"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " can"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " I"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " assist"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " you"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " today"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: "?"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices:
-      - index: 0
-        delta: {}
-        logprobs: null
-        finish_reason: stop
-    system_fingerprint: fp_5bf7397cd3
-    usage: null
-  - choices: []
-    system_fingerprint: fp_5bf7397cd3
-    usage:
-      prompt_tokens: 10
-      completion_tokens: 9
-      total_tokens: 19
+          content:
+            - type: output_text
+              text: Hello! How can I assist you today?
+              annotations: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage:
+        input_tokens: 28
+        input_tokens_details:
+          cached_tokens: 0
+        output_tokens: 10
+        output_tokens_details:
+          reasoning_tokens: 0
+        total_tokens: 38
+      user: null
+      metadata: {}
 step3KurtEvents:
   - chunk: Hello
   - chunk: "!"
@@ -119,6 +211,6 @@ step3KurtEvents:
   - finished: true
     text: Hello! How can I assist you today?
     metadata:
-      totalInputTokens: 10
-      totalOutputTokens: 9
-      systemFingerprint: fp_5bf7397cd3
+      totalInputTokens: 28
+      totalOutputTokens: 10
+      systemFingerprint: gpt-4o-2024-05-13

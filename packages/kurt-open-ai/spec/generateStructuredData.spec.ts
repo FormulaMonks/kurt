@@ -1,9 +1,9 @@
-import { describe, test, expect } from "@jest/globals"
+import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
 import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
 import {
   KurtCapabilityError,
-  KurtResultValidateError,
+  KurtInvalidInputSchemaError,
 } from "@formula-monks/kurt"
 
 describe("KurtOpenAI generateStructuredData", () => {
@@ -48,7 +48,7 @@ describe("KurtOpenAI generateStructuredData", () => {
         sampling: { forceSchemaConstrainedTokens: true },
       })
     )
-    expect(result.data).toEqual({ say: "hello" })
+    expect(result.data).toEqual({ say: "Hello!" })
   })
 
   test("throws a capability error for schema constrained tokens in an older model", async () => {
@@ -92,19 +92,12 @@ describe("KurtOpenAI generateStructuredData", () => {
         }),
 
       (errorAny) => {
-        expect(errorAny).toBeInstanceOf(KurtResultValidateError)
-        const error = errorAny as KurtResultValidateError
+        expect(errorAny).toBeInstanceOf(KurtInvalidInputSchemaError)
+        const error = errorAny as KurtInvalidInputSchemaError
 
-        expect(error.text).toEqual('{"say":"hello"}')
-        expect(error.data).toEqual({ say: "hello" })
-        expect(error.cause.issues).toEqual([
-          {
-            code: "invalid_string",
-            path: ["say"],
-            validation: "regex",
-            message: "Invalid",
-          },
-        ])
+        expect(error.message).toEqual(
+          "400 Invalid schema for function 'structured_data': In context=('properties', 'say'), 'pattern' is not permitted."
+        )
       }
     )
   })

@@ -1,22 +1,22 @@
 step1Request:
   stream: true
-  stream_options:
-    include_usage: true
+  store: false
   model: gpt-4o-mini-2024-07-18
-  max_tokens: 4096
+  max_output_tokens: 4096
   temperature: 0.5
   top_p: 0.95
-  messages:
+  input:
     - role: user
       content:
-        - type: text
+        - type: input_text
           text: Say hello!
-  response_format:
-    type: json_schema
-    json_schema:
-      strict: true
+  tool_choice: auto
+  text:
+    format:
       name: structured_data
       description: Say a word
+      type: json_schema
+      strict: true
       schema:
         type: object
         properties:
@@ -29,88 +29,229 @@ step1Request:
         description: Say a word
         $schema: http://json-schema.org/draft-07/schema#
 step2RawChunks:
-  - choices:
-      - index: 0
-        delta:
+  - type: response.created
+    response:
+      id: resp_67e53bd63b408192b5c1e3b04ac3ca800784114963286cd1
+      object: response
+      created_at: 1743076310
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-mini-2024-07-18
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: json_schema
+          description: Say a word
+          name: structured_data
+          schema:
+            type: object
+            properties:
+              say:
+                type: string
+                description: A single word to say
+            required:
+              - say
+            additionalProperties: false
+            description: Say a word
+          strict: true
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.in_progress
+    response:
+      id: resp_67e53bd63b408192b5c1e3b04ac3ca800784114963286cd1
+      object: response
+      created_at: 1743076310
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-mini-2024-07-18
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: json_schema
+          description: Say a word
+          name: structured_data
+          schema:
+            type: object
+            properties:
+              say:
+                type: string
+                description: A single word to say
+            required:
+              - say
+            additionalProperties: false
+            description: Say a word
+          strict: true
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.output_item.added
+    output_index: 0
+    item:
+      type: message
+      id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+      status: in_progress
+      role: assistant
+      content: []
+  - type: response.content_part.added
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    part:
+      type: output_text
+      text: ""
+      annotations: []
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: '{"'
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: say
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: '":"'
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: Hello
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: '!"'
+  - type: response.output_text.delta
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    delta: "}"
+  - type: response.output_text.done
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    text: '{"say":"Hello!"}'
+  - type: response.content_part.done
+    item_id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+    output_index: 0
+    content_index: 0
+    part:
+      type: output_text
+      text: '{"say":"Hello!"}'
+      annotations: []
+  - type: response.output_item.done
+    output_index: 0
+    item:
+      type: message
+      id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+      status: completed
+      role: assistant
+      content:
+        - type: output_text
+          text: '{"say":"Hello!"}'
+          annotations: []
+  - type: response.completed
+    response:
+      id: resp_67e53bd63b408192b5c1e3b04ac3ca800784114963286cd1
+      object: response
+      created_at: 1743076310
+      status: completed
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-mini-2024-07-18
+      output:
+        - type: message
+          id: msg_67e53bd6fd5481928aa8bc9f1c829d8f0784114963286cd1
+          status: completed
           role: assistant
-          content: ""
-          refusal: null
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: '{"'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: say
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: '":"'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: hello
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: '"}'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta: {}
-        logprobs: null
-        finish_reason: stop
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices: []
-    system_fingerprint: fp_bba3c8e70b
-    usage:
-      prompt_tokens: 74
-      completion_tokens: 5
-      total_tokens: 79
-      prompt_tokens_details:
-        cached_tokens: 0
-        audio_tokens: 0
-      completion_tokens_details:
-        reasoning_tokens: 0
-        audio_tokens: 0
-        accepted_prediction_tokens: 0
-        rejected_prediction_tokens: 0
+          content:
+            - type: output_text
+              text: '{"say":"Hello!"}'
+              annotations: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: json_schema
+          description: Say a word
+          name: structured_data
+          schema:
+            type: object
+            properties:
+              say:
+                type: string
+                description: A single word to say
+            required:
+              - say
+            additionalProperties: false
+            description: Say a word
+          strict: true
+      tool_choice: auto
+      tools: []
+      top_p: 0.95
+      truncation: disabled
+      usage:
+        input_tokens: 70
+        input_tokens_details:
+          cached_tokens: 0
+        output_tokens: 7
+        output_tokens_details:
+          reasoning_tokens: 0
+        total_tokens: 77
+      user: null
+      metadata: {}
 step3KurtEvents:
   - chunk: '{"'
   - chunk: say
   - chunk: '":"'
-  - chunk: hello
-  - chunk: '"}'
+  - chunk: Hello
+  - chunk: '!"'
+  - chunk: "}"
   - finished: true
-    text: '{"say":"hello"}'
+    text: '{"say":"Hello!"}'
     data:
-      say: hello
+      say: Hello!
     metadata:
-      totalInputTokens: 74
-      totalOutputTokens: 5
-      systemFingerprint: fp_bba3c8e70b
+      totalInputTokens: 70
+      totalOutputTokens: 7
+      systemFingerprint: gpt-4o-mini-2024-07-18

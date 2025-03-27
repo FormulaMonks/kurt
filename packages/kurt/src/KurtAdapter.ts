@@ -8,6 +8,7 @@ import type {
   KurtSchemaMapSingleResult,
   KurtSchemaResult,
 } from "./KurtSchema"
+import type { KurtTool } from "./KurtTools"
 
 type V1TypeParams = {
   rawMessage: object
@@ -30,6 +31,15 @@ export type KurtAdapter = KurtAdapterV1<{
   rawEvent: any
 }>
 
+export type RawToolInput<A extends V1TypeParams = V1TypeParams> =
+  | {
+      name: string
+      description: string
+      parameters: A["rawSchema"]
+      type: "external_tool"
+    }
+  | KurtTool
+
 export interface KurtAdapterV1<A extends V1TypeParams = V1TypeParams> {
   kurtAdapterVersion: "v1"
 
@@ -39,11 +49,7 @@ export interface KurtAdapterV1<A extends V1TypeParams = V1TypeParams> {
     schema: KurtSchema<I>
   ): A["rawSchema"]
 
-  transformToRawTool(tool: {
-    name: string
-    description: string
-    parameters: A["rawSchema"]
-  }): A["rawTool"]
+  transformToRawTool(tool: RawToolInput<A>): A["rawTool"]
 
   generateRawEvents(options: {
     messages: A["rawMessage"][]

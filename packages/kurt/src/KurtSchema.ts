@@ -1,5 +1,6 @@
 import type { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
 import { fromJSONSchema7 } from "./KurtSchema.fromJSONSchema7"
+import { type KurtTool, KurtTools } from "./KurtTools"
 
 export const KurtSchema = {
   fromJSONSchema7,
@@ -72,7 +73,7 @@ export type KurtSchemaInnerMap = { [key: string]: KurtSchemaInner }
  * This is often used for a set of named tool schemas available to Kurt.
  */
 export type KurtSchemaMap<I extends KurtSchemaInnerMap> = {
-  [key in keyof I]: KurtSchema<I[key]>
+  [key in keyof I]: KurtSchema<I[key]> | KurtTool
 }
 
 /**

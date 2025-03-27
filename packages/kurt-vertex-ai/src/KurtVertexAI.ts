@@ -19,6 +19,7 @@ import {
   type KurtSchemaResult,
   type KurtSchemaResultMaybe,
   type KurtStreamEvent,
+  type RawToolInput,
 } from "@formula-monks/kurt"
 import type {
   VertexAI,
@@ -61,15 +62,14 @@ export type KurtVertexAICreateOptions = {
   vertexAI: VertexAI
 }
 
-export class KurtVertexAI
-  implements
-    KurtAdapterV1<{
-      rawMessage: VertexAIMessage
-      rawSchema: VertexAISchema
-      rawTool: VertexAITool
-      rawEvent: VertexAIResponseChunk
-    }>
-{
+type KurtVertexAITypeParams = {
+  rawMessage: VertexAIMessage
+  rawSchema: VertexAISchema
+  rawTool: VertexAITool
+  rawEvent: VertexAIResponseChunk
+}
+
+export class KurtVertexAI implements KurtAdapterV1<KurtVertexAITypeParams> {
   kurtAdapterVersion = "v1" as const
 
   constructor(private options: KurtVertexAICreateOptions) {}
@@ -82,7 +82,9 @@ export class KurtVertexAI
 
   transformToRawSchema = jsonSchemaForVertexAI
 
-  transformToRawTool = (tool: VertexAITool) => tool
+  transformToRawTool = (
+    tool: RawToolInput<KurtVertexAITypeParams>
+  ): VertexAITool => tool
 
   generateRawEvents(options: {
     messages: VertexAIMessage[]

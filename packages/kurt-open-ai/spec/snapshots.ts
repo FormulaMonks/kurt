@@ -1,7 +1,7 @@
 import { expect } from "@jest/globals"
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
-import { OpenAI as RealOpenAI } from "openai"
+import { BadRequestError, OpenAI as RealOpenAI } from "openai"
 import {
   Kurt,
   type KurtStream,
@@ -13,7 +13,9 @@ import type {
   OpenAIResponse,
   OpenAIResponseChunk,
 } from "../src/OpenAI.types"
-import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src/KurtOpenAI"
+import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src"
+import type { ResponseStreamEvent } from "openai/resources/responses/responses"
+import type { Stream } from "openai/streaming"
 
 function snapshotFilenameFor(testName: string | undefined) {
   return `${__dirname}/snapshots/${testName?.replace(/ /g, "_")}.yaml`
@@ -28,6 +30,20 @@ function dumpYaml(filename: string, data: object) {
   writeFileSync(filename, stringifyYaml(data))
 }
 
+function createConcreteErrorType(error?: Error) {
+  if (!error) return error
+  const badRequestError = error as BadRequestError
+  if (badRequestError.type === "invalid_request_error") {
+    return new BadRequestError(
+      400,
+      badRequestError.error,
+      badRequestError.message,
+      badRequestError.headers
+    )
+  }
+  return error
+}
+
 export async function snapshotAndMock<T>(
   model: KurtOpenAISupportedModel,
   testCaseFn: (kurt: Kurt) => KurtStream<T>
@@ -35,10 +51,12 @@ export async function snapshotAndMock<T>(
   // Here's the data structure we will use to snapshot a request/response cycle.
   const snapshot: {
     step1Request?: OpenAIRequest
+    step1Error?: Error
     step2RawChunks: OpenAIResponseChunk[]
     step3KurtEvents: KurtStreamEvent<T>[]
   } = {
     step1Request: undefined,
+    step1Error: undefined,
     step2RawChunks: [],
     step3KurtEvents: [],
   }
@@ -48,45 +66,59 @@ export async function snapshotAndMock<T>(
     expect.getState().currentTestName
   )
   const savedSnapshot = loadYaml(snapshotFilename) as Required<typeof snapshot>
+  if (savedSnapshot) {
+    const concreteError = createConcreteErrorType(savedSnapshot.step1Error)
+    if (concreteError) savedSnapshot.step1Error = concreteError
+  }
 
   // Create a fake OpenAI instance that captures the request and response,
   // and will only delegate to "real OpenAI" if there is no saved snapshot.
   const openAI = {
-    chat: {
-      completions: {
-        async create(request: OpenAIRequest): OpenAIResponse {
-          snapshot.step1Request = request
+    responses: {
+      async create(request: OpenAIRequest): OpenAIResponse {
+        snapshot.step1Request = request
+        if (savedSnapshot?.step1Error) {
+          snapshot.step1Error = savedSnapshot.step1Error
+          throw savedSnapshot.step1Error
+        }
+        // If we have a saved snapshot, use it as a mock API.
+        if (savedSnapshot?.step2RawChunks) {
+          const savedRawChunks = savedSnapshot.step2RawChunks
+          snapshot.step2RawChunks = savedRawChunks
 
-          // If we have a saved snapshot, use it as a mock API.
-          if (savedSnapshot?.step2RawChunks) {
-            const savedRawChunks = savedSnapshot.step2RawChunks
-            snapshot.step2RawChunks = savedRawChunks
-            async function* generator(): AsyncIterable<OpenAIResponseChunk> {
-              for await (const rawChunk of savedRawChunks) {
-                yield rawChunk
-              }
-            }
-            return generator()
-          }
-
-          // Otherwise, use the real API (and capture the raw chunks to save).
-          const realOpenAI = new RealOpenAI()
-          const response = await realOpenAI.chat.completions.create(request)
-          async function* gen() {
-            for await (const rawChunk of response) {
-              // Snapshot the parts we care about from the raw chunk.
-              snapshot.step2RawChunks.push({
-                choices: rawChunk.choices,
-                system_fingerprint: rawChunk.system_fingerprint,
-                usage: (rawChunk as OpenAIResponseChunk).usage,
-              })
-
-              // Yield the raw chunk to the adapter.
+          // @ts-ignore
+          async function* generator(): AsyncIterable<OpenAIResponseChunk> {
+            for await (const rawChunk of savedRawChunks) {
               yield rawChunk
             }
           }
-          return gen()
-        },
+
+          return generator()
+        }
+
+        // Otherwise, use the real API (and capture the raw chunks to save).
+        const realOpenAI = new RealOpenAI()
+
+        let response: Stream<ResponseStreamEvent>
+
+        try {
+          response = await realOpenAI.responses.create(request)
+        } catch (e) {
+          if (e instanceof Error) snapshot.step1Error = e
+          throw e
+        }
+
+        async function* gen() {
+          for await (const rawChunk of response) {
+            // Snapshot the parts we care about from the raw chunk.
+            snapshot.step2RawChunks.push(rawChunk)
+
+            // Yield the raw chunk to the adapter.
+            yield rawChunk
+          }
+        }
+
+        return gen()
       },
     },
   } as unknown as OpenAI

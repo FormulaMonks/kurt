@@ -25,9 +25,9 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
     )
     expect(result.text).toEqual(
       [
-        "Moonlight gently gleams,",
-        "Whispers of the stream below,",
-        "Stars in water dream.",
+        "Moonlight threads the pines,  ",
+        "Whispers ripple in the stream—  ",
+        "Stone dreams in darkness.",
       ].join("\n")
     )
   })
@@ -45,7 +45,9 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
         expect(errorAny).toBeInstanceOf(KurtResultLimitError)
         const error = errorAny as KurtResultLimitError
 
-        expect(error.text).toEqual("Words constrained by bounds,\n")
+        expect(error.text).toEqual(
+          "The maximum output tokens limit was below the minimum value"
+        )
       }
     )
   })
@@ -66,7 +68,7 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
         ],
       })
     )
-    expect(result.text).toEqual("Heart eyes")
+    expect(result.text).toEqual("Heart eyes.")
   })
 
   test("describes a base64-encoded image (inlineData)", async () => {
@@ -85,7 +87,7 @@ describe("KurtOpenAI generateNaturalLanguage", () => {
         ],
       })
     )
-    expect(result.text).toEqual("Heart eyes")
+    expect(result.text).toEqual("Heart eyes.")
   })
 
   test("throws an error when a message includes inline audio data", async () => {

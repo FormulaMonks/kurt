@@ -8,7 +8,8 @@ import type {
   KurtSchemaMapSingleResult,
   KurtSchemaResult,
 } from "./KurtSchema"
-import type { KurtAdapter } from "./KurtAdapter"
+import type { KurtAdapter, RawToolInput } from "./KurtAdapter"
+import { KurtTools } from "./KurtTools"
 
 /**
  * Kurt wraps an LLM. You can use it to generate some output.
@@ -80,6 +81,7 @@ export class Kurt {
               name: "structured_data",
               description: options.schema.description ?? "",
               parameters: this.adapter.transformToRawSchema(options.schema),
+              type: "external_tool",
             }),
           },
           forceTool: "structured_data",
@@ -121,14 +123,17 @@ export class Kurt {
           ),
           sampling: this.makeSamplingOptions(options.sampling),
           tools: Object.fromEntries(
-            Object.entries(options.tools).map(([name, schema]) => [
-              name,
-              this.adapter.transformToRawTool({
-                name,
-                description: schema.description,
-                parameters: this.adapter.transformToRawSchema(schema),
-              }),
-            ])
+            Object.entries(options.tools).map(([name, schema]) => {
+              const rawToolInput: RawToolInput = KurtTools.isKurtTool(schema)
+                ? schema
+                : {
+                    name,
+                    description: schema.description,
+                    parameters: this.adapter.transformToRawSchema(schema),
+                    type: "external_tool",
+                  }
+              return [name, this.adapter.transformToRawTool(rawToolInput)]
+            })
           ),
         })
       )
