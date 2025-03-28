@@ -3,7 +3,6 @@ import type {
   FinishReason,
   FunctionDeclaration,
   FunctionDeclarationSchema,
-  FunctionDeclarationsTool,
   GenerateContentCandidate,
   GenerateContentRequest,
   GenerativeModel,

@@ -1,7 +1,7 @@
 import { describe, test, expect } from "@jest/globals"
 import { z } from "zod"
-import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
-import { KurtResultLimitError, KurtTools } from "@formula-monks/kurt"
+import { snapshotAndMock } from "./snapshots"
+import { KurtTools } from "@formula-monks/kurt"
 
 const calculatorTools = {
   subtract: z
