@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals"
-import { KurtSchema } from "../src/KurtSchema"
+import { KurtSchema } from "../src"
 import { zodToJsonSchema } from "zod-to-json-schema"
 import type { JSONSchema7 } from "json-schema"
 
