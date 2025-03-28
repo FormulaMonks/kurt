@@ -46,16 +46,26 @@ step2RawChunks:
       - content:
           role: model
           parts:
-            - text: |-
-                ```tool_code
-                print(default_api.divide(dividend=80262
-        finishReason: MAX_TOKENS
+            - text: ""
+        index: 0
+    usageMetadata:
+      trafficType: ON_DEMAND
+  - candidates:
+      - content:
+          role: model
+          parts:
+            - text: ""
+        finishReason: STOP
         index: 0
     usageMetadata:
       promptTokenCount: 123
-      candidatesTokenCount: 20
-      totalTokenCount: 143
+      totalTokenCount: 123
+      trafficType: ON_DEMAND
+      promptTokensDetails:
+        - modality: TEXT
+          tokenCount: 123
 step3KurtEvents:
-  - chunk: |-
-      ```tool_code
-      print(default_api.divide(dividend=80262
+  - finished: true
+    text: ""
+    metadata:
+      totalInputTokens: 123

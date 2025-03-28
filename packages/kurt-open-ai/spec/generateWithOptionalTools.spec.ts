@@ -1,7 +1,7 @@
-import { describe, test, expect } from "@jest/globals"
+import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
-import { snapshotAndMock, snapshotAndMockWithError } from "./snapshots"
-import { KurtResultLimitError } from "@formula-monks/kurt"
+import { snapshotAndMock } from "./snapshots"
+import { KurtTools } from "@formula-monks/kurt/dist/KurtTools"
 
 const calculatorTools = {
   subtract: z
@@ -69,7 +69,7 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
       })
     )
     expect(result.text).toEqual(
-      "9876356 divided by 30487, rounded to the nearest integer, is approximately 324."
+      "9876356 divided by 30487 is approximately 323.95. Rounded to the nearest integer, the result is 324."
     )
   })
 
@@ -148,6 +148,40 @@ describe("KurtOpenAI generateWithOptionalTools", () => {
         "3. 90135094495 minus 89944954350 is 190140145.",
       ].join("\n")
     )
+  })
+
+  test("uses a kurt tool to search the web", async () => {
+    const result = await snapshotAndMock("gpt-4o-2024-11-20", (kurt) =>
+      kurt.generateWithOptionalTools({
+        prompt: [
+          "What is the weather in Lisbon, Portugal today? Respond with only one sentence, start by saying which day it is.",
+        ].join("\n"),
+        tools: {
+          webSearch: KurtTools.WebSearch(),
+        },
+      })
+    )
+    expect(result.text).toEqual(
+      "Thursday, March 27, 2025, in Lisbon, Portugal, is mostly cloudy with a high of 61°F (16°C) and a low of 50°F (10°C). "
+    )
+  })
+
+  test("can use both a kurt tool and an external tool", async () => {
+    const result = await snapshotAndMock("gpt-4o-2024-11-20", (kurt) =>
+      kurt.generateWithOptionalTools({
+        prompt: [
+          "Get the current weather in Lisbon and divide the temperature in Celsius by 0.79",
+        ].join("\n"),
+        tools: {
+          webSearch: KurtTools.WebSearch(),
+          ...calculatorTools,
+        },
+      })
+    )
+    expect(result.data).toEqual({
+      name: "divide",
+      args: { dividend: 14, divisor: 0.79 },
+    })
   })
 
   // The below test is commented out because this test case currently breaks

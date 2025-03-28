@@ -55,33 +55,36 @@ step2RawChunks:
       - content:
           role: model
           parts:
-            - text: That
+            - text: The
         index: 0
+    usageMetadata:
+      trafficType: ON_DEMAND
   - candidates:
       - content:
           role: model
           parts:
-            - text: |
-                's about 324. 
-        index: 0
-  - candidates:
-      - content:
-          role: model
-          parts:
-            - text: ""
+            - text: |2
+                 answer is 324. 
         finishReason: STOP
         index: 0
     usageMetadata:
       promptTokenCount: 74
-      candidatesTokenCount: 11
-      totalTokenCount: 85
+      candidatesTokenCount: 10
+      totalTokenCount: 84
+      trafficType: ON_DEMAND
+      promptTokensDetails:
+        - modality: TEXT
+          tokenCount: 74
+      candidatesTokensDetails:
+        - modality: TEXT
+          tokenCount: 10
 step3KurtEvents:
-  - chunk: That
-  - chunk: |
-      's about 324. 
+  - chunk: The
+  - chunk: |2
+       answer is 324. 
   - finished: true
     text: |
-      That's about 324. 
+      The answer is 324. 
     metadata:
       totalInputTokens: 74
-      totalOutputTokens: 11
+      totalOutputTokens: 10

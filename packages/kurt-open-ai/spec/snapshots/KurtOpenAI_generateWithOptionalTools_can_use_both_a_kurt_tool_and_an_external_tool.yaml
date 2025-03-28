@@ -1,0 +1,1078 @@
+step1Request:
+  stream: true
+  store: false
+  model: gpt-4o-2024-11-20
+  max_output_tokens: 4096
+  temperature: 0.5
+  top_p: 0.95
+  input:
+    - role: user
+      content:
+        - type: input_text
+          text: Get the current weather in Lisbon and divide the temperature in Celsius by
+            0.79
+  tools:
+    - type: web_search_preview
+    - type: function
+      name: subtract
+      description: Calculate a subtraction
+      parameters:
+        type: object
+        properties:
+          minuend:
+            type: number
+            description: The number to subtract from
+          subtrahend:
+            type: number
+            description: The number to subtract by
+        required:
+          - minuend
+          - subtrahend
+        additionalProperties: false
+        description: Calculate a subtraction
+        $schema: http://json-schema.org/draft-07/schema#
+      strict: true
+    - type: function
+      name: divide
+      description: Calculate a division
+      parameters:
+        type: object
+        properties:
+          dividend:
+            type: number
+            description: The number to be divided
+          divisor:
+            type: number
+            description: The number to divide by
+        required:
+          - dividend
+          - divisor
+        additionalProperties: false
+        description: Calculate a division
+        $schema: http://json-schema.org/draft-07/schema#
+      strict: true
+step2RawChunks:
+  - type: response.created
+    response:
+      id: resp_67e5993d5408819290ddc06b95b68fc506b9db9c68036ff6
+      object: response
+      created_at: 1743100221
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-11-20
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+        - type: web_search_preview
+          search_context_size: medium
+          user_location:
+            type: approximate
+            city: null
+            country: US
+            region: null
+            timezone: null
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.in_progress
+    response:
+      id: resp_67e5993d5408819290ddc06b95b68fc506b9db9c68036ff6
+      object: response
+      created_at: 1743100221
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-11-20
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+        - type: web_search_preview
+          search_context_size: medium
+          user_location:
+            type: approximate
+            city: null
+            country: US
+            region: null
+            timezone: null
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.output_item.added
+    output_index: 0
+    item:
+      type: web_search_call
+      id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+      status: in_progress
+  - type: response.web_search_call.in_progress
+    output_index: 0
+    item_id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+  - type: response.web_search_call.searching
+    output_index: 0
+    item_id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+  - type: response.web_search_call.completed
+    output_index: 0
+    item_id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+  - type: response.output_item.done
+    output_index: 0
+    item:
+      type: web_search_call
+      id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+      status: completed
+  - type: response.output_item.added
+    output_index: 1
+    item:
+      type: message
+      id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+      status: in_progress
+      role: assistant
+      content: []
+  - type: response.content_part.added
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    part:
+      type: output_text
+      text: ""
+      annotations: []
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: As
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " of"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "6"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ":"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "30"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " PM"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " on"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " Thursday"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ","
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " March"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "27"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ","
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "202"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "5"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ","
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " the"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " current"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " weather"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " in"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " Lisbon"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ","
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " Portugal"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ","
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " is"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " mostly"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " cloudy"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " with"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " a"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " temperature"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " of"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "14"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: °C
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " ("
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "58"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: °F
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: ).
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "\n\n"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: >
+      ## Weather for Lisbon, Portugal:
+
+      Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+      Daily Forecast:
+
+      * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C), Description:
+      Cloudy this morning, then times of clouds and sun this afternoon
+
+      * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C), Description:
+      Pleasant and warmer with plenty of sunshine
+
+      * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C), Description:
+      Sunny to partly cloudy and pleasant
+
+      * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C), Description: A
+      stray shower in the morning; otherwise, clouds and breaks of sun
+
+      * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C), Description: A
+      stray morning shower; otherwise, after a cloudy start, sunshine returns
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: |-
+      
+
+      Div
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: iding
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " the"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " current"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " temperature"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " of"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "14"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: °C
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " by"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "0"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: .
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "79"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " yields"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " approximately"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "17"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: .
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: "72"
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: .
+  - type: response.output_text.delta
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    delta: " "
+  - type: response.output_text.done
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    text: >-
+      As of 6:30 PM on Thursday, March 27, 2025, the current weather in Lisbon,
+      Portugal, is mostly cloudy with a temperature of 14°C (58°F).
+
+
+      ## Weather for Lisbon, Portugal:
+
+      Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+      Daily Forecast:
+
+      * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C), Description:
+      Cloudy this morning, then times of clouds and sun this afternoon
+
+      * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C), Description:
+      Pleasant and warmer with plenty of sunshine
+
+      * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C), Description:
+      Sunny to partly cloudy and pleasant
+
+      * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C), Description: A
+      stray shower in the morning; otherwise, clouds and breaks of sun
+
+      * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C), Description: A
+      stray morning shower; otherwise, after a cloudy start, sunshine returns
+
+
+
+      Dividing the current temperature of 14°C by 0.79 yields approximately
+      17.72. 
+  - type: response.content_part.done
+    item_id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+    output_index: 1
+    content_index: 0
+    part:
+      type: output_text
+      text: >-
+        As of 6:30 PM on Thursday, March 27, 2025, the current weather in
+        Lisbon, Portugal, is mostly cloudy with a temperature of 14°C (58°F).
+
+
+        ## Weather for Lisbon, Portugal:
+
+        Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+        Daily Forecast:
+
+        * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C), Description:
+        Cloudy this morning, then times of clouds and sun this afternoon
+
+        * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C), Description:
+        Pleasant and warmer with plenty of sunshine
+
+        * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C), Description:
+        Pleasant with plenty of sunshine
+
+        * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C), Description:
+        Pleasant with plenty of sunshine
+
+        * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C), Description:
+        Sunny to partly cloudy and pleasant
+
+        * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C), Description: A
+        stray shower in the morning; otherwise, clouds and breaks of sun
+
+        * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C), Description:
+        A stray morning shower; otherwise, after a cloudy start, sunshine
+        returns
+
+
+
+        Dividing the current temperature of 14°C by 0.79 yields approximately
+        17.72. 
+      annotations: []
+  - type: response.output_item.done
+    output_index: 1
+    item:
+      type: message
+      id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+      status: completed
+      role: assistant
+      content:
+        - type: output_text
+          text: >-
+            As of 6:30 PM on Thursday, March 27, 2025, the current weather in
+            Lisbon, Portugal, is mostly cloudy with a temperature of 14°C
+            (58°F).
+
+
+            ## Weather for Lisbon, Portugal:
+
+            Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+            Daily Forecast:
+
+            * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C),
+            Description: Cloudy this morning, then times of clouds and sun this
+            afternoon
+
+            * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C),
+            Description: Pleasant and warmer with plenty of sunshine
+
+            * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C),
+            Description: Pleasant with plenty of sunshine
+
+            * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C),
+            Description: Pleasant with plenty of sunshine
+
+            * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C),
+            Description: Sunny to partly cloudy and pleasant
+
+            * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C),
+            Description: A stray shower in the morning; otherwise, clouds and
+            breaks of sun
+
+            * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C),
+            Description: A stray morning shower; otherwise, after a cloudy
+            start, sunshine returns
+
+
+
+            Dividing the current temperature of 14°C by 0.79 yields
+            approximately 17.72. 
+          annotations: []
+  - type: response.output_item.added
+    output_index: 2
+    item:
+      type: function_call
+      id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+      call_id: call_XbB1jUoUVPC7g7uyHpJsecMp
+      name: divide
+      arguments: ""
+      status: in_progress
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: '{"'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: div
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: idend
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: "14"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: ',"'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: div
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: isor
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: "0"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: .
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: "79"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    delta: "}"
+  - type: response.function_call_arguments.done
+    item_id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+    output_index: 2
+    arguments: '{"dividend":14,"divisor":0.79}'
+  - type: response.output_item.done
+    output_index: 2
+    item:
+      type: function_call
+      id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+      call_id: call_XbB1jUoUVPC7g7uyHpJsecMp
+      name: divide
+      arguments: '{"dividend":14,"divisor":0.79}'
+      status: completed
+  - type: response.completed
+    response:
+      id: resp_67e5993d5408819290ddc06b95b68fc506b9db9c68036ff6
+      object: response
+      created_at: 1743100221
+      status: completed
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-11-20
+      output:
+        - type: web_search_call
+          id: ws_67e5993de5a08192b866e72a4cd3aabb06b9db9c68036ff6
+          status: completed
+        - type: message
+          id: msg_67e5993f7a208192a29c2911628ed11506b9db9c68036ff6
+          status: completed
+          role: assistant
+          content:
+            - type: output_text
+              text: >-
+                As of 6:30 PM on Thursday, March 27, 2025, the current weather
+                in Lisbon, Portugal, is mostly cloudy with a temperature of 14°C
+                (58°F).
+
+
+                ## Weather for Lisbon, Portugal:
+
+                Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+                Daily Forecast:
+
+                * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C),
+                Description: Cloudy this morning, then times of clouds and sun
+                this afternoon
+
+                * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C),
+                Description: Pleasant and warmer with plenty of sunshine
+
+                * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C),
+                Description: Pleasant with plenty of sunshine
+
+                * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C),
+                Description: Pleasant with plenty of sunshine
+
+                * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C),
+                Description: Sunny to partly cloudy and pleasant
+
+                * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C),
+                Description: A stray shower in the morning; otherwise, clouds
+                and breaks of sun
+
+                * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C),
+                Description: A stray morning shower; otherwise, after a cloudy
+                start, sunshine returns
+
+
+
+                Dividing the current temperature of 14°C by 0.79 yields
+                approximately 17.72. 
+              annotations: []
+        - type: function_call
+          id: fc_67e59940e5f8819290c5c70ecc12ee2606b9db9c68036ff6
+          call_id: call_XbB1jUoUVPC7g7uyHpJsecMp
+          name: divide
+          arguments: '{"dividend":14,"divisor":0.79}'
+          status: completed
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+        - type: web_search_preview
+          search_context_size: medium
+          user_location:
+            type: approximate
+            city: null
+            country: US
+            region: null
+            timezone: null
+      top_p: 0.95
+      truncation: disabled
+      usage:
+        input_tokens: 1259
+        input_tokens_details:
+          cached_tokens: 0
+        output_tokens: 382
+        output_tokens_details:
+          reasoning_tokens: 0
+        total_tokens: 1641
+      user: null
+      metadata: {}
+step3KurtEvents:
+  - chunk: As
+  - chunk: " of"
+  - chunk: " "
+  - chunk: "6"
+  - chunk: ":"
+  - chunk: "30"
+  - chunk: " PM"
+  - chunk: " on"
+  - chunk: " Thursday"
+  - chunk: ","
+  - chunk: " March"
+  - chunk: " "
+  - chunk: "27"
+  - chunk: ","
+  - chunk: " "
+  - chunk: "202"
+  - chunk: "5"
+  - chunk: ","
+  - chunk: " the"
+  - chunk: " current"
+  - chunk: " weather"
+  - chunk: " in"
+  - chunk: " Lisbon"
+  - chunk: ","
+  - chunk: " Portugal"
+  - chunk: ","
+  - chunk: " is"
+  - chunk: " mostly"
+  - chunk: " cloudy"
+  - chunk: " with"
+  - chunk: " a"
+  - chunk: " temperature"
+  - chunk: " of"
+  - chunk: " "
+  - chunk: "14"
+  - chunk: °C
+  - chunk: " ("
+  - chunk: "58"
+  - chunk: °F
+  - chunk: ).
+  - chunk: "\n\n"
+  - chunk: >
+      ## Weather for Lisbon, Portugal:
+
+      Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+      Daily Forecast:
+
+      * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C), Description:
+      Cloudy this morning, then times of clouds and sun this afternoon
+
+      * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C), Description:
+      Pleasant and warmer with plenty of sunshine
+
+      * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C), Description:
+      Sunny to partly cloudy and pleasant
+
+      * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C), Description: A
+      stray shower in the morning; otherwise, clouds and breaks of sun
+
+      * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C), Description: A
+      stray morning shower; otherwise, after a cloudy start, sunshine returns
+  - chunk: |-
+      
+
+      Div
+  - chunk: iding
+  - chunk: " the"
+  - chunk: " current"
+  - chunk: " temperature"
+  - chunk: " of"
+  - chunk: " "
+  - chunk: "14"
+  - chunk: °C
+  - chunk: " by"
+  - chunk: " "
+  - chunk: "0"
+  - chunk: .
+  - chunk: "79"
+  - chunk: " yields"
+  - chunk: " approximately"
+  - chunk: " "
+  - chunk: "17"
+  - chunk: .
+  - chunk: "72"
+  - chunk: .
+  - chunk: " "
+  - chunk: '{"dividend":14,"divisor":0.79}'
+  - finished: true
+    text: >-
+      As of 6:30 PM on Thursday, March 27, 2025, the current weather in Lisbon,
+      Portugal, is mostly cloudy with a temperature of 14°C (58°F).
+
+
+      ## Weather for Lisbon, Portugal:
+
+      Current Conditions: Mostly cloudy, 58°F (14°C)
+
+
+      Daily Forecast:
+
+      * Thursday, March 27: Low: 50°F (10°C), High: 61°F (16°C), Description:
+      Cloudy this morning, then times of clouds and sun this afternoon
+
+      * Friday, March 28: Low: 51°F (10°C), High: 71°F (22°C), Description:
+      Pleasant and warmer with plenty of sunshine
+
+      * Saturday, March 29: Low: 54°F (12°C), High: 74°F (23°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Sunday, March 30: Low: 53°F (12°C), High: 76°F (24°C), Description:
+      Pleasant with plenty of sunshine
+
+      * Monday, March 31: Low: 56°F (13°C), High: 74°F (24°C), Description:
+      Sunny to partly cloudy and pleasant
+
+      * Tuesday, April 01: Low: 54°F (12°C), High: 66°F (19°C), Description: A
+      stray shower in the morning; otherwise, clouds and breaks of sun
+
+      * Wednesday, April 02: Low: 53°F (12°C), High: 66°F (19°C), Description: A
+      stray morning shower; otherwise, after a cloudy start, sunshine returns
+
+
+
+      Dividing the current temperature of 14°C by 0.79 yields approximately
+      17.72. {"dividend":14,"divisor":0.79}
+    data:
+      name: divide
+      args:
+        dividend: 14
+        divisor: 0.79
+    metadata:
+      totalInputTokens: 1259
+      totalOutputTokens: 382
+      systemFingerprint: gpt-4o-2024-11-20

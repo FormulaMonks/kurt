@@ -1,140 +1,73 @@
 step1Request:
   stream: true
-  stream_options:
-    include_usage: true
+  store: false
   model: gpt-4o-mini-2024-07-18
-  max_tokens: 4096
+  max_output_tokens: 4096
   temperature: 0.5
   top_p: 0.95
-  messages:
+  input:
     - role: system
       content:
-        - type: text
+        - type: input_text
           text: Respond with JSON.
     - role: user
       content:
-        - type: text
+        - type: input_text
           text: Say hello!
   tools:
     - type: function
-      function:
-        name: structured_data
+      name: structured_data
+      description: Say a word
+      parameters:
+        type: object
+        properties:
+          say:
+            type: string
+            pattern: (?=IMPOSSIBLE)hello
+            description: A single word to say
+        required:
+          - say
+        additionalProperties: false
         description: Say a word
-        parameters:
-          type: object
-          properties:
-            say:
-              type: string
-              pattern: (?=IMPOSSIBLE)hello
-              description: A single word to say
-          required:
-            - say
-          additionalProperties: false
-          description: Say a word
-          $schema: http://json-schema.org/draft-07/schema#
+        $schema: http://json-schema.org/draft-07/schema#
+      strict: true
   tool_choice:
     type: function
-    function:
-      name: structured_data
-  response_format:
-    type: json_object
-step2RawChunks:
-  - choices:
-      - index: 0
-        delta:
-          role: assistant
-          content: null
-          tool_calls:
-            - index: 0
-              id: call_o9V4SGLznZr6NCnsU2QjOdeg
-              type: function
-              function:
-                name: structured_data
-                arguments: ""
-          refusal: null
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '{"'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: say
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '":"'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: hello
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '"}'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices:
-      - index: 0
-        delta: {}
-        logprobs: null
-        finish_reason: stop
-    system_fingerprint: fp_bba3c8e70b
-    usage: null
-  - choices: []
-    system_fingerprint: fp_bba3c8e70b
-    usage:
-      prompt_tokens: 82
-      completion_tokens: 5
-      total_tokens: 87
-      prompt_tokens_details:
-        cached_tokens: 0
-        audio_tokens: 0
-      completion_tokens_details:
-        reasoning_tokens: 0
-        audio_tokens: 0
-        accepted_prediction_tokens: 0
-        rejected_prediction_tokens: 0
-step3KurtEvents:
-  - chunk: '{"'
-  - chunk: say
-  - chunk: '":"'
-  - chunk: hello
-  - chunk: '"}'
+    name: structured_data
+  text:
+    format:
+      type: json_object
+step1Error:
+  status: 400
+  headers:
+    alt-svc: h3=":443"; ma=86400
+    cf-cache-status: DYNAMIC
+    cf-ray: 926eafa5fac48e38-LIS
+    connection: keep-alive
+    content-length: "262"
+    content-type: application/json
+    date: Thu, 27 Mar 2025 11:53:14 GMT
+    openai-organization: mightyhive-acct-with-gpt4
+    openai-processing-ms: "26"
+    openai-version: 2020-10-01
+    server: cloudflare
+    set-cookie: __cf_bm=A1xyqyzMdMNhkH2qfWYPp.UNyPPELxSLIgzz_yhAij0-1743076394-1.0.1.1-N8T6SoaiSCxgPsA3MQGwPcuhtmBO_AYSJYpPY4V6fQNA.i3sUvwWt7GtJfHfU_Cn_Nvx9DjyLAYsLIPmWRYJiTuFoGY5FxXIAX.ix8yXpGU;
+      path=/; expires=Thu, 27-Mar-25 12:23:14 GMT; domain=.api.openai.com;
+      HttpOnly; Secure; SameSite=None,
+      _cfuvid=oVWV3YyGRYWEZWGWzxDEHlGkXtM21A279Rgor9KOla8-1743076394123-0.0.1.1-604800000;
+      path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+    strict-transport-security: max-age=31536000; includeSubDomains; preload
+    x-content-type-options: nosniff
+    x-request-id: req_c24999e5bfb879ef01cbc5222384e1d0
+  request_id: req_c24999e5bfb879ef01cbc5222384e1d0
+  error:
+    message: "Invalid schema for function 'structured_data': In
+      context=('properties', 'say'), 'pattern' is not permitted."
+    type: invalid_request_error
+    param: tools[0].parameters
+    code: invalid_function_parameters
+  code: invalid_function_parameters
+  param: tools[0].parameters
+  type: invalid_request_error
+step2RawChunks: []
+step3KurtEvents: []

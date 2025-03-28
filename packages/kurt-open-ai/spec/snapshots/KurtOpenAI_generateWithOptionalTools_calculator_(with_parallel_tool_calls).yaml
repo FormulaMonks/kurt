@@ -1,15 +1,14 @@
 step1Request:
   stream: true
-  stream_options:
-    include_usage: true
+  store: false
   model: gpt-4o-2024-05-13
-  max_tokens: 4096
+  max_output_tokens: 4096
   temperature: 0.5
   top_p: 0.95
-  messages:
+  input:
     - role: user
       content:
-        - type: text
+        - type: input_text
           text: |-
             Calculate each of the following:
             1. 8026256882 divided by 3402398
@@ -17,472 +16,456 @@ step1Request:
             3. 90135094495 minus 89944954350
   tools:
     - type: function
-      function:
-        name: subtract
+      name: subtract
+      description: Calculate a subtraction
+      parameters:
+        type: object
+        properties:
+          minuend:
+            type: number
+            description: The number to subtract from
+          subtrahend:
+            type: number
+            description: The number to subtract by
+        required:
+          - minuend
+          - subtrahend
+        additionalProperties: false
         description: Calculate a subtraction
-        parameters:
-          type: object
-          properties:
-            minuend:
-              type: number
-              description: The number to subtract from
-            subtrahend:
-              type: number
-              description: The number to subtract by
-          required:
-            - minuend
-            - subtrahend
-          additionalProperties: false
-          description: Calculate a subtraction
-          $schema: http://json-schema.org/draft-07/schema#
+        $schema: http://json-schema.org/draft-07/schema#
+      strict: true
     - type: function
-      function:
-        name: divide
+      name: divide
+      description: Calculate a division
+      parameters:
+        type: object
+        properties:
+          dividend:
+            type: number
+            description: The number to be divided
+          divisor:
+            type: number
+            description: The number to divide by
+        required:
+          - dividend
+          - divisor
+        additionalProperties: false
         description: Calculate a division
-        parameters:
-          type: object
-          properties:
-            dividend:
-              type: number
-              description: The number to be divided
-            divisor:
-              type: number
-              description: The number to divide by
-          required:
-            - dividend
-            - divisor
-          additionalProperties: false
-          description: Calculate a division
-          $schema: http://json-schema.org/draft-07/schema#
+        $schema: http://json-schema.org/draft-07/schema#
+      strict: true
 step2RawChunks:
-  - choices:
-      - index: 0
-        delta:
-          role: assistant
-          content: null
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              id: call_PGf2wPkvmAag3xtEsDnS9B0F
-              type: function
-              function:
-                name: divide
-                arguments: ""
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: '{"di'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: viden
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: 'd": 80'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: "2625"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: 6882,
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: ' "divi'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: sor"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: ": 340"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 0
-              function:
-                arguments: 2398}
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              id: call_vBgrIZCwG8YMhcrxJCEbdq1b
-              type: function
-              function:
-                name: divide
-                arguments: ""
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: '{"di'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: viden
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: 'd": 11'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: "8583"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: 5515,
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: ' "divi'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: sor"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: ": 348"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 1
-              function:
-                arguments: 263}
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              id: call_uvfAmM0tr46k5CQnffssjiSa
-              type: function
-              function:
-                name: subtract
-                arguments: ""
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: '{"mi'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: nuend
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: '": 901'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: "3509"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: 4495,
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: ' "subt'
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: rahe
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: 'nd": '
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: "899449"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: "5435"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          tool_calls:
-            - index: 2
-              function:
-                arguments: 0}
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices:
-      - index: 0
-        delta: {}
-        logprobs: null
-        finish_reason: tool_calls
-    system_fingerprint: fp_e37d8a480e
-    usage: null
-  - choices: []
-    system_fingerprint: fp_e37d8a480e
-    usage:
-      prompt_tokens: 154
-      completion_tokens: 91
-      total_tokens: 245
-      prompt_tokens_details:
-        cached_tokens: 0
-        audio_tokens: 0
-      completion_tokens_details:
-        reasoning_tokens: 0
-        audio_tokens: 0
-        accepted_prediction_tokens: 0
-        rejected_prediction_tokens: 0
+  - type: response.created
+    response:
+      id: resp_67e545d1e3b08192a16c916873247d44064f155f12cb3e78
+      object: response
+      created_at: 1743078865
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.in_progress
+    response:
+      id: resp_67e545d1e3b08192a16c916873247d44064f155f12cb3e78
+      object: response
+      created_at: 1743078865
+      status: in_progress
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output: []
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+      top_p: 0.95
+      truncation: disabled
+      usage: null
+      user: null
+      metadata: {}
+  - type: response.output_item.added
+    output_index: 0
+    item:
+      type: function_call
+      id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+      call_id: call_sHdqrLZ94M6bGtr5sEPbaKPU
+      name: divide
+      arguments: ""
+      status: in_progress
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: "{"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: '"div'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: idend
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: 8026256882,
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: '"div'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: isor
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    delta: 3402398}
+  - type: response.function_call_arguments.done
+    item_id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+    output_index: 0
+    arguments: '{"dividend":8026256882,"divisor":3402398}'
+  - type: response.output_item.done
+    output_index: 0
+    item:
+      type: function_call
+      id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+      call_id: call_sHdqrLZ94M6bGtr5sEPbaKPU
+      name: divide
+      arguments: '{"dividend":8026256882,"divisor":3402398}'
+      status: completed
+  - type: response.output_item.added
+    output_index: 1
+    item:
+      type: function_call
+      id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+      call_id: call_C1EMIVgyXmzgUX9q69QRZFm5
+      name: divide
+      arguments: ""
+      status: in_progress
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: "{"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: '"div'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: idend
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: 1185835515,
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: '"div'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: isor
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    delta: 348263}
+  - type: response.function_call_arguments.done
+    item_id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+    output_index: 1
+    arguments: '{"dividend":1185835515,"divisor":348263}'
+  - type: response.output_item.done
+    output_index: 1
+    item:
+      type: function_call
+      id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+      call_id: call_C1EMIVgyXmzgUX9q69QRZFm5
+      name: divide
+      arguments: '{"dividend":1185835515,"divisor":348263}'
+      status: completed
+  - type: response.output_item.added
+    output_index: 2
+    item:
+      type: function_call
+      id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+      call_id: call_DIYT1ujtc5RSKlppdjPMD1um
+      name: subtract
+      arguments: ""
+      status: in_progress
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: "{"
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: '"min'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: u
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: end
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: 90135094495,
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: '"sub'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: tr
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: ah
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: end
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: '":'
+  - type: response.function_call_arguments.delta
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    delta: 89944954350}
+  - type: response.function_call_arguments.done
+    item_id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+    output_index: 2
+    arguments: '{"minuend":90135094495,"subtrahend":89944954350}'
+  - type: response.output_item.done
+    output_index: 2
+    item:
+      type: function_call
+      id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+      call_id: call_DIYT1ujtc5RSKlppdjPMD1um
+      name: subtract
+      arguments: '{"minuend":90135094495,"subtrahend":89944954350}'
+      status: completed
+  - type: response.completed
+    response:
+      id: resp_67e545d1e3b08192a16c916873247d44064f155f12cb3e78
+      object: response
+      created_at: 1743078865
+      status: completed
+      error: null
+      incomplete_details: null
+      instructions: null
+      max_output_tokens: 4096
+      model: gpt-4o-2024-05-13
+      output:
+        - type: function_call
+          id: fc_67e545d297348192a11302621ed8dea5064f155f12cb3e78
+          call_id: call_sHdqrLZ94M6bGtr5sEPbaKPU
+          name: divide
+          arguments: '{"dividend":8026256882,"divisor":3402398}'
+          status: completed
+        - type: function_call
+          id: fc_67e545d2bac0819289292313f6e96239064f155f12cb3e78
+          call_id: call_C1EMIVgyXmzgUX9q69QRZFm5
+          name: divide
+          arguments: '{"dividend":1185835515,"divisor":348263}'
+          status: completed
+        - type: function_call
+          id: fc_67e545d2ebc08192af5609019bf79e71064f155f12cb3e78
+          call_id: call_DIYT1ujtc5RSKlppdjPMD1um
+          name: subtract
+          arguments: '{"minuend":90135094495,"subtrahend":89944954350}'
+          status: completed
+      parallel_tool_calls: true
+      previous_response_id: null
+      reasoning:
+        effort: null
+        generate_summary: null
+      store: false
+      temperature: 0.5
+      text:
+        format:
+          type: text
+      tool_choice: auto
+      tools:
+        - type: function
+          description: Calculate a subtraction
+          name: subtract
+          parameters:
+            type: object
+            properties:
+              minuend:
+                type: number
+                description: The number to subtract from
+              subtrahend:
+                type: number
+                description: The number to subtract by
+            required:
+              - minuend
+              - subtrahend
+            additionalProperties: false
+            description: Calculate a subtraction
+          strict: true
+        - type: function
+          description: Calculate a division
+          name: divide
+          parameters:
+            type: object
+            properties:
+              dividend:
+                type: number
+                description: The number to be divided
+              divisor:
+                type: number
+                description: The number to divide by
+            required:
+              - dividend
+              - divisor
+            additionalProperties: false
+            description: Calculate a division
+          strict: true
+      top_p: 0.95
+      truncation: disabled
+      usage:
+        input_tokens: 0
+        input_tokens_details:
+          cached_tokens: 0
+        output_tokens: 0
+        output_tokens_details:
+          reasoning_tokens: 0
+        total_tokens: 0
+      user: null
+      metadata: {}
 step3KurtEvents:
-  - chunk: '{"di'
-  - chunk: viden
-  - chunk: 'd": 80'
-  - chunk: "2625"
-  - chunk: 6882,
-  - chunk: ' "divi'
-  - chunk: sor"
-  - chunk: ": 340"
-  - chunk: 2398}
-  - chunk: "\n"
-  - chunk: '{"di'
-  - chunk: viden
-  - chunk: 'd": 11'
-  - chunk: "8583"
-  - chunk: 5515,
-  - chunk: ' "divi'
-  - chunk: sor"
-  - chunk: ": 348"
-  - chunk: 263}
-  - chunk: "\n"
-  - chunk: '{"mi'
-  - chunk: nuend
-  - chunk: '": 901'
-  - chunk: "3509"
-  - chunk: 4495,
-  - chunk: ' "subt'
-  - chunk: rahe
-  - chunk: 'nd": '
-  - chunk: "899449"
-  - chunk: "5435"
-  - chunk: 0}
+  - chunk: '{"dividend":8026256882,"divisor":3402398}'
+  - chunk: '{"dividend":1185835515,"divisor":348263}'
+  - chunk: '{"minuend":90135094495,"subtrahend":89944954350}'
   - finished: true
-    text: |-
-      {"dividend": 8026256882, "divisor": 3402398}
-      {"dividend": 1185835515, "divisor": 348263}
-      {"minuend": 90135094495, "subtrahend": 89944954350}
+    text: '{"dividend":8026256882,"divisor":3402398}{"dividend":1185835515,"divisor":348263}{"minuend":90135094495,"subtrahend":89944954350}'
     data:
       name: divide
       args:
@@ -498,6 +481,6 @@ step3KurtEvents:
           minuend: 90135094495
           subtrahend: 89944954350
     metadata:
-      totalInputTokens: 154
-      totalOutputTokens: 91
-      systemFingerprint: fp_e37d8a480e
+      totalInputTokens: 0
+      totalOutputTokens: 0
+      systemFingerprint: gpt-4o-2024-05-13
