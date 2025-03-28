@@ -51,8 +51,8 @@ importers:
         specifier: 1.9.3
         version: 1.9.3
       openai:
-        specifier: 4.85.1
-        version: 4.85.1(zod@3.24.2)
+        specifier: 4.89.1
+        version: 4.89.1(zod@3.24.2)
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -4782,30 +4782,6 @@ packages:
     dependencies:
       mimic-function: 5.0.1
     dev: true
-
-  /openai@4.85.1(zod@3.24.2):
-    resolution: {integrity: sha512-jkX2fntHljUvSH3MkWh4jShl10oNkb+SsCj4auKlbu2oF4KWAnmHLNR5EpnUHK1ZNW05Rp0fjbJzYwQzMsH8ZA==}
-    hasBin: true
-    peerDependencies:
-      ws: ^8.18.0
-      zod: ^3.23.8
-    peerDependenciesMeta:
-      ws:
-        optional: true
-      zod:
-        optional: true
-    dependencies:
-      '@types/node': 18.19.32
-      '@types/node-fetch': 2.6.12
-      abort-controller: 3.0.0
-      agentkeepalive: 4.5.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0
-      zod: 3.24.2
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /openai@4.89.1(zod@3.24.2):
     resolution: {integrity: sha512-k6t7WfnodIctPo40/9sy7Ww4VypnfkKi/urO2VQx4trCIwgzeroO1jkaCL2f5MyTS1H3HT9X+M2qLsc7NSXwTw==}
