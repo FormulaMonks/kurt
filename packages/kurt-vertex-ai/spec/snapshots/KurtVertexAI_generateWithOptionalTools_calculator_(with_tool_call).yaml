@@ -6,7 +6,8 @@ step1Request:
   contents:
     - role: user
       parts:
-        - text: What's 9876356 divided by 30487, rounded to the nearest integer?
+        - text: What's 9876356 divided by 30487, rounded to the nearest integer? Use the
+            tool to calculate
   tools:
     - functionDeclarations:
         - name: subtract
@@ -47,18 +48,19 @@ step2RawChunks:
                 args:
                   divisor: 30487
                   dividend: 9876356
-        index: 0
-  - candidates:
-      - content:
-          role: model
-          parts:
-            - text: ""
         finishReason: STOP
         index: 0
     usageMetadata:
-      promptTokenCount: 68
+      promptTokenCount: 73
       candidatesTokenCount: 3
-      totalTokenCount: 71
+      totalTokenCount: 76
+      trafficType: ON_DEMAND
+      promptTokensDetails:
+        - modality: TEXT
+          tokenCount: 73
+      candidatesTokensDetails:
+        - modality: TEXT
+          tokenCount: 3
 step3KurtEvents:
   - chunk: '{"dividend":9876356,"divisor":30487}'
   - finished: true
@@ -69,5 +71,5 @@ step3KurtEvents:
         dividend: 9876356
         divisor: 30487
     metadata:
-      totalInputTokens: 68
+      totalInputTokens: 73
       totalOutputTokens: 3

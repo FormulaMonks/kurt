@@ -133,7 +133,12 @@ export class KurtOpenAI implements KurtAdapterV1<KurtOpenAiAdapterTypeParams> {
     tool: RawToolInput<KurtOpenAiAdapterTypeParams>
   ): OpenAITool {
     if (KurtTools.isKurtTool(tool)) {
-      return { type: "web_search_preview" }
+      switch (tool.type) {
+        case "web_search":
+          return { type: "web_search_preview" }
+        default:
+          throw new Error(`Unsupported Kurt tool: ${tool}`)
+      }
     }
     return {
       type: "function",

@@ -1,13 +1,15 @@
 import type {
-  VertexAI as RealVertexAI,
-  GenerativeModel,
   Content,
-  GenerateContentRequest,
-  GenerateContentCandidate,
+  FinishReason,
   FunctionDeclaration,
   FunctionDeclarationSchema,
+  FunctionDeclarationsTool,
+  GenerateContentCandidate,
+  GenerateContentRequest,
+  GenerativeModel,
+  GoogleSearchRetrievalTool,
   UsageMetadata,
-  FinishReason,
+  VertexAI as RealVertexAI,
 } from "@google-cloud/vertexai"
 
 export type VertexAI = RealVertexAI
@@ -18,16 +20,9 @@ export type VertexAIGenerativeModel = GenerativeModel & {
 
 export type VertexAIMessage = Content
 
-export type VertexAIRequest = GenerateContentRequest & {
-  tool_config?: {
-    function_calling_config?: {
-      mode: "AUTO" | "NONE" | "ANY"
-      allowed_function_names?: string[]
-    }
-  }
-}
+export type VertexAIRequest = GenerateContentRequest
 export type VertexAISchema = FunctionDeclarationSchema
-export type VertexAITool = FunctionDeclaration
+export type VertexAITool = FunctionDeclaration | GoogleSearchRetrievalTool
 export type VertexAIResponse = Promise<{
   stream: AsyncIterable<VertexAIResponseChunk>
 }>

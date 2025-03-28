@@ -19,7 +19,7 @@ describe("KurtVertexAI generateStructuredData", () => {
           .describe("Say a word"),
       })
     )
-    expect(result.data).toEqual({ say: "hello" })
+    expect(result.data).toEqual({ say: "Hello!" })
   })
 
   test("says hello (response format 2)", async () => {
@@ -33,7 +33,7 @@ describe("KurtVertexAI generateStructuredData", () => {
           .describe("Say a word"),
       })
     )
-    expect(result.data).toEqual({ say: "hello" })
+    expect(result.data).toEqual({ say: "Hello!" })
   })
 
   test("says hello (response format 3)", async () => {
@@ -47,7 +47,7 @@ describe("KurtVertexAI generateStructuredData", () => {
           .describe("Say a word"),
       })
     )
-    expect(result.data).toEqual({ say: "hello" })
+    expect(result.data).toEqual({ say: "Hello!" })
   })
 
   test("throws a capability error for schema constrained tokens", async () => {
@@ -61,7 +61,6 @@ describe("KurtVertexAI generateStructuredData", () => {
             })
             .describe("Say a word"),
           sampling: {
-            // This is not available as a capability of Vertex AI.
             forceSchemaConstrainedTokens: true,
           },
         }),
@@ -96,8 +95,8 @@ describe("KurtVertexAI generateStructuredData", () => {
         expect(errorAny).toBeInstanceOf(KurtResultValidateError)
         const error = errorAny as KurtResultValidateError
 
-        expect(error.text).toEqual('{"say":"hello"}')
-        expect(error.data).toEqual({ say: "hello" })
+        expect(error.text).toEqual('{"say": "Hello"}')
+        expect(error.data).toEqual({ say: "Hello" })
         expect(error.cause.issues).toEqual([
           {
             code: "invalid_string",

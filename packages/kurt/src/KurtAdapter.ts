@@ -36,7 +36,6 @@ export type RawToolInput<A extends V1TypeParams = V1TypeParams> =
       name: string
       description: string
       parameters: A["rawSchema"]
-      type: "external_tool"
     }
   | KurtTool
 

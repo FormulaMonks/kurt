@@ -81,7 +81,6 @@ export class Kurt {
               name: "structured_data",
               description: options.schema.description ?? "",
               parameters: this.adapter.transformToRawSchema(options.schema),
-              type: "external_tool",
             }),
           },
           forceTool: "structured_data",
@@ -123,14 +122,15 @@ export class Kurt {
           ),
           sampling: this.makeSamplingOptions(options.sampling),
           tools: Object.fromEntries(
-            Object.entries(options.tools).map(([name, schema]) => {
-              const rawToolInput: RawToolInput = KurtTools.isKurtTool(schema)
-                ? schema
+            Object.entries(options.tools).map(([name, schemaOrTool]) => {
+              const rawToolInput: RawToolInput = KurtTools.isKurtTool(
+                schemaOrTool
+              )
+                ? schemaOrTool
                 : {
                     name,
-                    description: schema.description,
-                    parameters: this.adapter.transformToRawSchema(schema),
-                    type: "external_tool",
+                    description: schemaOrTool.description,
+                    parameters: this.adapter.transformToRawSchema(schemaOrTool),
                   }
               return [name, this.adapter.transformToRawTool(rawToolInput)]
             })

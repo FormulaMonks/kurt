@@ -19,6 +19,7 @@ import {
   type KurtSchemaResult,
   type KurtSchemaResultMaybe,
   type KurtStreamEvent,
+  KurtTools,
   type RawToolInput,
 } from "@formula-monks/kurt"
 import type {
@@ -33,6 +34,10 @@ import type {
   VertexAIUsageMetadata,
 } from "./VertexAI.types"
 import { ZodError } from "zod"
+import type {
+  FunctionDeclaration,
+  GoogleSearchRetrievalTool,
+} from "@google-cloud/vertexai"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = [
@@ -84,7 +89,28 @@ export class KurtVertexAI implements KurtAdapterV1<KurtVertexAITypeParams> {
 
   transformToRawTool = (
     tool: RawToolInput<KurtVertexAITypeParams>
-  ): VertexAITool => tool
+  ): VertexAITool => {
+    if (KurtTools.isKurtTool(tool)) {
+      switch (tool.type) {
+        case "web_search":
+          return { googleSearchRetrieval: {} }
+        default:
+          throw new Error(`The tool ${tool} isn't supported by KurtVertexAI`)
+      }
+    }
+
+    return tool
+  }
+
+  isFunctionDeclarationTool(tool: VertexAITool): tool is FunctionDeclaration {
+    return "name" in tool && "parameters" in tool
+  }
+
+  isGoogleSearchRetrievalTool(
+    tool: VertexAITool
+  ): tool is GoogleSearchRetrievalTool {
+    return "googleSearchRetrieval" in tool
+  }
 
   generateRawEvents(options: {
     messages: VertexAIMessage[]
@@ -126,15 +152,40 @@ export class KurtVertexAI implements KurtAdapterV1<KurtVertexAITypeParams> {
     }
 
     const tools = Object.values(options.tools)
-    if (tools.length > 0) req.tools = [{ functionDeclarations: tools }]
 
-    if (options.forceTool)
-      req.tool_config = {
-        function_calling_config: {
-          mode: "ANY",
-          allowed_function_names: [options.forceTool],
-        },
+    if (tools.length > 0) {
+      req.tools = []
+      const functionDeclarations = tools.filter((t) =>
+        this.isFunctionDeclarationTool(t)
+      ) as FunctionDeclaration[]
+      if (functionDeclarations.length) {
+        req.tools.push({ functionDeclarations: functionDeclarations })
       }
+      const searchTool = this.getSearchTool(tools)
+      if (searchTool) {
+        req.tools.push(searchTool)
+      }
+    }
+
+    if (options.forceTool) {
+      if (!req.generationConfig) throw new Error("Expected generationConfig")
+      const toolFunction = options.tools[options.forceTool]
+      if (!toolFunction) {
+        throw new Error(
+          `The tool ${options.forceTool} wasn't found in the tools list`
+        )
+      }
+
+      if (!this.isFunctionDeclarationTool(toolFunction)) {
+        throw new Error(
+          `The tool ${options.forceTool} isn't a function declaration`
+        )
+      }
+
+      req.tools = undefined
+      req.generationConfig.responseMimeType = "application/json"
+      req.generationConfig.responseSchema = toolFunction.parameters
+    }
 
     const promise = llm.generateContentStreamPATCHED(req)
 
@@ -144,6 +195,14 @@ export class KurtVertexAI implements KurtAdapterV1<KurtVertexAITypeParams> {
     }
 
     return gen()
+  }
+
+  private getSearchTool(
+    tools: (FunctionDeclaration | GoogleSearchRetrievalTool)[]
+  ) {
+    return tools.find((t) => this.isGoogleSearchRetrievalTool(t)) as
+      | GoogleSearchRetrievalTool
+      | undefined
   }
 
   transformNaturalLanguageFromRawEvents(
@@ -235,6 +294,33 @@ function jsonSchemaForVertexAI<T extends KurtSchemaInner>(
   return schema as VertexAISchema
 }
 
+function parseSchemaResult<
+  I extends KurtSchemaInnerMaybe,
+  S extends KurtSchemaMaybe<I>,
+>(
+  adapter: KurtVertexAI,
+  schema: S,
+  input: string | object
+): object | undefined {
+  if (!schema) return undefined
+
+  const data = typeof input === "string" ? JSON.parse(input) : input
+  try {
+    return schema.parse(data)
+  } catch (e) {
+    if (e instanceof ZodError) {
+      throw new KurtResultValidateError(
+        adapter,
+        schema,
+        typeof input === "string" ? input : JSON.stringify(input),
+        data,
+        e
+      )
+    }
+    throw e
+  }
+}
+
 async function* transformStream<
   I extends KurtSchemaInnerMaybe,
   S extends KurtSchemaMaybe<I>,
@@ -248,28 +334,20 @@ async function* transformStream<
   for await (const event of state.observeAndTransform(rawEvents)) yield event
   throwIfStreamWasInterrupted(state)
 
-  const { chunks, functionCalls, lastRawEvent: rawEvent } = state
+  const { chunks, lastRawEvent: rawEvent } = state
+  const text = chunks.join("")
   if (rawEvent) {
     const metadata = convertMetadata(rawEvent)
 
     if (schema) {
-      const functionCall = functionCalls[0]
-      if (!functionCall) throw new Error("Expected function call, but got none")
-      if (functionCalls.length > 1)
-        throw new Error(
-          `Expected just function call, but got ${functionCalls.length}`
-        )
-
-      const data = applySchemaToFuzzyStructure(
-        adapter,
-        schema,
-        functionCall
-      ) as D
-      const text = JSON.stringify(data)
       yield { chunk: text }
-      yield { finished: true, text, data, metadata }
+      yield {
+        finished: true,
+        text,
+        data: parseSchemaResult(adapter, schema, text) as D,
+        metadata,
+      }
     } else {
-      const text = chunks.join("")
       yield {
         finished: true,
         text,
@@ -310,9 +388,16 @@ async function* transformStreamWithOptionalTools<
             )}}`
           )
         }
+
+        if (KurtTools.isKurtTool(schema)) {
+          throw new Error(
+            `Vertex AI tried to call a KurtTool ${name} which it shouldn't have`
+          )
+        }
+
         return {
           name,
-          args: applySchemaToFuzzyStructure(adapter, schema, functionCall),
+          args: parseSchemaResult(adapter, schema, functionCall.args),
         } as D
       })
 
@@ -327,8 +412,6 @@ async function* transformStreamWithOptionalTools<
         yield { chunk: text }
       }
 
-      // if (!isNonEmptyArray(allData))
-      //   throw new Error("Empty here is impossible but TS doesn't know it")
       const [data, ...additionalData] = allData
       const text = chunks.join("")
 
@@ -376,50 +459,6 @@ class StreamState {
         }
       }
     }
-  }
-}
-
-// Vertex AI sometimes gives wonky results that are nested weirdly.
-// This function tries to account for the different scenarios we've seen.
-//
-// If a new scenario is seen, we can add a test for it in KurtVertexAI.spec.ts
-// and then add new logic here as needed to handle the new scenario.
-function applySchemaToFuzzyStructure<I extends KurtSchemaInner>(
-  adapter: KurtVertexAI,
-  schema: KurtSchema<I>,
-  input: { name: string; args: object }
-): KurtSchemaResult<I> {
-  const { name, args } = input
-
-  try {
-    // First, try the most obvious case.
-    return schema.parse(args)
-  } catch (firstParseError) {
-    // Okay, if that didn't work, we'll try some alternative strategies here.
-
-    // Sometimes the args are double-nested...
-    if ("args" in args) {
-      try {
-        return schema.parse(args.args)
-      } catch {}
-    }
-
-    // If all the alternative strategies failed, we'll need to re-throw.
-
-    // Assuming this is indeed a `ZodError` as expected, we'll wrap it in
-    // a `KurtResultValidateError` to provide full context.
-    if (firstParseError instanceof ZodError) {
-      throw new KurtResultValidateError(
-        adapter,
-        schema,
-        JSON.stringify(args),
-        args,
-        firstParseError
-      )
-    }
-
-    // Otherwise we fall back to re-throwing whatever the unexpected error was.
-    throw firstParseError
   }
 }
 

@@ -5,7 +5,7 @@ import {
   type KurtCreateOptions,
   type KurtSamplingOptions,
   KurtSamplingOptionsDefault,
-} from "../src/Kurt"
+} from "../src"
 
 function createV1(options: KurtCreateOptions = {}) {
   const adapter = new FakeAdapterV1()

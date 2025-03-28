@@ -1,6 +1,6 @@
 import type { ZodObject, ZodRawShape, infer as zodInfer } from "zod"
 import { fromJSONSchema7 } from "./KurtSchema.fromJSONSchema7"
-import { type KurtTool, KurtTools } from "./KurtTools"
+import type { KurtTool } from "./KurtTools"
 
 export const KurtSchema = {
   fromJSONSchema7,
