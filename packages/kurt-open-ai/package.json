@@ -17,7 +17,7 @@
     "build": "tsc --build",
     "prepack": "pnpm run build",
     "format": "pnpm biome format --write .",
-    "lint": "pnpm biome lint --apply .",
+    "lint": "pnpm biome lint --write .",
     "check": "pnpm biome check .",
     "prepublish": "../../scripts/interpolate-example-code.sh README.md",
     "release": "pnpm exec semantic-release"
@@ -27,10 +27,10 @@
     "extends": "semantic-release-monorepo"
   },
   "dependencies": {
-    "@formula-monks/kurt": "^1.5.0",
-    "openai": "4.85.1",
-    "zod": "^3.23.8",
-    "zod-to-json-schema": "^3.23.3"
+    "@formula-monks/kurt": "^1.6.0",
+    "openai": "4.89.1",
+    "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

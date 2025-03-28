@@ -1,34 +1,24 @@
 import type { OpenAI as RealOpenAI } from "openai"
+import type { FunctionParameters } from "openai/resources"
 import type {
-  ChatCompletionCreateParamsStreaming,
-  ChatCompletionSystemMessageParam,
-  ChatCompletionUserMessageParam,
-  ChatCompletionAssistantMessageParam,
-  ChatCompletionToolMessageParam,
-  ChatCompletionContentPart,
-  FunctionParameters,
-  ChatCompletionTool,
-  ChatCompletionChunk,
-  CompletionUsage,
-} from "openai/resources/index"
+  EasyInputMessage,
+  FunctionTool,
+  ResponseCreateParamsStreaming,
+  ResponseFunctionToolCall,
+  ResponseInputItem,
+  WebSearchTool,
+} from "openai/resources/responses/responses"
+import type { ResponseStreamEvent } from "openai/resources/responses/responses"
 
 export type OpenAI = RealOpenAI
 
-export type OpenAIRequest = ChatCompletionCreateParamsStreaming
+export type OpenAIRequest = ResponseCreateParamsStreaming
 export type OpenAIMessage =
-  | ChatCompletionSystemMessageParam
-  | (ChatCompletionUserMessageParam & { content: ChatCompletionContentPart[] })
-  | ChatCompletionAssistantMessageParam
-  | ChatCompletionToolMessageParam
+  | EasyInputMessage
+  | ResponseFunctionToolCall
+  | ResponseInputItem.FunctionCallOutput
 
 export type OpenAISchema = FunctionParameters
-export type OpenAITool = ChatCompletionTool
+export type OpenAITool = FunctionTool | WebSearchTool
 export type OpenAIResponse = Promise<AsyncIterable<OpenAIResponseChunk>>
-export type OpenAIResponseChunk = {
-  choices: Pick<
-    ChatCompletionChunk["choices"][number],
-    "delta" | "finish_reason"
-  >[]
-  usage?: Pick<CompletionUsage, "prompt_tokens" | "completion_tokens"> | null
-  system_fingerprint?: string | null
-}
+export type OpenAIResponseChunk = ResponseStreamEvent

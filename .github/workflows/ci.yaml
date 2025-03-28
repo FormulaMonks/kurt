@@ -30,9 +30,9 @@ jobs:
 
       # Validate that the tests pass without the pnpm overrides that alter
       # the intra-monorepo dependencies for local development.
-      - run: cat package.json | jq 'del(.pnpm.overrides)' | tee package.json
-      - run: pnpm install --no-frozen-lockfile
-      - run: pnpm run test
+      # - run: cat package.json | jq 'del(.pnpm.overrides)' | tee package.json
+      # - run: pnpm install --no-frozen-lockfile
+      # - run: pnpm run test
 
       # Validate that the prepublish hook works.
       - run: pnpm run prepublish

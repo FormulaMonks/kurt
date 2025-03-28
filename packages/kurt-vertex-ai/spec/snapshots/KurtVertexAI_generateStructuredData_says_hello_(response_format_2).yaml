@@ -3,56 +3,54 @@ step1Request:
     maxOutputTokens: 4096
     temperature: 0.5
     topP: 0.95
+    responseMimeType: application/json
+    responseSchema:
+      type: object
+      properties:
+        say:
+          type: string
+          description: A single word to say
+      required:
+        - say
   contents:
     - role: user
       parts:
         - text: Say hello!
-  tools:
-    - functionDeclarations:
-        - name: structured_data
-          description: Say a word
-          parameters:
-            type: object
-            properties:
-              say:
-                type: string
-                description: A single word to say
-            required:
-              - say
-  tool_config:
-    function_calling_config:
-      mode: ANY
-      allowed_function_names:
-        - structured_data
 step2RawChunks:
   - candidates:
       - content:
           role: model
           parts:
-            - functionCall:
-                name: call
-                args:
-                  function: structured_data
-                  say: hello
-                  extension: default_api
+            - text: '{"'
         index: 0
+    usageMetadata:
+      trafficType: ON_DEMAND
   - candidates:
       - content:
           role: model
           parts:
-            - text: ""
+            - text: 'say": "Hello!"}'
         finishReason: STOP
         index: 0
     usageMetadata:
-      promptTokenCount: 16
-      candidatesTokenCount: 8
-      totalTokenCount: 24
+      promptTokenCount: 10
+      candidatesTokenCount: 7
+      totalTokenCount: 17
+      trafficType: ON_DEMAND
+      promptTokensDetails:
+        - modality: TEXT
+          tokenCount: 10
+      candidatesTokensDetails:
+        - modality: TEXT
+          tokenCount: 7
 step3KurtEvents:
-  - chunk: '{"say":"hello"}'
+  - chunk: '{"'
+  - chunk: 'say": "Hello!"}'
+  - chunk: '{"say": "Hello!"}'
   - finished: true
-    text: '{"say":"hello"}'
+    text: '{"say": "Hello!"}'
     data:
-      say: hello
+      say: Hello!
     metadata:
-      totalInputTokens: 16
-      totalOutputTokens: 8
+      totalInputTokens: 10
+      totalOutputTokens: 7

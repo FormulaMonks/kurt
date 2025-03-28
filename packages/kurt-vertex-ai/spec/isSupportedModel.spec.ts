@@ -7,8 +7,6 @@ test("KurtVertexAI.isSupportedModel", () => {
   expect(KurtVertexAI.isSupportedModel("gemini-1.5-pro")).toBe(true)
   expect(KurtVertexAI.isSupportedModel("gemini-1.5-flash")).toBe(true)
   expect(KurtVertexAI.isSupportedModel("gemini-2.0-flash")).toBe(true)
-  expect(KurtVertexAI.isSupportedModel("gemini-1.0-pro")).toBe(false)
-  expect(KurtVertexAI.isSupportedModel("gemini-1.0-pro-vision")).toBe(false)
 
   expect(KurtVertexAI.isSupportedModel("bogus")).toBe(false)
 

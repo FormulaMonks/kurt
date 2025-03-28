@@ -13,9 +13,8 @@ import type {
   VertexAIRequest,
   VertexAIResponse,
   VertexAIResponseChunk,
-  VertexAIResponseChunkCandidate,
 } from "../src/VertexAI.types"
-import { KurtVertexAI } from "../src/KurtVertexAI"
+import { KurtVertexAI } from "../src"
 
 function requiredEnvVar(name: string) {
   const value = process.env[name]
@@ -85,6 +84,10 @@ export async function snapshotAndMock<T>(
             const realVertexAI = new RealVertexAI({
               project: requiredEnvVar("VERTEX_AI_PROJECT"),
               location: requiredEnvVar("VERTEX_AI_LOCATION"),
+              googleAuthOptions: {
+                keyFile:
+                  "C:\\Users\\mihai\\Documents\\monksflow-insights-engine-5a3dcb451692.json",
+              },
             })
             const generativeModel = realVertexAI.getGenerativeModel({
               model,

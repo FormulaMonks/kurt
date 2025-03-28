@@ -1,84 +1,46 @@
 step1Request:
   stream: true
-  stream_options:
-    include_usage: true
+  store: false
   model: gpt-4o-2024-05-13
-  max_tokens: 5
+  max_output_tokens: 5
   temperature: 0.5
   top_p: 0.95
-  messages:
+  input:
     - role: user
       content:
-        - type: text
+        - type: input_text
           text: Compose a haiku about content length limitations.
-step2RawChunks:
-  - choices:
-      - index: 0
-        delta:
-          role: assistant
-          content: ""
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: Words
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " constrained"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " by"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: " bounds"
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta:
-          content: |
-            ,
-        logprobs: null
-        finish_reason: null
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices:
-      - index: 0
-        delta: {}
-        logprobs: null
-        finish_reason: length
-    system_fingerprint: fp_d576307f90
-    usage: null
-  - choices: []
-    system_fingerprint: fp_d576307f90
-    usage:
-      prompt_tokens: 16
-      completion_tokens: 5
-      total_tokens: 21
-step3KurtEvents:
-  - chunk: Words
-  - chunk: " constrained"
-  - chunk: " by"
-  - chunk: " bounds"
-  - chunk: |
-      ,
+step1Error:
+  status: 400
+  headers:
+    alt-svc: h3=":443"; ma=86400
+    cf-cache-status: DYNAMIC
+    cf-ray: 9269452a79bae3c3-LIS
+    connection: keep-alive
+    content-length: "248"
+    content-type: application/json
+    date: Wed, 26 Mar 2025 20:06:43 GMT
+    openai-organization: mightyhive-acct-with-gpt4
+    openai-processing-ms: "9"
+    openai-version: 2020-10-01
+    server: cloudflare
+    set-cookie: __cf_bm=_AtqO9fOtOC7zLzVnVAopFMXc9iuSDDkMBxdKm9DmS8-1743019603-1.0.1.1-EGRlIHYBT_RUdDOPUTZt03z.ZyQN7E4K1D6Rt9WMhOAmaKWXuG9xN2whg0vwzpEcXZVsBuZr8qI5tlyGY8V.Rqrq6NmGhGGo9AGQ5rM2gjQ;
+      path=/; expires=Wed, 26-Mar-25 20:36:43 GMT; domain=.api.openai.com;
+      HttpOnly; Secure; SameSite=None,
+      _cfuvid=VUJZGhcLqMYCiAub5uZt3I4JwgXA.0ti37j11ZNyy9M-1743019603934-0.0.1.1-604800000;
+      path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+    strict-transport-security: max-age=31536000; includeSubDomains; preload
+    x-content-type-options: nosniff
+    x-request-id: req_182bb9dc255e1455bfaf009724a7e435
+  request_id: req_182bb9dc255e1455bfaf009724a7e435
+  error:
+    message: "Invalid 'max_output_tokens': integer below minimum value. Expected a
+      value >= 16, but got 5 instead."
+    type: invalid_request_error
+    param: max_output_tokens
+    code: integer_below_min_value
+  code: integer_below_min_value
+  param: max_output_tokens
+  type: invalid_request_error
+step2RawChunks: []
+step3KurtEvents: []

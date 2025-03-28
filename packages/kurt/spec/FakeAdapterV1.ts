@@ -1,14 +1,15 @@
-import type { KurtSamplingOptions, KurtMessage } from "../src/Kurt"
-import type { KurtAdapterV1 } from "../src/KurtAdapter"
-import type { KurtStreamEvent } from "../src/KurtStream"
 import type {
+  KurtAdapterV1,
   KurtSchema,
   KurtSchemaInner,
   KurtSchemaInnerMap,
   KurtSchemaMap,
   KurtSchemaMapSingleResult,
   KurtSchemaResult,
-} from "../src/KurtSchema"
+  KurtStreamEvent,
+  RawToolInput,
+} from "../src"
+import { type KurtMessage, type KurtSamplingOptions, KurtTools } from "../src"
 
 export type FakeMessage = { fake: KurtMessage }
 export type FakeSchema = { fake: object }
@@ -16,15 +17,14 @@ export type FakeTool = {
   fake: { name: string; description: string; parameters: FakeSchema }
 }
 export type FakeEvent = { fake: KurtStreamEvent<unknown> }
-export class FakeAdapterV1
-  implements
-    KurtAdapterV1<{
-      rawMessage: FakeMessage
-      rawSchema: FakeSchema
-      rawTool: FakeTool
-      rawEvent: FakeEvent
-    }>
-{
+type FakeAdapterTypeParams = {
+  rawMessage: FakeMessage
+  rawSchema: FakeSchema
+  rawTool: FakeTool
+  rawEvent: FakeEvent
+}
+
+export class FakeAdapterV1 implements KurtAdapterV1<FakeAdapterTypeParams> {
   kurtAdapterVersion = "v1" as const
 
   // Hook-in points for testing.
@@ -39,11 +39,16 @@ export class FakeAdapterV1
     return { fake: schema }
   }
 
-  transformToRawTool(tool: {
-    name: string
-    description: string
-    parameters: { fake: object }
-  }) {
+  transformToRawTool(tool: RawToolInput<FakeAdapterTypeParams>): FakeTool {
+    if (KurtTools.isKurtTool(tool)) {
+      return {
+        fake: {
+          name: tool.type,
+          description: "Kurt tool",
+          parameters: { fake: {} },
+        },
+      }
+    }
     return { fake: tool }
   }
 

@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals"
-import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src/KurtOpenAI"
+import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src"
 
 test("KurtOpenAI.isSupportedModel", () => {
   // For updating this test, the current list of models can be found at:

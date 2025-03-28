@@ -2,7 +2,7 @@
   "name": "@formula-monks/kurt",
   "description": "A wrapper for AI SDKs, for building LLM-agnostic structured AI applications",
   "license": "MIT",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "homepage": "https://github.com/FormulaMonks/kurt",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "build": "tsc --build",
     "prepack": "pnpm run build",
     "format": "pnpm biome format --write .",
-    "lint": "pnpm biome lint --apply .",
+    "lint": "pnpm biome lint --write .",
     "check": "pnpm biome check .",
     "prepublish": "../../scripts/interpolate-example-code.sh README.md",
     "release": "pnpm exec semantic-release"
@@ -37,9 +37,9 @@
     "ts-jest": "^29.1.2",
     "type-fest": "^4.18.1",
     "typescript": "^5.4.5",
-    "zod-to-json-schema": "^3.23.3"
+    "zod-to-json-schema": "^3.24.5"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.24.2"
   }
 }
