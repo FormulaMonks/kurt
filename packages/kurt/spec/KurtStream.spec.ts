@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals"
 import { z } from "zod"
-import { KurtStream, type KurtStreamEvent } from "../src/KurtStream"
+import { KurtStream, type KurtStreamEvent } from "../src"
 
 function kurtSayHelloEvents() {
   return [
