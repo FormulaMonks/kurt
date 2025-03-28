@@ -52,10 +52,10 @@ importers:
         version: 1.9.3
       openai:
         specifier: 4.85.1
-        version: 4.85.1(zod@3.24.1)
+        version: 4.85.1(zod@3.24.2)
       zod:
-        specifier: ^3.23.8
-        version: 3.24.1
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@types/node':
         specifier: 18.19.32
@@ -73,8 +73,8 @@ importers:
   packages/kurt:
     dependencies:
       zod:
-        specifier: ^3.23.8
-        version: 3.24.1
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -107,8 +107,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       zod-to-json-schema:
-        specifier: ^3.23.3
-        version: 3.24.1(zod@3.24.1)
+        specifier: ^3.24.5
+        version: 3.24.5(zod@3.24.2)
 
   packages/kurt-cache:
     dependencies:
@@ -119,8 +119,8 @@ importers:
         specifier: ^2.4.5
         version: 2.6.1
       zod-to-json-schema:
-        specifier: ^3.23.3
-        version: 3.24.1(zod@3.24.1)
+        specifier: ^3.24.5
+        version: 3.24.5(zod@3.24.2)
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -147,8 +147,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       zod:
-        specifier: ^3.23.8
-        version: 3.24.1
+        specifier: ^3.24.2
+        version: 3.24.2
 
   packages/kurt-open-ai:
     dependencies:
@@ -156,14 +156,14 @@ importers:
         specifier: workspace:^
         version: link:../kurt
       openai:
-        specifier: 4.89.0
-        version: 4.89.0(zod@3.24.1)
+        specifier: 4.89.1
+        version: 4.89.1(zod@3.24.2)
       zod:
-        specifier: ^3.23.8
-        version: 3.24.1
+        specifier: ^3.24.2
+        version: 3.24.2
       zod-to-json-schema:
-        specifier: ^3.23.3
-        version: 3.24.1(zod@3.24.1)
+        specifier: ^3.24.5
+        version: 3.24.5(zod@3.24.2)
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -202,11 +202,11 @@ importers:
         specifier: 1.9.3
         version: 1.9.3
       zod:
-        specifier: ^3.23.8
-        version: 3.24.1
+        specifier: ^3.24.2
+        version: 3.24.2
       zod-to-json-schema:
-        specifier: ^3.23.3
-        version: 3.24.1(zod@3.24.1)
+        specifier: ^3.24.5
+        version: 3.24.5(zod@3.24.2)
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -4783,7 +4783,7 @@ packages:
       mimic-function: 5.0.1
     dev: true
 
-  /openai@4.85.1(zod@3.24.1):
+  /openai@4.85.1(zod@3.24.2):
     resolution: {integrity: sha512-jkX2fntHljUvSH3MkWh4jShl10oNkb+SsCj4auKlbu2oF4KWAnmHLNR5EpnUHK1ZNW05Rp0fjbJzYwQzMsH8ZA==}
     hasBin: true
     peerDependencies:
@@ -4802,13 +4802,13 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /openai@4.89.0(zod@3.24.1):
-    resolution: {integrity: sha512-XNI0q2l8/Os6jmojxaID5EhyQjxZgzR2gWcpEjYWK5hGKwE7AcifxEY7UNwFDDHJQXqeiosQ0CJwQN+rvnwdjA==}
+  /openai@4.89.1(zod@3.24.2):
+    resolution: {integrity: sha512-k6t7WfnodIctPo40/9sy7Ww4VypnfkKi/urO2VQx4trCIwgzeroO1jkaCL2f5MyTS1H3HT9X+M2qLsc7NSXwTw==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -4826,7 +4826,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -6425,12 +6425,12 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /zod-to-json-schema@3.24.1(zod@3.24.1):
-    resolution: {integrity: sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==}
+  /zod-to-json-schema@3.24.5(zod@3.24.2):
+    resolution: {integrity: sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==}
     peerDependencies:
       zod: ^3.24.1
     dependencies:
-      zod: 3.24.1
+      zod: 3.24.2
 
-  /zod@3.24.1:
-    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
+  /zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}

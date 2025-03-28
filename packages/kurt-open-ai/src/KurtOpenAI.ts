@@ -33,12 +33,11 @@ import type {
   OpenAITool,
 } from "./OpenAI.types"
 import { ZodError } from "zod"
+
 import type {
   EasyInputMessage,
-  ResponseInputMessageContentList,
-} from "openai/src/resources/responses/responses"
-import type {
   Response,
+  ResponseInputMessageContentList,
   ResponseInputText,
 } from "openai/resources/responses/responses"
 import { BadRequestError } from "openai"

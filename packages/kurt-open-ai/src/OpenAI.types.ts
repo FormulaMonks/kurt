@@ -7,7 +7,7 @@ import type {
   ResponseFunctionToolCall,
   ResponseInputItem,
   WebSearchTool,
-} from "openai/src/resources/responses/responses"
+} from "openai/resources/responses/responses"
 import type { ResponseStreamEvent } from "openai/resources/responses/responses"
 
 export type OpenAI = RealOpenAI

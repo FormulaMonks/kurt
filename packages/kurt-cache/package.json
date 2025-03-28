@@ -27,9 +27,9 @@
     "extends": "semantic-release-monorepo"
   },
   "dependencies": {
-    "@formula-monks/kurt": "^1.5.0",
+    "@formula-monks/kurt": "^1.6.0",
     "yaml": "^2.4.5",
-    "zod-to-json-schema": "^3.23.3"
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -40,6 +40,6 @@
     "ts-jest": "^29.1.2",
     "type-fest": "^4.30.0",
     "typescript": "^5.4.5",
-    "zod": "^3.23.8"
+    "zod": "^3.24.2"
   }
 }
