@@ -28,7 +28,7 @@
     "@formula-monks/kurt-open-ai": "workspace:*",
     "@formula-monks/kurt-vertex-ai": "workspace:*",
     "@google-cloud/vertexai": "1.9.3",
-    "openai": "4.89.1",
+    "openai": "4.96.0",
     "zod": "^3.24.2"
   }
 }

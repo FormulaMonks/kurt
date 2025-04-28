@@ -4,6 +4,12 @@ import { KurtOpenAI, type KurtOpenAISupportedModel } from "../src"
 test("KurtOpenAI.isSupportedModel", () => {
   // For updating this test, the current list of models can be found at:
   // https://platform.openai.com/docs/models/overview
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1-2025-04-14")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1-mini")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1-mini-2025-04-14")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1-nano")).toBe(true)
+  expect(KurtOpenAI.isSupportedModel("gpt-4.1-nano-2025-04-14")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4o")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4o-2024-05-13")).toBe(true)
   expect(KurtOpenAI.isSupportedModel("gpt-4o-mini")).toBe(true)
