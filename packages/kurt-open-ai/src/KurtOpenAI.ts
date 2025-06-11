@@ -44,6 +44,18 @@ import { BadRequestError } from "openai"
 
 // These models support function calling.
 const COMPATIBLE_MODELS = [
+  "o4-mini",
+  "o4-mini-2025-04-16",
+  "o3-mini",
+  "o3-mini-2025-01-31",
+  "o3",
+  "o3-2025-04-16",
+  "o3-pro",
+  "o3-pro-2025-06-10",
+  "o1-pro",
+  "o1-pro-2025-03-19",
+  "o1",
+  "o1-2024-12-17",
   "gpt-4.1",
   "gpt-4.1-2025-04-14",
   "gpt-4.1-mini",
@@ -160,13 +172,14 @@ export class KurtOpenAI implements KurtAdapterV1<KurtOpenAiAdapterTypeParams> {
     tools: { [key: string]: OpenAITool }
     forceTool?: string
   }): AsyncIterable<OpenAIResponseChunk> {
+    const sampling = adjustSampling(this.options.model, options.sampling)
     const req: OpenAIRequest = {
       stream: true,
       store: false,
       model: this.options.model,
-      max_output_tokens: options.sampling.maxOutputTokens,
-      temperature: options.sampling.temperature,
-      top_p: options.sampling.topP,
+      max_output_tokens: sampling.maxOutputTokens,
+      temperature: sampling.temperature,
+      top_p: sampling.topP,
       input: options.messages,
     }
 
@@ -705,4 +718,19 @@ function withInjectedSystemPromptLine(
         ? { ...message, content: newParts }
         : message
   )
+}
+
+function adjustSampling(
+  model: KurtOpenAISupportedModel,
+  sampling: Required<KurtSamplingOptions>
+) {
+  if (model.startsWith("o")) {
+    return {
+      temperature: null,
+      topP: null,
+      maxOutputTokens: sampling.maxOutputTokens,
+      forceSchemaConstrainedTokens: sampling.forceSchemaConstrainedTokens,
+    }
+  }
+  return sampling
 }
